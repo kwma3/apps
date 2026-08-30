@@ -39,7 +39,7 @@
   }
 
   .page {
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 2rem 1.5rem 4rem;
   }
@@ -87,44 +87,9 @@
     margin-bottom: 1.5rem;
   }
 
-  .strategy-toggle {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 1.25rem;
-    padding: 6px;
-    background: var(--paper);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-  }
-
-  .strategy-btn {
-    flex: 1;
-    height: 36px;
-    border: none;
-    border-radius: var(--radius);
-    background: transparent;
-    color: var(--ink-muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-weight: 500;
-  }
-
-  .strategy-btn.active {
-    background: var(--accent);
-    color: #fff;
-  }
-
-  .strategy-btn:hover:not(.active) {
-    background: var(--surface2);
-  }
-
   .input-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.25rem;
     margin-bottom: 1.25rem;
   }
@@ -160,6 +125,30 @@
   .field .hint {
     font-size: 11px;
     color: var(--ink-faint);
+  }
+
+  .range-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .range-row input[type=range] {
+    flex: 1;
+    height: 4px;
+    border: none;
+    padding: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .range-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    min-width: 40px;
+    text-align: right;
   }
 
   .btn-row {
@@ -198,7 +187,7 @@
   /* KPI CARDS */
   .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 10px;
     margin-bottom: 1.5rem;
   }
@@ -245,7 +234,7 @@
     margin-bottom: 1.5rem;
   }
 
-  @media (max-width: 800px) { .chart-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 700px) { .chart-grid { grid-template-columns: 1fr; } }
 
   .chart-card {
     background: var(--surface);
@@ -335,7 +324,6 @@
   tbody tr { border-bottom: 1px solid #f0ede6; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--paper); }
-  tbody tr:nth-child(5n) { border-bottom: 1px solid var(--border); }
 
   tbody td {
     padding: 7px 10px;
@@ -361,7 +349,6 @@
   .tag-rmd { background: var(--teal-light); color: var(--teal); }
   .tag-high { background: var(--warn-light); color: var(--warn); }
   .tag-good { background: var(--accent-light); color: var(--accent); }
-  .tag-ca { background: var(--gold-light); color: var(--gold); }
 
   .rate-cell { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
   .rate-bar-bg { width: 50px; height: 5px; background: var(--surface2); border-radius: 3px; }
@@ -381,8 +368,6 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-    flex-wrap: wrap;
-    gap: 10px;
   }
 
   .prompt-label {
@@ -404,7 +389,7 @@
     color: var(--ink);
     white-space: pre-wrap;
     word-break: break-word;
-    max-height: 300px;
+    max-height: 160px;
     overflow-y: auto;
   }
 
@@ -426,9 +411,22 @@
     line-height: 1.7;
   }
 
-  @media print {
-    body { background: white; }
-    .input-panel, .btn-row { display: none; }
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 1.5rem 0 1rem;
+    color: var(--ink-faint);
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .section-divider::before, .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
   }
 </style>
 </head>
@@ -438,7 +436,7 @@
   <header>
     <div>
       <div class="header-title">Roth Conversion <em>Planner</em></div>
-      <div class="header-sub">25-Year IRA → Roth Strategy · Tax-Optimized · CA State Tax Included</div>
+      <div class="header-sub" id="headerSub">25-Year IRA → Roth Strategy · Tax-Optimized</div>
     </div>
     <div style="text-align:right; font-size:11px; color:var(--ink-faint); font-family:'DM Mono',monospace;">
       Not financial advice<br>Consult a CPA / CFP
@@ -447,57 +445,119 @@
 
   <!-- INPUTS -->
   <div class="input-panel">
-    <div class="strategy-toggle">
-      <button class="strategy-btn active" id="optimizedBtn" onclick="setStrategy('optimized')">📈 Optimized (Even Tax Rate)</button>
-      <button class="strategy-btn" id="fixedBtn" onclick="setStrategy('fixed')">📊 Fixed Annual Amount</button>
-    </div>
-
     <div class="input-grid">
       <div class="field">
         <label>IRA Balance ($)</label>
-        <input type="number" id="iraBalance" value="3500000" min="100000" max="20000000" step="50000">
+        <input type="number" id="iraBalance" value="3000000" min="100000" max="20000000" step="50000" oninput="calculate()">
         <span class="hint">Pre-tax IRA starting value</span>
       </div>
       <div class="field">
         <label>Other Annual Income ($)</label>
-        <input type="number" id="otherIncome" value="90000" min="0" max="500000" step="1000">
+        <input type="number" id="otherIncome" value="90000" min="0" max="500000" step="1000" oninput="calculate()">
         <span class="hint">Pension, SS, dividends, etc.</span>
       </div>
       <div class="field">
         <label>Annual Return (%)</label>
-        <input type="number" id="returnRate" value="7" min="0" max="15" step="0.1">
+        <div class="range-row">
+          <input type="range" id="returnRate" min="3" max="12" step="0.5" value="7" oninput="document.getElementById('returnVal').textContent=this.value+'%';calculate()">
+          <span class="range-val" id="returnVal">7%</span>
+        </div>
         <span class="hint">Expected annual growth (both accounts)</span>
       </div>
-      <div class="field" id="fixedConversionField" style="display:none;">
-        <label>Fixed Annual Conversion ($)</label>
-        <input type="number" id="fixedConversion" value="140000" min="10000" max="500000" step="5000">
-        <span class="hint">Amount to convert each year</span>
+      <div class="field">
+        <label>Target Effective Rate</label>
+        <div class="range-row">
+          <input type="range" id="targetRate" min="20" max="37" step="0.5" value="22" oninput="document.getElementById('targetRateVal').textContent=this.value+'%';calculate()">
+          <span class="range-val" id="targetRateVal">22%</span>
+        </div>
+        <span class="hint">Fed effective rate on conversions (20–37%)</span>
+      </div>
+      <div class="field">
+        <label>Filing Status</label>
+        <select id="filingStatus" onchange="calculate()">
+          <option value="mfj">Married Filing Jointly</option>
+          <option value="single">Single</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Standard Deduction ($)</label>
+        <input type="number" id="stdDed" value="29200" min="0" max="60000" step="100" oninput="calculate()">
+        <span class="hint">2024 MFJ: $29,200 / Single: $14,600</span>
+      </div>
+      <div class="field">
+        <label>Starting Age</label>
+        <input type="number" id="startAge" value="55" min="40" max="75" step="1" oninput="calculate()">
+        <span class="hint">Your current age</span>
+      </div>
+      <div class="field">
+        <label>Conversion Duration (years)</label>
+        <div class="range-row">
+          <input type="range" id="duration" min="5" max="35" step="1" value="25" oninput="document.getElementById('durationVal').textContent=this.value+' yrs';calculate()">
+          <span class="range-val" id="durationVal">25 yrs</span>
+        </div>
+        <span class="hint">Years to complete full conversion</span>
       </div>
     </div>
+
+    <!-- Required Annual Conversion Banner -->
+    <div id="reqConvBanner" style="background:var(--accent-light);border:1px solid #b0ccb8;border-radius:var(--radius);padding:0.75rem 1rem;margin-bottom:1.25rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
+      <div style="flex:1;min-width:200px;">
+        <div style="font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink-muted);margin-bottom:2px;">Required Annual Conversion to Complete in <span id="reqDurLabel">25</span> Years</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--accent)" id="reqConvAmount">—</div>
+        <div style="font-size:11px;color:var(--ink-muted);margin-top:2px;" id="reqConvNote">—</div>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <div style="font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink-muted);margin-bottom:2px;">Your Rate-Cap Allows Per Year</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--teal)" id="rateCapAmount">—</div>
+        <div style="font-size:11px;color:var(--ink-muted);margin-top:2px;" id="rateCapNote">—</div>
+      </div>
+      <div id="feasibilityMsg" style="flex:2;min-width:200px;font-size:12px;line-height:1.6;padding:0.5rem 0.75rem;border-radius:var(--radius);"></div>
+    </div>
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="calculate()">▶ Calculate Plan</button>
-      <button class="btn" onclick="showPrompt()">📋 Get Regeneration Prompt</button>
-      <button class="btn" onclick="exportCSV()">📥 Export CSV</button>
-      <button class="btn" onclick="window.print()">🖨 Print</button>
+      <button class="btn btn-primary" onclick="calculate()">&#9654; Calculate Plan</button>
+      <button class="btn" onclick="resetDefaults()">&#8635; Reset Defaults</button>
+      <button class="btn" onclick="showPrompt()">&#128196; Get Regeneration Prompt</button>
     </div>
   </div>
 
   <!-- KPI -->
-  <div class="kpi-grid">
-    <div class="kpi kpi-accent"><div class="kpi-label">Final Roth Balance</div><div class="kpi-value" id="kpi1">—</div><div class="kpi-sub">Tax-free at age 80</div></div>
-    <div class="kpi kpi-teal"><div class="kpi-label">Total Converted</div><div class="kpi-value" id="kpi2">—</div><div class="kpi-sub">Over 25 years</div></div>
-    <div class="kpi kpi-gold"><div class="kpi-label">Total Fed Tax</div><div class="kpi-value" id="kpi3">—</div><div class="kpi-sub">Federal only</div></div>
-    <div class="kpi kpi-warn"><div class="kpi-label">Total CA Tax</div><div class="kpi-value" id="kpi4">—</div><div class="kpi-sub">9.3% state tax</div></div>
-    <div class="kpi"><div class="kpi-label">Total Tax (Fed+CA)</div><div class="kpi-value" id="kpi5">—</div><div class="kpi-sub">All-in tax cost</div></div>
-    <div class="kpi"><div class="kpi-label">Avg Effective Rate</div><div class="kpi-value" id="kpi6">—</div><div class="kpi-sub">Total eff rate (Fed+CA)</div></div>
-    <div class="kpi"><div class="kpi-label">Effective Rate Spread</div><div class="kpi-value" id="kpi7">—</div><div class="kpi-sub">Max − Min (smoothness)</div></div>
-    <div class="kpi kpi-warn"><div class="kpi-label">Total NIIT Exposure</div><div class="kpi-value" id="kpi8">—</div><div class="kpi-sub">3.8% on MAGI &gt;$250K</div></div>
+  <div class="kpi-grid" id="kpiGrid">
+    <div class="kpi kpi-accent"><div class="kpi-label" id="kpiRothLabel">Final Roth Balance (age 80)</div><div class="kpi-value">—</div></div>
+    <div class="kpi kpi-teal"><div class="kpi-label">Total Converted</div><div class="kpi-value">—</div></div>
+    <div class="kpi kpi-gold"><div class="kpi-label">Total Fed Tax Paid</div><div class="kpi-value">—</div></div>
+    <div class="kpi"><div class="kpi-label">Avg Effective Rate</div><div class="kpi-value">—</div></div>
+    <div class="kpi"><div class="kpi-label">Effective Rate Spread</div><div class="kpi-value">—</div><div class="kpi-sub">Max − Min across years</div></div>
+    <div class="kpi kpi-warn"><div class="kpi-label">Total NIIT Exposure</div><div class="kpi-value">—</div><div class="kpi-sub">3.8% on MAGI &gt;$250K</div></div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title" id="balChartTitle">IRA vs Roth Balance (25 years)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#1a3a2a"></div>Roth balance</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0d6e6e"></div>IRA balance</div>
+      </div>
+      <div style="position:relative;height:220px">
+        <canvas id="balChart" role="img" aria-label="Stacked bar chart showing IRA declining and Roth growing">IRA declines to zero; Roth grows.</canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Effective Tax Rate on Conversion</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#b8860b"></div>Effective rate</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#9aa0b8;border:1px dashed #9aa0b8"></div>Marginal bracket</div>
+      </div>
+      <div style="position:relative;height:220px">
+        <canvas id="rateChart" role="img" aria-label="Line chart showing effective tax rate held flat across 25 years">Effective rate stays roughly flat.</canvas>
+      </div>
+    </div>
   </div>
 
   <!-- PROMPT BOX (hidden until requested) -->
   <div class="prompt-card" id="promptCard" style="display:none">
     <div class="prompt-header">
-      <div class="prompt-label">📋 Regeneration Prompt</div>
+      <div class="prompt-label">&#128196; Regeneration Prompt</div>
       <div style="display:flex;align-items:center;gap:10px">
         <span class="copy-status" id="copyStatus">Copied!</span>
         <button class="btn" style="height:30px;padding:0 14px;font-size:11px" onclick="copyPrompt()">Copy</button>
@@ -506,32 +566,8 @@
     <div class="prompt-text" id="promptText"></div>
   </div>
 
-  <!-- CHARTS -->
-  <div class="chart-grid">
-    <div class="chart-card">
-      <div class="chart-title">IRA vs Roth Balance (25 years)</div>
-      <div class="legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#1a3a2a"></div>Roth balance</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#0d6e6e"></div>IRA balance</div>
-      </div>
-      <div style="position:relative;height:220px">
-        <canvas id="balChart"></canvas>
-      </div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Effective Tax Rate (Fed + CA)</div>
-      <div class="legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#b8860b"></div>Total effective</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#0d6e6e"></div>Federal only</div>
-      </div>
-      <div style="position:relative;height:220px">
-        <canvas id="rateChart"></canvas>
-      </div>
-    </div>
-  </div>
-
   <!-- TABLE -->
-  <div class="table-card">
+  <div class="table-card" id="tableCard">
     <div class="table-header">
       <div class="table-header-title">Annual Breakdown</div>
       <div class="show-toggle">
@@ -547,183 +583,196 @@
             <th>IRA Start</th>
             <th>Conversion</th>
             <th>MAGI</th>
-            <th>Fed Tax</th>
-            <th>CA Tax</th>
-            <th>Total Tax</th>
-            <th>Fed Eff %</th>
-            <th>Total Eff %</th>
-            <th>Marg %</th>
+            <th>Fed Tax (Conv.)</th>
+            <th>Marginal Rate</th>
+            <th>Effective Rate</th>
             <th>NIIT</th>
-            <th>Roth End</th>
+            <th>Roth Balance</th>
             <th>IRA End</th>
           </tr>
         </thead>
         <tbody id="tBody">
-          <tr><td colspan="13" style="text-align:center;padding:2rem;color:var(--ink-faint);font-family:'DM Mono',monospace;font-size:12px">Enter your inputs and click Calculate Plan</td></tr>
+          <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--ink-faint);font-family:'DM Mono',monospace;font-size:12px">Enter your inputs and click Calculate Plan</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
   <div class="disclaimer">
-    <strong>Important:</strong> This tool is for educational and planning purposes only. It does not constitute financial, tax, or legal advice. California state income tax (9.3% marginal) is included in all calculations. Medicare IRMAA surcharges apply above ~$206K MAGI after age 65. RMDs are mandatory from age 73 but do not prevent additional conversions. Figures use 2024 tax brackets held constant; actual brackets adjust annually for inflation. Always consult a licensed CPA and/or CFP before executing a Roth conversion strategy.
+    <strong>Important:</strong> This tool is for educational and planning purposes only. It does not constitute financial, tax, or legal advice. California state income tax (~9.3% marginal at these income levels) is not included — add ~9% to federal effective rates for all-in cost. Medicare IRMAA surcharges apply above ~$206K MAGI after age 65. RMDs are mandatory from age 73. Figures use 2024 tax brackets held constant; actual brackets adjust annually for inflation. Always consult a licensed CPA and/or CFP before executing a Roth conversion strategy.
   </div>
 
 </div>
 
 <script>
-const BRACKETS_MFJ = [
-  {max:22000,r:.10},{max:89075,r:.12},{max:190750,r:.22},
-  {max:364200,r:.24},{max:462500,r:.32},{max:693750,r:.35},{max:1e15,r:.37}
-];
-const STANDARD_DEDUCTION = 29200;
-const NIIT_THRESHOLD = 250000;
-const NIIT_RATE = 0.038;
-const CA_TAX_RATE = 0.093;
-const TARGET_EFFECTIVE_RATE = 0.24;
-const TOP_24_BRACKET = 364200 + STANDARD_DEDUCTION;
-const YEARS = 25;
-const START_AGE = 55;
-const RMD_AGE = 73;
+const BRACKETS = {
+  mfj: [{max:23200,r:.10},{max:94300,r:.12},{max:201050,r:.22},{max:383900,r:.24},{max:487450,r:.32},{max:731200,r:.35},{max:1e15,r:.37}],
+  single: [{max:11600,r:.10},{max:47150,r:.12},{max:100525,r:.22},{max:191950,r:.24},{max:243725,r:.32},{max:609350,r:.35},{max:1e15,r:.37}]
+};
+const NIIT_T = 250000;
 
-let STRATEGY = 'optimized';
+function fedTax(ti, status) {
+  let t=0, p=0;
+  for(const b of BRACKETS[status]) {
+    if(ti<=p) break;
+    t += (Math.min(ti,b.max)-p)*b.r; p=b.max;
+  }
+  return t;
+}
+
+function margRate(ti, status) {
+  for(const b of BRACKETS[status]) if(ti<=b.max) return b.r;
+  return .37;
+}
+
 let planRows = [];
 let viewMode = 'all';
 let balChartInst = null, rateChartInst = null;
 
-function fedTax(taxableIncome) {
-  let tax = 0, prev = 0;
-  for(const b of BRACKETS_MFJ) {
-    if(taxableIncome <= prev) break;
-    tax += (Math.min(taxableIncome, b.max) - prev) * b.r;
-    prev = b.max;
-  }
-  return tax;
-}
-
-function margRate(taxableIncome) {
-  for(const b of BRACKETS_MFJ) if(taxableIncome <= b.max) return b.r;
-  return 0.37;
-}
-
 function gv(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function gs(id) { return document.getElementById(id).value; }
 
 function fmtM(n) { return n>=1e6 ? '$'+(n/1e6).toFixed(2)+'M' : '$'+(n/1000).toFixed(0)+'K'; }
 function fmt(n) { return '$'+Math.round(n).toLocaleString(); }
 function pct(n) { return (n*100).toFixed(1)+'%'; }
 
-function setStrategy(s) {
-  STRATEGY = s;
-  document.getElementById('optimizedBtn').classList.toggle('active', s==='optimized');
-  document.getElementById('fixedBtn').classList.toggle('active', s==='fixed');
-  document.getElementById('fixedConversionField').style.display = s==='fixed' ? 'flex' : 'none';
-}
-
-function calculateConversionForRate(iraBalance, otherIncome, targetRate) {
-  const baseTax = fedTax(Math.max(0, otherIncome - STANDARD_DEDUCTION));
-  const maxConv = TOP_24_BRACKET - otherIncome;
-
-  let lo = 0, hi = Math.min(maxConv, iraBalance);
-  for(let i = 0; i < 100; i++) {
-    const mid = (lo + hi) / 2;
-    const magi = otherIncome + mid;
-    const taxable = Math.max(0, magi - STANDARD_DEDUCTION);
-    let taxOnConv = fedTax(taxable) - baseTax;
-
-    if(magi > NIIT_THRESHOLD) {
-      taxOnConv += (magi - NIIT_THRESHOLD) * NIIT_RATE;
-      if(otherIncome > NIIT_THRESHOLD) {
-        taxOnConv -= (otherIncome - NIIT_THRESHOLD) * NIIT_RATE;
-      }
-    }
-
-    taxOnConv += mid * CA_TAX_RATE;
-    const eff = mid > 0 ? taxOnConv / mid : 0;
-
-    if(Math.abs(eff - targetRate) < 0.0001) return mid;
-    if(eff < targetRate) lo = mid; else hi = mid;
-  }
-  return lo;
+function annuityPayment(pv, r, n) {
+  // Required annual payment to draw down PV to 0 in N years at growth rate r
+  // Formula: PMT = PV * r / (1 - (1+r)^-n)  — beginning of year (convert then grow)
+  if(r === 0) return pv / n;
+  return pv * r / (1 - Math.pow(1 + r, -n));
 }
 
 function calculate() {
-  const ira0 = gv('iraBalance');
-  const other = gv('otherIncome');
-  const ret = gv('returnRate') / 100;
-  const fixedConv = gv('fixedConversion');
+  const ira0      = gv('iraBalance');
+  const other     = gv('otherIncome');
+  const ret       = gv('returnRate') / 100;
+  const targetEff = gv('targetRate') / 100;
+  const status    = gs('filingStatus');
+  const stdDed    = gv('stdDed');
+  const startAge  = Math.max(18, Math.min(75, Math.round(gv('startAge'))));
+  const duration  = Math.max(1,  Math.min(35, Math.round(gv('duration'))));
+  const endAge    = startAge + duration;
 
-  const baseTax = fedTax(Math.max(0, other - STANDARD_DEDUCTION));
+  // Update dynamic labels
+  document.getElementById('headerSub').textContent   = `${duration}-Year IRA → Roth Strategy · Tax-Optimized`;
+  document.getElementById('balChartTitle').textContent = `IRA vs Roth Balance (${duration} years)`;
+  document.getElementById('kpiRothLabel').textContent  = `Final Roth Balance (age ${endAge})`;
+  document.getElementById('reqDurLabel').textContent   = duration;
 
+  // Baseline tax on non-conversion income
+  const baseTI  = Math.max(0, other - stdDed);
+  const baseTax = fedTax(baseTI, status);
+
+  // Binary search: find largest conv where effective rate on conversion <= targetEff
+  // No bracket ceiling — user controls rate via the slider, not a hardcoded bracket
+  function maxConvAtRate(targetRate) {
+    let lo = 0, hi = ira0 * 3; // generous upper bound well beyond any realistic conversion
+    for(let k = 0; k < 64; k++) {
+      const mid = (lo + hi) / 2;
+      const er  = (fedTax(Math.max(0, other + mid - stdDed), status) - baseTax) / mid;
+      if(er <= targetRate) lo = mid; else hi = mid;
+    }
+    return lo;
+  }
+
+  const annualCap = maxConvAtRate(targetEff);
+
+  // Required annual conversion to clear IRA in exactly `duration` years
+  // using proper annuity formula (convert-first, then grow)
+  const reqAnnual = annuityPayment(ira0, ret, duration);
+
+  // Update the banner
+  document.getElementById('reqConvAmount').textContent = fmt(reqAnnual);
+  document.getElementById('reqConvNote').textContent   =
+    `Flat amount needed to fully convert $${(ira0/1e6).toFixed(2)}M in ${duration} yrs at ${(ret*100).toFixed(1)}% growth`;
+  document.getElementById('rateCapAmount').textContent = fmt(annualCap);
+  document.getElementById('rateCapNote').textContent   =
+    `Max conversion at ${(targetEff*100).toFixed(1)}% effective fed rate → MAGI ${fmt(other + annualCap)} · marginal rate ${(margRate(Math.max(0, other + annualCap - (gv('stdDed'))), gs('filingStatus'))*100).toFixed(0)}%`;
+
+  // Feasibility check
+  const feasEl = document.getElementById('feasibilityMsg');
+  if(annualCap >= reqAnnual) {
+    const surplus = annualCap - reqAnnual;
+    feasEl.style.background = 'var(--accent-light)';
+    feasEl.style.color = 'var(--accent)';
+    feasEl.style.border = '1px solid #b0ccb8';
+    feasEl.innerHTML = `<strong>✓ Feasible.</strong> Your ${(targetEff*100).toFixed(1)}% rate cap allows ${fmt(annualCap)}/yr — ${fmt(surplus)} more than the ${fmt(reqAnnual)}/yr needed. The plan will front-load to your rate cap and complete early or exactly on time.`;
+  } else {
+    const shortfall = reqAnnual - annualCap;
+    feasEl.style.background = 'var(--warn-light)';
+    feasEl.style.color = 'var(--warn)';
+    feasEl.style.border = '1px solid #e0b0a0';
+    feasEl.innerHTML = `<strong>⚠ Rate cap too low.</strong> You need ${fmt(reqAnnual)}/yr but your ${(targetEff*100).toFixed(1)}% rate cap only allows ${fmt(annualCap)}/yr — a ${fmt(shortfall)}/yr shortfall. The plan will exceed your target rate in later years to finish on time. Consider raising the effective rate target or extending the duration.`;
+  }
+
+  // Build year-by-year rows
   let ira = ira0, roth = 0;
   const rows = [];
 
-  for(let i = 0; i < YEARS; i++) {
-    const age = START_AGE + i;
-    const iraStart = ira;
-    const yearsLeft = YEARS - i;
+  for(let i = 0; i < duration; i++) {
+    const age       = startAge + i;
+    const iraStart  = ira;
+    const yearsLeft = duration - i;
 
-    let conv;
-    if(STRATEGY === 'fixed') {
-      conv = Math.min(fixedConv, ira);
-    } else {
-      const minConv = ira / yearsLeft;
-      const targetConv = calculateConversionForRate(ira, other, TARGET_EFFECTIVE_RATE);
-      conv = Math.min(Math.max(minConv, targetConv), ira);
-    }
+    // Minimum needed this year so IRA reaches 0 by end of window (annuity formula)
+    const minConv = annuityPayment(ira, ret, yearsLeft);
 
-    const magi = other + conv;
-    const taxable = Math.max(0, magi - STANDARD_DEDUCTION);
-    const totalFedTax = fedTax(taxable);
-    let fedTaxOnConv = totalFedTax - baseTax;
+    // Convert the larger of rate-cap or minimum; cap at full remaining IRA
+    const conv = Math.min(Math.max(annualCap, minConv), ira);
 
-    let niit = 0;
-    if(magi > NIIT_THRESHOLD) {
-      const totalNiit = (magi - NIIT_THRESHOLD) * NIIT_RATE;
-      const baseNiit = other > NIIT_THRESHOLD ? (other - NIIT_THRESHOLD) * NIIT_RATE : 0;
-      niit = totalNiit - baseNiit;
-      fedTaxOnConv += niit;
-    }
-
-    const caTax = conv * CA_TAX_RATE;
-    const totalTax = fedTaxOnConv + caTax;
-    const fedEff = conv > 0 ? fedTaxOnConv / conv : 0;
-    const totalEff = conv > 0 ? totalTax / conv : 0;
-    const mr = margRate(taxable);
-
-    ira = (ira - conv) * (1 + ret);
+    // Convert first, then both accounts grow
+    ira  = (ira  - conv) * (1 + ret);
     roth = (roth + conv) * (1 + ret);
 
-    rows.push({
-      age, iraStart, conv, magi, fedTax: fedTaxOnConv, caTax, totalTax,
-      fedEff, totalEff, mr, niit, roth, iraEnd: ira
-    });
+    // Tax metrics
+    const totalTI  = Math.max(0, other + conv - stdDed);
+    const totalTax = fedTax(totalTI, status);
+    const convTax  = totalTax - baseTax;
+    const er       = conv > 0 ? convTax / conv : 0;
+    const mr       = margRate(totalTI, status);
+    const magi     = other + conv;
+    const niit     = magi > NIIT_T;
+    const niitAmt  = niit ? (magi - NIIT_T) * 0.038 : 0;
+    const isRmd    = age >= 73;
+
+    rows.push({ age, iraStart, conv, magi, convTax, mr, er, niit, niitAmt, roth, iraEnd: ira, isRmd });
   }
 
   planRows = rows;
-  renderKPIs(rows);
+  renderKPIs(rows, endAge);
   renderCharts(rows);
   renderTable();
 }
 
-function renderKPIs(rows) {
+function renderKPIs(rows, endAge) {
   const totalConv = rows.reduce((s,r)=>s+r.conv,0);
-  const totalFedTax = rows.reduce((s,r)=>s+r.fedTax,0);
-  const totalCaTax = rows.reduce((s,r)=>s+r.caTax,0);
-  const totalTax = rows.reduce((s,r)=>s+r.totalTax,0);
-  const totalNiit = rows.reduce((s,r)=>s+r.niit,0);
+  const totalTax  = rows.reduce((s,r)=>s+r.convTax,0);
+  const totalNiit = rows.reduce((s,r)=>s+r.niitAmt,0);
   const finalRoth = rows[rows.length-1].roth;
-  const avgEff = totalConv>0 ? totalTax/totalConv : 0;
-  const rates = rows.map(r=>r.totalEff*100);
-  const spread = (Math.max(...rates)-Math.min(...rates)).toFixed(1);
+  const avgEff    = totalConv>0 ? totalTax/totalConv : 0;
+  const rates     = rows.map(r=>r.er*100);
+  const spread    = (Math.max(...rates)-Math.min(...rates)).toFixed(1);
 
-  document.getElementById('kpi1').textContent = fmtM(finalRoth);
-  document.getElementById('kpi2').textContent = fmtM(totalConv);
-  document.getElementById('kpi3').textContent = fmtM(totalFedTax);
-  document.getElementById('kpi4').textContent = fmtM(totalCaTax);
-  document.getElementById('kpi5').textContent = fmtM(totalTax);
-  document.getElementById('kpi6').textContent = pct(avgEff);
-  document.getElementById('kpi7').textContent = spread+' pts';
-  document.getElementById('kpi8').textContent = fmtM(totalNiit);
+  const vals = [
+    [fmtM(finalRoth), `tax-free at age ${endAge}`],
+    [fmtM(totalConv), `over ${rows.length} years`],
+    [fmtM(totalTax), 'federal only'],
+    [pct(avgEff), 'fed effective rate'],
+    [spread+' pts', 'rate smoothness'],
+    [fmtM(totalNiit), 'MAGI &gt; $250K']
+  ];
+  const cards = document.querySelectorAll('#kpiGrid .kpi');
+  cards.forEach((c, i) => {
+    c.querySelector('.kpi-value').innerHTML = vals[i][0];
+    let sub = c.querySelector('.kpi-sub');
+    if(!sub) {
+      sub = document.createElement('div');
+      sub.className = 'kpi-sub';
+      c.appendChild(sub);
+    }
+    sub.innerHTML = vals[i][1];
+  });
 }
 
 function renderCharts(rows) {
@@ -755,8 +804,8 @@ function renderCharts(rows) {
     data:{
       labels,
       datasets:[
-        {label:'Total Eff',data:rows.map(r=>parseFloat((r.totalEff*100).toFixed(2))),borderColor:'#b8860b',backgroundColor:'rgba(184,134,11,0.07)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#b8860b',borderWidth:2},
-        {label:'Fed Eff',data:rows.map(r=>parseFloat((r.fedEff*100).toFixed(2))),borderColor:'#0d6e6e',fill:false,tension:0.3,pointRadius:2,pointBackgroundColor:'#0d6e6e',borderWidth:1.5},
+        {label:'Effective',data:rows.map(r=>parseFloat((r.er*100).toFixed(2))),borderColor:'#b8860b',backgroundColor:'rgba(184,134,11,0.07)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#b8860b',borderWidth:2},
+        {label:'Marginal',data:rows.map(r=>parseFloat((r.mr*100).toFixed(1))),borderColor:'#9aa0b8',borderDash:[4,3],fill:false,tension:0,pointRadius:0,borderWidth:1.5},
       ]
     },
     options:{
@@ -764,7 +813,7 @@ function renderCharts(rows) {
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw.toFixed(1)}%`}}},
       scales:{
         x:{ticks:{autoSkip:true,maxRotation:0,font:{size:9},color:'#9aa0b8'}},
-        y:{min:0,max:40,ticks:{callback:v=>v+'%',font:{size:9},color:'#9aa0b8'},grid:{color:'#f0ede6'}}
+        y:{min:0,max:Math.max(40, Math.ceil(Math.max(...rows.map(r=>r.mr*100))/5)*5+5),ticks:{callback:v=>v+'%',font:{size:9},color:'#9aa0b8'},grid:{color:'#f0ede6'}}
       }
     }
   });
@@ -773,23 +822,21 @@ function renderCharts(rows) {
 function renderTable() {
   const dispRows = viewMode==='5' ? planRows.filter((_,i)=>i%5===0||i===planRows.length-1) : planRows;
   document.getElementById('tBody').innerHTML = dispRows.map((r,i)=>{
-    const niitTag = r.niit>0 ? `<span class="tag tag-niit">NIIT</span>` : '';
-    const rmdTag = r.age>=RMD_AGE ? `<span class="tag tag-rmd">RMD</span>` : '';
-    const caTag = `<span class="tag tag-ca">CA</span>`;
-    const barPct = Math.round(r.totalEff*100/40*100);
-    const barColor = r.totalEff>0.35 ? '#8b3a0f' : r.totalEff>0.30 ? '#b8860b' : '#1a3a2a';
+    const niitTag = r.niit ? `<span class="tag tag-niit">NIIT</span>` : '';
+    const rmdTag = r.isRmd ? `<span class="tag tag-rmd">RMD</span>` : '';
+    const erPct   = r.er * 100;
+    const erTag   = erPct > 32 ? `<span class="tag tag-high">high</span>` : erPct < 21.5 ? `<span class="tag tag-good">low</span>` : '';
+    const barPct  = Math.min(100, Math.round(erPct / 40 * 100));
+    const barColor = erPct > 32 ? '#8b3a0f' : erPct > 24 ? '#b8860b' : '#1a3a2a';
     return `<tr>
       <td>Age ${r.age}${rmdTag}</td>
       <td>${fmtM(r.iraStart)}</td>
       <td>${fmt(r.conv)}</td>
       <td>${fmt(r.magi)}${niitTag}</td>
-      <td>${fmt(r.fedTax)}</td>
-      <td>${fmt(r.caTax)}${caTag}</td>
-      <td>${fmt(r.totalTax)}</td>
-      <td>${pct(r.fedEff)}</td>
-      <td><div class="rate-cell"><span>${pct(r.totalEff)}</span><div class="rate-bar-bg"><div class="rate-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div></div></td>
+      <td>${fmt(r.convTax)}</td>
       <td>${pct(r.mr)}</td>
-      <td>${r.niit>0 ? fmt(r.niit) : '—'}</td>
+      <td><div class="rate-cell"><span>${pct(r.er)}${erTag}</span><div class="rate-bar-bg"><div class="rate-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div></div></td>
+      <td>${r.niit ? fmt(r.niitAmt) : '—'}</td>
       <td>${fmtM(r.roth)}</td>
       <td>${fmtM(r.iraEnd)}</td>
     </tr>`;
@@ -803,104 +850,75 @@ function setView(v) {
   if(planRows.length) renderTable();
 }
 
-function exportCSV() {
-  let csv = 'Age,IRA Start,Conversion,MAGI,Fed Tax,CA Tax,Total Tax,Fed Eff %,Total Eff %,Marg %,NIIT,Roth End,IRA End\n';
-  planRows.forEach(r => {
-    csv += `${r.age},${r.iraStart.toFixed(2)},${r.conv.toFixed(2)},${r.magi.toFixed(2)},${r.fedTax.toFixed(2)},${r.caTax.toFixed(2)},${r.totalTax.toFixed(2)},${(r.fedEff*100).toFixed(2)},${(r.totalEff*100).toFixed(2)},${(r.mr*100).toFixed(2)},${r.niit.toFixed(2)},${r.roth.toFixed(2)},${r.iraEnd.toFixed(2)}\n`;
-  });
-  const blob = new Blob([csv], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'roth_conversion_plan.csv';
-  a.click();
-  URL.revokeObjectURL(url);
+function resetDefaults() {
+  document.getElementById('iraBalance').value = 3000000;
+  document.getElementById('otherIncome').value = 90000;
+  document.getElementById('returnRate').value = 7;
+  document.getElementById('returnVal').textContent = '7%';
+  document.getElementById('targetRate').value = 22;
+  document.getElementById('targetRateVal').textContent = '22%';
+  document.getElementById('filingStatus').value = 'mfj';
+  document.getElementById('stdDed').value = 29200;
+  document.getElementById('startAge').value = 55;
+  document.getElementById('duration').value = 25;
+  document.getElementById('durationVal').textContent = '25 yrs';
+  document.getElementById('promptCard').style.display = 'none';
+  calculate();
 }
 
 function showPrompt() {
-  const ira = gv('iraBalance');
-  const other = gv('otherIncome');
-  const ret = gv('returnRate');
-  const fixedConv = gv('fixedConversion');
+  const ira      = gv('iraBalance');
+  const other    = gv('otherIncome');
+  const ret      = gv('returnRate');
+  const rate     = gv('targetRate');
+  const status   = gs('filingStatus');
+  const ded      = gv('stdDed');
+  const startAge = Math.round(gv('startAge'));
+  const duration = Math.round(gv('duration'));
+  const endAge   = startAge + duration;
+  const reqAnnual = annuityPayment(ira, ret/100, duration);
 
-  const strategyDesc = STRATEGY === 'fixed'
-    ? `Fixed annual conversion of $${fixedConv.toLocaleString()}`
-    : `Front-loaded even-tax-rate optimization targeting 24% effective federal rate`;
+  const statusLabel = status === 'mfj' ? 'Married Filing Jointly' : 'Single';
 
-  const prompt = `I need a 25-year Roth IRA conversion plan with the following parameters:
+  const prompt = `I need a ${duration}-year Roth IRA conversion plan with the following parameters:
 
 PROFILE:
 - Starting IRA balance: $${ira.toLocaleString()} (pre-tax)
 - Other annual income: $${other.toLocaleString()} (pension, SS, dividends, etc.)
 - Expected annual return: ${ret}% (applied to both IRA and Roth accounts)
-- Filing status: Married Filing Jointly
-- Standard deduction: $29,200
-- Duration: 25 years (starting age 55, completing at age 80)
+- Filing status: ${statusLabel}
+- Standard deduction: $${ded.toLocaleString()}
+- Target effective federal tax rate on conversions: ${rate}%
+- Starting age: ${startAge}, completing at age ${endAge} (${duration} years)
 - All taxes paid from outside savings (conversions deposited fully into Roth)
 
+KEY FIGURE:
+- Required annual conversion to complete in ${duration} years at ${ret}% growth: $${Math.round(reqAnnual).toLocaleString()}/yr
+  (uses annuity formula: PMT = PV × r / (1 − (1+r)^−n), convert-first then grow)
+
 STRATEGY REQUIREMENTS:
-${STRATEGY === 'optimized'
-  ? `- Use a front-loaded even-tax-rate optimization: convert the LARGER of (IRA balance ÷ remaining years) or the amount that keeps the effective rate near 24%
-- This prevents the IRA from outgrowing the conversion pace and avoids late-window bracket spikes
-- Cap conversions at the top of the 24% federal bracket (~$393,400 MAGI for MFJ)`
-  : `- Use a FIXED annual conversion strategy: convert exactly $${fixedConv.toLocaleString()} per year (or remaining IRA balance if less)
-- This provides predictable annual tax bills and simpler planning`}
-- Flag NIIT exposure: 3.8% surcharge applies on MAGI above $250,000
+- Compute the max annual conversion that keeps effective fed rate ≤ ${rate}% (binary search, no bracket ceiling)
+- Each year convert the LARGER of: (a) rate-cap amount, or (b) annuity minimum needed to finish on time
+- This front-loads conversions when the rate cap exceeds the minimum, and overrides the cap only when necessary
+- Flag NIIT exposure: 3.8% surcharge on MAGI above $250,000
 - Flag RMD years starting at age 73
-- California state income tax (9.3%) must be included in all calculations
-- Tax paid from outside savings (full conversion deposited to Roth)
+- Show feasibility: whether rate cap ≥ required annual conversion
 
-OUTPUT:
-Create an interactive HTML app with:
+OUTPUT TABLE (one row per year, ${duration} rows):
+Age | IRA Start | Conversion | MAGI | Fed Tax (Conv.) | Marginal Rate | Effective Rate | NIIT | Roth Balance | IRA End
 
-1. INPUT SECTION:
-   - Toggle between "Optimized" and "Fixed Annual Amount" strategies
-   - Input fields: IRA Balance, Other Annual Income, Annual Return %, Fixed Conversion Amount (shown only for fixed strategy)
-   - Buttons: Calculate Plan, Get Regeneration Prompt, Export CSV, Print
+SUMMARY METRICS:
+- Required annual conversion: $${Math.round(reqAnnual).toLocaleString()}/yr
+- Final Roth balance at age ${endAge}
+- Total converted, total fed tax paid
+- Avg effective rate, rate spread (max − min)
+- Total NIIT exposure
 
-2. KPI CARDS (8 metrics):
-   - Final Roth Balance (age 80)
-   - Total Converted (25 years)
-   - Total Federal Tax Paid
-   - Total CA State Tax Paid (9.3%)
-   - Total Tax (Fed + CA)
-   - Average Effective Rate (all-in)
-   - Effective Rate Spread (max - min, measures smoothness)
-   - Total NIIT Exposure
-
-3. CHARTS (using Chart.js):
-   - Stacked bar chart: IRA declining, Roth growing over 25 years
-   - Line chart: Total effective rate (Fed+CA) and Federal-only effective rate
-
-4. TABLE with columns:
-   Age | IRA Start | Conversion | MAGI | Fed Tax | CA Tax | Total Tax | Fed Eff % | Total Eff % | Marg % | NIIT | Roth End | IRA End
-   - Add tags for: NIIT (when MAGI > $250K), RMD (age ≥ 73), CA (on CA Tax column)
-   - Visual rate bars showing effective rate as colored bar
-   - Toggle to show "All years" or "Every 5 years"
-   - Every 5th row has border accent
-
-5. DESIGN STYLE:
-   - Use fonts: DM Serif Display (headings), DM Mono (numbers/labels), Instrument Sans (body)
-   - Color palette: warm paper background (#f7f6f2), dark green accent (#1a3a2a), gold (#b8860b), teal (#0d6e6e)
-   - Editorial/journal aesthetic with clean borders and subtle styling
-   - Header: "Roth Conversion Planner" with italic emphasis
-   - All number formatting: monospace font, M/K suffixes for large numbers
-
-6. TAX CALCULATIONS:
-   - 2024 MFJ federal brackets with standard deduction of $29,200
-   - California state tax: 9.3% flat on conversion amount
-   - NIIT: 3.8% on MAGI above $250,000
-   - Marginal rate: federal bracket at taxable income level
-   - Federal effective rate: (Federal tax + NIIT) / Conversion
-   - Total effective rate: (Federal tax + NIIT + CA tax) / Conversion
-
-NOTES TO INCLUDE IN DISCLAIMER:
-- Medicare IRMAA surcharges apply above ~$206K MAGI after age 65
-- RMDs are mandatory from age 73 but do not prevent additional conversions
-- Figures assume 2024 tax brackets held constant (inflation-adjusted in practice)
-- This is for PLANNING PURPOSES ONLY — consult a CPA/CFP before executing
-
-Make it a single self-contained HTML file with all JavaScript and CSS inline.`;
+NOTES:
+- California state tax (~9.3%) not included; add ~9% for all-in rate
+- IRMAA surcharges apply above ~$206K MAGI after age 65
+- 2024 tax brackets assumed constant; real brackets adjust for inflation annually
+- For planning purposes only — consult a CPA/CFP before executing`;
 
   document.getElementById('promptText').textContent = prompt;
   document.getElementById('promptCard').style.display = 'block';
