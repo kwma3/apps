@@ -147,6 +147,14 @@ tbody td:first-child{text-align:left;font-family:'Instrument Sans',sans-serif;fo
       </div>
       <span class="hint">Years to complete full conversion</span>
     </div>
+    <div class="field">
+      <label>Tax Payment Method</label>
+      <select id="taxPayMethod" onchange="calculate()">
+        <option value="outside">Pay tax from outside savings</option>
+        <option value="conversion">Pay tax from conversion (withheld)</option>
+      </select>
+      <span class="hint">Outside savings = more in Roth; withheld = taxes reduce Roth deposit</span>
+    </div>
   </div>
 
   <div class="section-label">Income &amp; Federal Tax</div>
@@ -239,13 +247,14 @@ tbody td:first-child{text-align:left;font-family:'Instrument Sans',sans-serif;fo
 <!-- KPIs -->
 <div class="kpi-grid" id="kpiGrid">
   <div class="kpi kpi-accent"><div class="kpi-label" id="kpiRothLabel">Final Roth Balance</div><div class="kpi-value">—</div><div class="kpi-sub">—</div></div>
-  <div class="kpi kpi-teal"><div class="kpi-label">Total Converted</div><div class="kpi-value">—</div><div class="kpi-sub">—</div></div>
+  <div class="kpi kpi-teal"><div class="kpi-label">Total IRA Withdrawn</div><div class="kpi-value">—</div><div class="kpi-sub">gross conversion amount</div></div>
+  <div class="kpi" style="border:1.5px solid var(--accent)"><div class="kpi-label" id="kpiNetRothLabel">Total Net to Roth</div><div class="kpi-value kpi-accent-val" style="color:var(--accent)">—</div><div class="kpi-sub" id="kpiNetRothSub">—</div></div>
   <div class="kpi kpi-gold"><div class="kpi-label">Total Federal Tax</div><div class="kpi-value">—</div><div class="kpi-sub">on conversions</div></div>
-  <div class="kpi kpi-warn"><div class="kpi-label">Total CA State Tax</div><div class="kpi-value">—</div><div class="kpi-sub">on conversions</div></div>
+  <div class="kpi kpi-warn"><div class="kpi-label" id="kpiStateLabel">Total State Tax</div><div class="kpi-value">—</div><div class="kpi-sub">on conversions</div></div>
   <div class="kpi kpi-purple"><div class="kpi-label">Total NIIT</div><div class="kpi-value">—</div><div class="kpi-sub">3.8% on excess MAGI</div></div>
   <div class="kpi kpi-blue"><div class="kpi-label">Total IRMAA</div><div class="kpi-value">—</div><div class="kpi-sub">Medicare surcharges</div></div>
   <div class="kpi"><div class="kpi-label">Total All-In Tax</div><div class="kpi-value">—</div><div class="kpi-sub">—</div></div>
-  <div class="kpi"><div class="kpi-label">Avg All-In Rate</div><div class="kpi-value">—</div><div class="kpi-sub">on conversions</div></div>
+  <div class="kpi"><div class="kpi-label">Avg All-In Rate</div><div class="kpi-value">—</div><div class="kpi-sub">on gross conversion</div></div>
 </div>
 
 <!-- CHARTS -->
@@ -297,7 +306,7 @@ tbody td:first-child{text-align:left;font-family:'Instrument Sans',sans-serif;fo
         <tr>
           <th>Age</th>
           <th>IRA Start</th>
-          <th>Conversion</th>
+          <th>IRA Withdrawn</th>
           <th>MAGI</th>
           <th class="group-fed">Fed Tax</th>
           <th class="group-fed">Marg. Rate</th>
@@ -306,12 +315,13 @@ tbody td:first-child{text-align:left;font-family:'Instrument Sans',sans-serif;fo
           <th class="group-other">IRMAA</th>
           <th class="group-total">Total Tax</th>
           <th class="group-total">All-In Rate</th>
+          <th style="color:var(--accent)">Net to Roth</th>
           <th>Roth Bal.</th>
           <th>IRA End</th>
         </tr>
       </thead>
       <tbody id="tBody">
-        <tr><td colspan="13" style="text-align:center;padding:2rem;color:var(--ink-faint);font-family:'DM Mono',monospace">Enter your inputs and click Calculate Plan</td></tr>
+        <tr><td colspan="14" style="text-align:center;padding:2rem;color:var(--ink-faint);font-family:'DM Mono',monospace">Enter your inputs and click Calculate Plan</td></tr>
       </tbody>
     </table>
   </div>
@@ -319,6 +329,7 @@ tbody td:first-child{text-align:left;font-family:'Instrument Sans',sans-serif;fo
 
 <div class="disclaimer">
   <strong>Important — modeling assumptions:</strong>
+  <strong>Tax payment method:</strong> "Outside savings" — full IRA withdrawal enters Roth; tax paid separately (maximizes Roth). "From conversion (withheld)" — IRA withdrawal is split: tax is withheld and sent to IRS, only the after-tax remainder enters Roth (same as having taxes reduce your Roth deposit; less efficient but reflects real withholding).
   Federal brackets: 2024 MFJ/Single brackets held constant (real brackets inflation-adjust annually).
   CA tax: 2024 brackets up to 13.3% (1% mental health surtax on income &gt;$1M included); CA does <em>not</em> tax Social Security income.
   Social Security: up to 85% of SS benefits included in federal taxable income (standard IRS formula); CA exempts SS entirely.
@@ -492,41 +503,38 @@ function totalConvTax(conv, other, ssIncome, stdDed, status, stateKey, customRat
 
 // ── CALCULATE ──────────────────────────────────────────────────────────────
 function calculate() {
-  const ira0       = gv('iraBalance');
-  const other      = gv('otherIncome');
-  const ssIncome   = gv('ssIncome');
-  const ret        = gv('returnRate') / 100;
-  const targetAll  = gv('targetRate') / 100;
-  const status     = gs('filingStatus');
-  const stdDed     = gv('stdDed');
-  const startAge   = Math.max(18, Math.min(80, Math.round(gv('startAge'))));
-  const dur        = Math.max(1,  Math.min(35, Math.round(gv('duration'))));
-  const endAge     = startAge + dur;
-  const stateKey   = gs('stateSelect');
-  const customRate = gv('customStateRate');
-  const niitThresh = gv('niitThreshold');
-  const irmaaAge   = Math.round(gv('irmaaAge'));
+  const ira0        = gv('iraBalance');
+  const other       = gv('otherIncome');
+  const ssIncome    = gv('ssIncome');
+  const ret         = gv('returnRate') / 100;
+  const targetAll   = gv('targetRate') / 100;
+  const status      = gs('filingStatus');
+  const stdDed      = gv('stdDed');
+  const startAge    = Math.max(18, Math.min(80, Math.round(gv('startAge'))));
+  const dur         = Math.max(1,  Math.min(35, Math.round(gv('duration'))));
+  const endAge      = startAge + dur;
+  const stateKey    = gs('stateSelect');
+  const customRate  = gv('customStateRate');
+  const niitThresh  = gv('niitThreshold');
+  const irmaaAge    = Math.round(gv('irmaaAge'));
+  const payFromConv = gs('taxPayMethod') === 'conversion';
 
-  // Update labels
-  document.getElementById('headerSub').textContent    = `${dur}-Year IRA → Roth Strategy · All-In Tax Optimized`;
-  document.getElementById('balChartTitle').textContent = `IRA vs Roth Balance (${dur} years)`;
-  document.getElementById('kpiRothLabel').textContent  = `Final Roth Balance (age ${endAge})`;
-  document.getElementById('reqDurLabel').textContent   = dur;
+  // Update dynamic labels
+  document.getElementById('headerSub').textContent     = `${dur}-Year IRA → Roth · ${payFromConv ? 'Tax Withheld from Conversion' : 'Tax from Outside Savings'}`;
+  document.getElementById('balChartTitle').textContent  = `IRA vs Roth Balance (${dur} years)`;
+  document.getElementById('kpiRothLabel').textContent   = `Final Roth Balance (age ${endAge})`;
+  document.getElementById('reqDurLabel').textContent    = dur;
+  document.getElementById('kpiNetRothSub').textContent  = payFromConv ? 'after tax withheld from IRA' : 'equals gross (tax paid outside)';
+  document.getElementById('kpiStateLabel').textContent  = stateKey==='CA' ? 'Total CA State Tax' : 'Total State Tax';
 
-  // Binary search: find largest conv where ALL-IN effective rate <= targetAll
-  // Upper bound: ira0 * 3 (never reached in practice)
-  const sampleAge = Math.max(startAge, irmaaAge); // use IRMAA-eligible age for sample
+  const sampleAge = Math.max(startAge, irmaaAge);
   function allInRate(conv) {
     if(conv <= 0) return 0;
-    const t = totalConvTax(conv, other, ssIncome, stdDed, status, stateKey, customRate, niitThresh, sampleAge, irmaaAge);
-    return t.total / conv;
+    return totalConvTax(conv, other, ssIncome, stdDed, status, stateKey, customRate, niitThresh, sampleAge, irmaaAge).total / conv;
   }
   function maxConvAtRate(targetRate) {
     let lo=0, hi=ira0*3;
-    for(let k=0;k<64;k++){
-      const mid=(lo+hi)/2;
-      if(allInRate(mid)<=targetRate) lo=mid; else hi=mid;
-    }
+    for(let k=0;k<64;k++){const mid=(lo+hi)/2; if(allInRate(mid)<=targetRate) lo=mid; else hi=mid;}
     return lo;
   }
 
@@ -536,22 +544,22 @@ function calculate() {
   // Banner
   document.getElementById('reqConvAmount').textContent = fmt(reqAnnual);
   document.getElementById('reqConvNote').textContent   =
-    `Flat amt to convert $${(ira0/1e6).toFixed(2)}M in ${dur} yrs @ ${(ret*100).toFixed(1)}% growth`;
+    `Gross IRA withdrawal to convert $${(ira0/1e6).toFixed(2)}M in ${dur} yrs @ ${(ret*100).toFixed(1)}% growth`;
   document.getElementById('rateCapAmount').textContent = fmt(annualCap);
   const sampleTax = totalConvTax(annualCap, other, ssIncome, stdDed, status, stateKey, customRate, niitThresh, sampleAge, irmaaAge);
-  const capAllIn = annualCap > 0 ? sampleTax.total / annualCap : 0;
+  const sampleNet = payFromConv ? annualCap - sampleTax.total : annualCap;
   document.getElementById('rateCapNote').textContent =
-    `At ${(targetAll*100).toFixed(1)}% all-in rate · MAGI ${fmt(other+ssIncome+annualCap)} · Fed ${(sampleTax.fedConv/annualCap*100).toFixed(1)}% + State ${(sampleTax.stConv/annualCap*100).toFixed(1)}%`;
+    `${(targetAll*100).toFixed(1)}% all-in · MAGI ${fmt(other+ssIncome+annualCap)} · Net to Roth: ${fmt(sampleNet)}`;
 
   const feasEl = document.getElementById('feasibilityMsg');
   if(annualCap >= reqAnnual) {
     const surplus = annualCap - reqAnnual;
     feasEl.style.cssText = 'background:var(--accent-light);color:var(--accent);border:1px solid #b0ccb8;';
-    feasEl.innerHTML = `<strong>✓ Feasible.</strong> Rate cap ${fmt(annualCap)}/yr exceeds the ${fmt(reqAnnual)}/yr required by ${fmt(surplus)}. Plan front-loads at rate cap and finishes on time.`;
+    feasEl.innerHTML = `<strong>✓ Feasible.</strong> Rate cap ${fmt(annualCap)}/yr exceeds required ${fmt(reqAnnual)}/yr by ${fmt(surplus)}. Plan front-loads at rate cap.`;
   } else {
     const gap = reqAnnual - annualCap;
     feasEl.style.cssText = 'background:var(--warn-light);color:var(--warn);border:1px solid #e0b0a0;';
-    feasEl.innerHTML = `<strong>⚠ Rate cap too low.</strong> Need ${fmt(reqAnnual)}/yr but cap allows only ${fmt(annualCap)}/yr (${fmt(gap)} shortfall). Plan will exceed target rate in later years. Raise rate target or extend duration.`;
+    feasEl.innerHTML = `<strong>⚠ Rate cap too low.</strong> Need ${fmt(reqAnnual)}/yr but cap allows ${fmt(annualCap)}/yr (${fmt(gap)} shortfall). Raise rate target or extend duration.`;
   }
 
   // Build rows
@@ -563,28 +571,30 @@ function calculate() {
     const iraStart  = ira;
     const yearsLeft = dur - i;
     const minConv   = annuityPayment(ira, ret, yearsLeft);
-    const conv      = Math.min(Math.max(annualCap, minConv), ira);
+    const conv      = Math.min(Math.max(annualCap, minConv), ira); // gross IRA withdrawal
 
-    // Convert then grow
-    ira  = (ira  - conv) * (1+ret);
-    roth = (roth + conv) * (1+ret);
+    const taxes     = totalConvTax(conv, other, ssIncome, stdDed, status, stateKey, customRate, niitThresh, age, irmaaAge);
 
-    // All taxes
-    const taxes   = totalConvTax(conv, other, ssIncome, stdDed, status, stateKey, customRate, niitThresh, age, irmaaAge);
+    // Net deposit into Roth depends on payment method
+    const netToRoth = payFromConv ? Math.max(0, conv - taxes.total) : conv;
+
+    // IRA loses full gross withdrawal; Roth receives netToRoth; both then grow
+    ira  = (ira  - conv)      * (1+ret);
+    roth = (roth + netToRoth) * (1+ret);
+
     const magi    = other + ssIncome + conv;
     const ssTax   = ssTaxableAmount(other+conv, ssIncome, status);
     const totalTI = Math.max(0, other+conv+ssTax-stdDed);
     const mr      = margRate(totalTI, status);
     const allInEr = conv>0 ? taxes.total/conv : 0;
-    const fedEr   = conv>0 ? taxes.fedConv/conv : 0;
     const isRmd   = age >= 73;
     const irmaaLbl= age>=irmaaAge ? irmaaTierLabel(magi,status) : '—';
 
-    rows.push({age,iraStart,conv,magi,taxes,mr,allInEr,fedEr,roth,iraEnd:ira,isRmd,irmaaLbl});
+    rows.push({age, iraStart, conv, netToRoth, magi, taxes, mr, allInEr, roth, iraEnd:ira, isRmd, irmaaLbl, payFromConv});
   }
 
   planRows = rows;
-  renderKPIs(rows, endAge);
+  renderKPIs(rows, endAge, payFromConv, stateKey);
   renderCharts(rows);
   renderTable();
 }
@@ -612,6 +622,39 @@ function renderKPIs(rows, endAge) {
   ];
   const cards=document.querySelectorAll('#kpiGrid .kpi');
   cards.forEach((c,i)=>{
+    c.querySelector('.kpi-value').innerHTML=vals[i][0];
+    let sub=c.querySelector('.kpi-sub');
+    if(!sub){sub=document.createElement('div');sub.className='kpi-sub';c.appendChild(sub);}
+    sub.innerHTML=vals[i][1];
+  });
+}
+
+// ── RENDER KPIs ────────────────────────────────────────────────────────────
+function renderKPIs(rows, endAge, payFromConv, stateKey) {
+  const totalConv    = rows.reduce((s,r)=>s+r.conv,0);
+  const totalNetRoth = rows.reduce((s,r)=>s+r.netToRoth,0);
+  const totalFed     = rows.reduce((s,r)=>s+r.taxes.fedConv,0);
+  const totalState   = rows.reduce((s,r)=>s+r.taxes.stConv,0);
+  const totalNiit    = rows.reduce((s,r)=>s+r.taxes.niitConv,0);
+  const totalIrmaa   = rows.reduce((s,r)=>s+r.taxes.irmaaConv,0);
+  const totalTax     = rows.reduce((s,r)=>s+r.taxes.total,0);
+  const finalRoth    = rows[rows.length-1].roth;
+  const avgAllIn     = totalConv>0 ? totalTax/totalConv : 0;
+
+  const vals=[
+    [fmtM(finalRoth),    `tax-free at age ${endAge}`],
+    [fmtM(totalConv),    `gross over ${rows.length} years`],
+    [fmtM(totalNetRoth), payFromConv ? 'after tax withheld from IRA' : 'same as gross (tax paid outside)'],
+    [fmtM(totalFed),     'on conversions'],
+    [fmtM(totalState),   stateKey==='none' ? 'no state tax applies' : 'on conversions'],
+    [fmtM(totalNiit),    '3.8% on excess MAGI'],
+    [fmtM(totalIrmaa),   'Medicare Part B + D'],
+    [fmtM(totalTax),     `fed + state + NIIT + IRMAA`],
+    [pct(avgAllIn),      'avg all-in on gross conversion'],
+  ];
+  const cards=document.querySelectorAll('#kpiGrid .kpi');
+  cards.forEach((c,i)=>{
+    if(!vals[i]) return;
     c.querySelector('.kpi-value').innerHTML=vals[i][0];
     let sub=c.querySelector('.kpi-sub');
     if(!sub){sub=document.createElement('div');sub.className='kpi-sub';c.appendChild(sub);}
@@ -669,6 +712,8 @@ function renderTable() {
     const arTag    = arPct>40 ? `<span class="tag tag-high">high</span>` : arPct<20 ? `<span class="tag tag-good">low</span>` : '';
     const barPct   = Math.min(100,Math.round(arPct/55*100));
     const barColor = arPct>40?'#8b3a0f':arPct>30?'#b8860b':'#1a3a2a';
+    // Highlight net to roth differently when paying from conversion
+    const netStyle = r.payFromConv ? 'color:var(--warn);font-weight:600' : 'color:var(--accent);font-weight:600';
     return `<tr>
       <td>Age ${r.age}${rmdTag}</td>
       <td>${fmtM(r.iraStart)}</td>
@@ -681,6 +726,7 @@ function renderTable() {
       <td class="td-other">${r.taxes.irmaaConv>0?fmt(r.taxes.irmaaConv)+irmaaTag:'—'}</td>
       <td class="td-total">${fmt(r.taxes.total)}</td>
       <td class="td-total"><div class="rate-cell"><span>${pct(r.allInEr)}${arTag}</span><div class="rate-bar-bg"><div class="rate-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div></div></td>
+      <td style="${netStyle}">${fmt(r.netToRoth)}</td>
       <td>${fmtM(r.roth)}</td>
       <td>${fmtM(r.iraEnd)}</td>
     </tr>`;
@@ -708,6 +754,7 @@ function resetDefaults() {
   document.getElementById('customRateField').style.display='none';
   document.getElementById('niitThreshold').value=250000;
   document.getElementById('irmaaAge').value=65;
+  document.getElementById('taxPayMethod').value='outside';
   document.getElementById('promptCard').style.display='none';
   calculate();
 }
@@ -720,6 +767,10 @@ function showPrompt() {
   const endAge=startAge+dur, stateKey=gs('stateSelect'), customRate=gv('customStateRate');
   const niitThresh=gv('niitThreshold'), irmaaAge=Math.round(gv('irmaaAge'));
   const req=annuityPayment(ira, ret/100, dur);
+  const payFromConv = gs('taxPayMethod') === 'conversion';
+  const taxMethodLabel = payFromConv
+    ? 'Pay tax from conversion (withheld from IRA withdrawal — only after-tax amount enters Roth)'
+    : 'Pay tax from outside savings (full IRA withdrawal enters Roth — maximizes Roth balance)';
   const statusLabel=status==='mfj'?'Married Filing Jointly':'Single';
   const stateLabel=stateKey==='CA'?'California (full 2024 CA brackets up to 13.3%+1% MHS)':stateKey==='none'?'No state income tax':`Custom flat rate: ${customRate}%`;
 
@@ -737,11 +788,12 @@ PROFILE:
 - NIIT threshold: $${niitThresh.toLocaleString()} MAGI
 - IRMAA applies from age: ${irmaaAge}
 - Target all-in effective rate on conversions: ${rate}% (fed+state+NIIT+IRMAA combined)
-- All taxes paid from outside savings; full conversion deposited to Roth
+- Tax payment: ${taxMethodLabel}
 
 KEY FIGURE:
-- Required annual conversion: $${Math.round(req).toLocaleString()}/yr
+- Required annual gross IRA withdrawal: $${Math.round(req).toLocaleString()}/yr
   (annuity formula: PMT = PV × r / (1−(1+r)^−n), convert-first then grow)
+${payFromConv ? '- Net to Roth each year = gross withdrawal − total tax (withheld at source)' : '- Net to Roth each year = full gross withdrawal (tax paid from separate savings)'}
 
 TAX COMPONENTS TO MODEL:
 1. Federal income tax (2024 brackets, up to 37%)
@@ -751,14 +803,16 @@ TAX COMPONENTS TO MODEL:
 5. IRMAA: Medicare Part B + D surcharges by MAGI tier, starting age ${irmaaAge} (2024 amounts)
 
 STRATEGY:
-- Binary search: largest conv where all-in effective rate ≤ ${rate}%
-- Each year: convert max(rate-cap, annuity-minimum), capped at remaining IRA
-- No hard bracket ceiling
+- Binary search: largest gross conv where all-in effective rate ≤ ${rate}%
+- Each year: gross = max(rate-cap, annuity-minimum), capped at remaining IRA
+- IRA is reduced by full gross withdrawal each year
+- Roth receives: ${payFromConv ? 'gross − total tax (withheld mode)' : 'full gross (outside savings mode)'}
+- Both IRA remainder and Roth then grow at ${ret}%
 
 OUTPUT TABLE per year (${dur} rows):
-Age | IRA Start | Conversion | MAGI | Fed Tax | Marginal Rate | State Tax | NIIT | IRMAA | Total Tax | All-In Rate | Roth Balance | IRA End
+Age | IRA Start | IRA Withdrawn (gross) | MAGI | Fed Tax | Marg Rate | State Tax | NIIT | IRMAA | Total Tax | All-In Rate | Net to Roth | Roth Balance | IRA End
 
-SUMMARY: Final Roth balance, total converted, total by tax type, avg all-in rate, rate spread.
+SUMMARY: Final Roth balance, total gross withdrawn, total net to Roth, total by tax type, avg all-in rate.
 For planning only — consult a CPA/CFP before executing.`;
 
   document.getElementById('promptText').textContent=prompt;
