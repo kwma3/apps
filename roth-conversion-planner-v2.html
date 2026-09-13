@@ -78,6 +78,25 @@
     margin-top: 4px;
   }
 
+  .v-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--accent);
+    background: var(--accent-light);
+    border: 1px solid #b0ccb8;
+    padding: 5px 12px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .v-link:hover {
+    background: #d4e8dc;
+  }
+
   /* INPUT PANEL */
   .input-panel {
     background: var(--surface);
@@ -435,11 +454,14 @@
 
   <header>
     <div>
-      <div class="header-title">Roth Conversion <em>Planner</em></div>
+      <div class="header-title">Roth Conversion <em>Planner</em> <span style="font-size:11px;font-family:'DM Mono',monospace;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:10px;vertical-align:middle;margin-left:8px;font-weight:500;">v2.0</span></div>
       <div class="header-sub" id="headerSub">25-Year IRA → Roth Strategy · Tax-Optimized</div>
     </div>
-    <div style="text-align:right; font-size:11px; color:var(--ink-faint); font-family:'DM Mono',monospace;">
-      Not financial advice<br>Consult a CPA / CFP
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <a href="index.html" class="v-link" title="Open Version 3">→ Version 3 (Latest)</a>
+      <div style="text-align:right; font-size:11px; color:var(--ink-faint); font-family:'DM Mono',monospace; line-height:1.4;">
+        Not financial advice<br>Consult a CPA / CFP
+      </div>
     </div>
   </header>
 
