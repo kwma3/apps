@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roth Conversion Planner v3</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --ink:#0f1117; --ink-muted:#4a5068; --ink-faint:#9aa0b8;
+  --paper:#f7f6f2; --surface:#fff; --surface2:#f0efe9;
+  --accent:#1a3a2a; --accent-light:#e8f0eb;
+  --gold:#b8860b; --gold-light:#fdf6e3;
+  --teal:#0d6e6e; --teal-light:#e0f2f2;
+  --warn:#8b3a0f; --warn-light:#fdeee7;
+  --blue:#1a4a8a; --blue-light:#e8eef8;
+  --purple:#5a2d8a; --purple-light:#f0eaf8;
+  --border:#dddbd4; --radius:4px; --radius-lg:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+.page{max-width:1440px;width:96%;margin:0 auto;padding:2rem 1.25rem 4rem;}
+header{border-bottom:1px solid var(--border);padding-bottom:1.5rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;}
+.header-title{font-family:'DM Serif Display',serif;font-size:2.2rem;color:var(--accent);letter-spacing:-0.02em;line-height:1.1;}
+.header-title em{font-style:italic;color:var(--gold);}
+.version-badge{font-size:11px;font-family:'DM Mono',monospace;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:10px;vertical-align:middle;margin-left:8px;font-weight:500;}
+.v-link{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);background:var(--paper);border:1px solid var(--border);padding:5px 12px;border-radius:var(--radius);text-decoration:none;transition:all 0.15s;font-weight:500;}
+.v-link:hover{background:var(--surface2);color:var(--ink);border-color:var(--ink-muted);}
+.header-sub{font-size:12px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;margin-top:4px;}
+.input-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.5rem;}
+.section-label{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-faint);margin:1rem 0 0.6rem;border-bottom:1px solid var(--border);padding-bottom:4px;}
+.input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;margin-bottom:0.5rem;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-muted);}
+.field input,.field select{height:38px;border:1px solid var(--border);border-radius:var(--radius);padding:0 10px;font-family:'Instrument Sans',sans-serif;font-size:13px;background:var(--paper);color:var(--ink);outline:none;transition:border-color 0.15s;}
+.field input:focus,.field select:focus{border-color:var(--accent);background:#fff;}
+.field .hint{font-size:10px;color:var(--ink-faint);line-height:1.3;}
+.range-row{display:flex;align-items:center;gap:8px;}
+.range-row input[type=range]{flex:1;height:4px;border:none;padding:0;accent-color:var(--accent);cursor:pointer;}
+.range-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--accent);min-width:44px;text-align:right;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.25rem;}
+.btn{height:38px;padding:0 18px;border-radius:var(--radius);border:1px solid var(--border);font-family:'Instrument Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:6px;background:transparent;color:var(--ink);}
+.btn:hover{background:var(--surface2);border-color:var(--ink-muted);}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{background:#112819;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.5rem;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0.9rem 1rem;}
+.kpi-label{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink-faint);margin-bottom:4px;}
+.kpi-value{font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink);line-height:1.1;}
+.kpi-sub{font-size:10px;color:var(--ink-muted);margin-top:2px;}
+.kpi-accent .kpi-value{color:var(--accent);}
+.kpi-gold .kpi-value{color:var(--gold);}
+.kpi-teal .kpi-value{color:var(--teal);}
+.kpi-blue .kpi-value{color:var(--blue);}
+.kpi-warn .kpi-value{color:var(--warn);}
+.kpi-purple .kpi-value{color:var(--purple);}
+.chart-grid{display:grid;grid-template-columns:3fr 2fr;gap:1rem;margin-bottom:1.5rem;}
+@media(max-width:700px){.chart-grid{grid-template-columns:1fr;}}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;}
+.chart-title{font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-muted);margin-bottom:10px;}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--ink-muted);}
+.legend-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+.banner{background:var(--accent-light);border:1px solid #b0ccb8;border-radius:var(--radius);padding:0.75rem 1rem;margin-bottom:1.25rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;}
+.banner-stat{flex:1;min-width:180px;}
+.banner-stat-label{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink-muted);margin-bottom:2px;}
+.banner-stat-val{font-family:'DM Serif Display',serif;font-size:1.5rem;}
+.banner-stat-note{font-size:10px;color:var(--ink-muted);margin-top:2px;}
+.feasibility{flex:2;min-width:200px;font-size:12px;line-height:1.6;padding:0.5rem 0.75rem;border-radius:var(--radius);}
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1.5rem;}
+.table-header{display:flex;justify-content:space-between;align-items:center;padding:0.9rem 1.25rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.table-header-title{font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-muted);}
+.show-toggle{display:flex;gap:5px;}
+.toggle-btn{height:26px;padding:0 10px;font-size:11px;border:1px solid var(--border);border-radius:var(--radius);background:transparent;color:var(--ink-muted);cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.1s;}
+.toggle-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:11px;table-layout:auto;}
+thead th{padding:8px 7px;text-align:right;font-weight:500;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-faint);background:var(--paper);border-bottom:1px solid var(--border);white-space:nowrap;}
+thead th:first-child{text-align:left;}
+thead th.group-fed{color:#1a4a8a;}
+thead th.group-ca{color:#8b3a0f;}
+thead th.group-other{color:#5a2d8a;}
+thead th.group-total{color:#1a3a2a;}
+
+/* Column widths optimized to show all columns without horizontal scrolling */
+thead th:nth-child(1){min-width:60px;}
+thead th:nth-child(2){min-width:68px;}
+thead th:nth-child(3){min-width:78px;}
+thead th:nth-child(4){min-width:80px;}
+thead th:nth-child(5){min-width:70px;}
+thead th:nth-child(6){min-width:65px;}
+thead th:nth-child(7){min-width:68px;}
+thead th:nth-child(8){min-width:54px;}
+thead th:nth-child(9){min-width:65px;}
+thead th:nth-child(10){min-width:72px;}
+thead th:nth-child(11){min-width:88px;}
+thead th:nth-child(12){min-width:78px;}
+thead th:nth-child(13){min-width:68px;}
+thead th:nth-child(14){min-width:68px;}
+
+/* Sticky Age Column */
+thead th:first-child, tbody td:first-child{
+  position:sticky;
+  left:0;
+  border-right:1px solid var(--border);
+  box-shadow:2px 0 5px rgba(0,0,0,0.03);
+}
+thead th:first-child{background:var(--paper);z-index:3;}
+tbody td:first-child{background:var(--surface);z-index:2;font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:500;}
+tbody tr:hover td:first-child{background:var(--surface2);}
+
+tbody tr{transition:background 0.1s;}
+tbody tr:hover td{background:var(--surface2);}
+tbody td{padding:6px 7px;text-align:right;font-family:'DM Mono',monospace;font-size:11px;white-space:nowrap;color:var(--ink);border-bottom:1px solid #f0ede6;background:var(--surface);}
+tbody tr:last-child td{border-bottom:none;}
+tbody td:first-child{text-align:left;}
+
+.td-fed{color:#1a4a8a;}
+.td-ca{color:#8b3a0f;}
+.td-other{color:#5a2d8a;}
+.td-total{color:#1a3a2a;font-weight:600;}
+.tag{display:inline-block;font-size:9px;padding:1px 4px;border-radius:3px;font-family:'DM Mono',monospace;font-weight:500;vertical-align:middle;}
+.tag-niit{background:var(--purple-light);color:var(--purple);}
+.tag-rmd{background:var(--teal-light);color:var(--teal);margin-left:4px;}
+.tag-irmaa{background:var(--blue-light);color:var(--blue);}
+.tag-high{background:var(--warn-light);color:var(--warn);}
+.tag-good{background:var(--accent-light);color:var(--accent);}
+.num-cell{display:flex;align-items:center;gap:5px;justify-content:flex-end;}
+.rate-cell{display:flex;align-items:center;gap:5px;justify-content:flex-end;}
+.rate-bar-bg{width:44px;height:5px;background:var(--surface2);border-radius:3px;}
+.rate-bar-fill{height:5px;border-radius:3px;}
+.prompt-card{background:var(--gold-light);border:1px solid #e0c870;border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.5rem;}
+.prompt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.prompt-label{font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);}
+.prompt-text{background:var(--surface);border:1px solid #e0c870;border-radius:var(--radius);padding:1rem;font-family:'DM Mono',monospace;font-size:11px;line-height:1.8;color:var(--ink);white-space:pre-wrap;word-break:break-word;max-height:160px;overflow-y:auto;}
+.copy-status{font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;opacity:0;transition:opacity 0.3s;}
+.copy-status.show{opacity:1;}
+.disclaimer{font-size:11px;color:var(--ink-faint);border-top:1px solid var(--border);padding-top:1rem;line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div>
+    <div class="header-title">Roth Conversion <em>Planner</em> <span class="version-badge">v3.0</span></div>
+    <div class="header-sub" id="headerSub">TCJA Permanent · Dual Strategy (Rate / Bracket) · Dynamic IRMAA Lookback</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+    <a href="roth-conversion-planner-v2.html" class="v-link" title="Open Version 2">← Version 2 (v2)</a>
+    <div style="text-align:right;font-size:11px;color:var(--ink-faint);font-family:'DM Mono',monospace;line-height:1.4;">Not financial advice<br>Consult a CPA / CFP</div>
+  </div>
+</header>
+
+<!-- INPUTS -->
+<div class="input-panel">
+  <div class="section-label">Account &amp; Growth</div>
+  <div class="input-grid">
+    <div class="field">
+      <label>IRA Balance ($)</label>
+      <input type="number" id="iraBalance" value="3000000" min="10000" max="30000000" step="50000" oninput="calculate()">
+      <span class="hint">Pre-tax IRA starting value</span>
+    </div>
+    <div class="field">
+      <label>Annual Return (%)</label>
+      <div class="range-row">
+        <input type="range" id="returnRate" min="3" max="12" step="0.5" value="7" oninput="document.getElementById('returnVal').textContent=this.value+'%';calculate()">
+        <span class="range-val" id="returnVal">7%</span>
+      </div>
+      <span class="hint">Expected growth (both IRA and Roth)</span>
+    </div>
+    <div class="field">
+      <label>Starting Age</label>
+      <input type="number" id="startAge" value="55" min="18" max="80" step="1" oninput="calculate()">
+      <span class="hint">Your current age</span>
+    </div>
+    <div class="field">
+      <label>Conversion Duration</label>
+      <div class="range-row">
+        <input type="range" id="duration" min="1" max="35" step="1" value="25" oninput="document.getElementById('durationVal').textContent=this.value+' yrs';calculate()">
+        <span class="range-val" id="durationVal">25 yrs</span>
+      </div>
+      <span class="hint">Years to complete full conversion</span>
+    </div>
+    <div class="field">
+      <label>Tax Payment Method</label>
+      <select id="taxPayMethod" onchange="calculate()">
+        <option value="outside">Pay tax from outside savings</option>
+        <option value="conversion">Pay tax from conversion (withheld)</option>
+      </select>
+      <span class="hint">Outside savings = more in Roth; withheld = taxes reduce Roth deposit</span>
+    </div>
+  </div>
+
+  <div class="section-label">Conversion Strategy</div>
+  <div class="input-grid">
+    <div class="field">
+      <label>Conversion Strategy</label>
+      <select id="strategyMode" onchange="toggleStrategyUI();calculate()">
+        <option value="rate">Target All-In Effective Rate Cap</option>
+        <option value="bracket">Fill Federal Tax Bracket</option>
+      </select>
+      <span class="hint">Rate cap targets total tax %; bracket fill targets federal bracket ceiling</span>
+    </div>
+    <div class="field" id="targetRateField">
+      <label>Target All-In Eff. Rate</label>
+      <div class="range-row">
+        <input type="range" id="targetRate" min="15" max="55" step="0.5" value="30" oninput="document.getElementById('targetRateVal').textContent=this.value+'%';calculate()">
+        <span class="range-val" id="targetRateVal">30%</span>
+      </div>
+      <span class="hint">Cap combined Fed + State + NIIT + IRMAA</span>
+    </div>
+    <div class="field" id="targetBracketField" style="display:none">
+      <label>Target Federal Bracket</label>
+      <select id="targetBracket" onchange="calculate()">
+        <option value="0.12">12% Bracket ($94.3k MFJ / $47.1k Single)</option>
+        <option value="0.22">22% Bracket ($201.0k MFJ / $100.5k Single)</option>
+        <option value="0.24" selected>24% Bracket ($383.9k MFJ / $191.9k Single)</option>
+        <option value="0.32">32% Bracket ($487.4k MFJ / $243.7k Single)</option>
+        <option value="0.35">35% Bracket ($731.2k MFJ / $609.3k Single)</option>
+      </select>
+      <span class="hint">Converts up to top of chosen federal bracket</span>
+    </div>
+  </div>
+
+  <div class="section-label">Income &amp; Federal Tax</div>
+  <div class="input-grid">
+    <div class="field">
+      <label>Other Ordinary Income ($)</label>
+      <input type="number" id="otherIncome" value="90000" min="0" max="1000000" step="1000" oninput="calculate()">
+      <span class="hint">Pension, wages, interest, etc. (excl. SS)</span>
+    </div>
+    <div class="field">
+      <label>Social Security Income ($)</label>
+      <input type="number" id="ssIncome" value="0" min="0" max="100000" step="500" oninput="calculate()">
+      <span class="hint">Annual SS benefit (up to 85% taxable federally)</span>
+    </div>
+    <div class="field">
+      <label>SS Start Age</label>
+      <input type="number" id="ssStartAge" value="67" min="62" max="70" step="1" oninput="calculate()">
+      <span class="hint">Age Social Security benefit begins (62–70)</span>
+    </div>
+    <div class="field">
+      <label>Filing Status</label>
+      <select id="filingStatus" onchange="autoFillStdDed();calculate()">
+        <option value="mfj">Married Filing Jointly</option>
+        <option value="single">Single</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Standard Deduction ($)</label>
+      <input type="number" id="stdDed" value="29200" min="0" max="80000" step="100" oninput="calculate()">
+      <span class="hint">2024 MFJ $29,200 / Single $14,600</span>
+    </div>
+  </div>
+
+  <div class="section-label">State Tax</div>
+  <div class="input-grid">
+    <div class="field">
+      <label>State</label>
+      <select id="stateSelect" onchange="calculate()">
+        <option value="CA">California</option>
+        <option value="none">No State Income Tax</option>
+        <option value="custom">Custom State Rate</option>
+      </select>
+    </div>
+    <div class="field" id="customRateField" style="display:none">
+      <label>Custom State Rate (%)</label>
+      <input type="number" id="customStateRate" value="5" min="0" max="15" step="0.1" oninput="calculate()">
+      <span class="hint">Flat marginal rate on conversion income</span>
+    </div>
+  </div>
+
+  <div class="section-label">Medicare &amp; Investment Tax (IRMAA &amp; NIIT)</div>
+  <div class="input-grid">
+    <div class="field">
+      <label>IRMAA Applies After Age</label>
+      <input type="number" id="irmaaAge" value="65" min="55" max="80" step="1" oninput="calculate()">
+      <span class="hint">Medicare Part B/D surcharges (2-yr lookback rule)</span>
+    </div>
+    <div class="field">
+      <label>Annual Net Invest. Income ($)</label>
+      <input type="number" id="niiIncome" value="0" min="0" max="1000000" step="1000" oninput="calculate()">
+      <span class="hint">Dividends, capital gains, passive income subject to NIIT</span>
+    </div>
+    <div class="field">
+      <label>NIIT Threshold ($)</label>
+      <input type="number" id="niitThreshold" value="250000" min="0" max="1000000" step="10000" oninput="calculate()">
+      <span class="hint">MFJ $250K / Single $200K (MAGI)</span>
+    </div>
+  </div>
+
+  <!-- Banner -->
+  <div class="banner" id="reqBanner">
+    <div class="banner-stat">
+      <div class="banner-stat-label">Required Annual Conversion (<span id="reqDurLabel">25</span> yrs)</div>
+      <div class="banner-stat-val" id="reqConvAmount" style="color:var(--accent)">—</div>
+      <div class="banner-stat-note" id="reqConvNote">—</div>
+    </div>
+    <div class="banner-stat">
+      <div class="banner-stat-label" id="strategyStatLabel">All-In Rate Cap Allows / Year</div>
+      <div class="banner-stat-val" id="rateCapAmount" style="color:var(--teal)">—</div>
+      <div class="banner-stat-note" id="rateCapNote">—</div>
+    </div>
+    <div class="feasibility" id="feasibilityMsg"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="calculate()">&#9654; Calculate Plan</button>
+    <button class="btn" onclick="resetDefaults()">&#8635; Reset</button>
+    <button class="btn" onclick="showPrompt()">&#128196; Regeneration Prompt</button>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-grid" id="kpiGrid">
+  <div class="kpi kpi-accent"><div class="kpi-label" id="kpiRothLabel">Final Roth Balance</div><div class="kpi-value">—</div><div class="kpi-sub">—</div></div>
+  <div class="kpi kpi-teal"><div class="kpi-label">Total IRA Withdrawn</div><div class="kpi-value">—</div><div class="kpi-sub">gross conversion amount</div></div>
+  <div class="kpi" style="border:1.5px solid var(--accent)"><div class="kpi-label" id="kpiNetRothLabel">Total Net to Roth</div><div class="kpi-value kpi-accent-val" style="color:var(--accent)">—</div><div class="kpi-sub" id="kpiNetRothSub">—</div></div>
+  <div class="kpi kpi-gold"><div class="kpi-label">Total Federal Tax</div><div class="kpi-value">—</div><div class="kpi-sub">on conversions</div></div>
+  <div class="kpi kpi-warn"><div class="kpi-label" id="kpiStateLabel">Total State Tax</div><div class="kpi-value">—</div><div class="kpi-sub">on conversions</div></div>
+  <div class="kpi kpi-purple"><div class="kpi-label">Total NIIT</div><div class="kpi-value">—</div><div class="kpi-sub">3.8% on net investment income</div></div>
+  <div class="kpi kpi-blue"><div class="kpi-label">Total IRMAA</div><div class="kpi-value">—</div><div class="kpi-sub">Medicare surcharges (2-yr lookback)</div></div>
+  <div class="kpi"><div class="kpi-label">Total All-In Tax</div><div class="kpi-value">—</div><div class="kpi-sub">—</div></div>
+  <div class="kpi"><div class="kpi-label">Avg All-In Rate</div><div class="kpi-value">—</div><div class="kpi-sub">on gross conversion</div></div>
+</div>
+
+<!-- CHARTS -->
+<div class="chart-grid">
+  <div class="chart-card">
+    <div class="chart-title" id="balChartTitle">IRA vs Roth Balance (25 years)</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#1a3a2a"></div>Roth</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#0d6e6e"></div>IRA</div>
+    </div>
+    <div style="position:relative;height:220px"><canvas id="balChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Annual Tax Breakdown &amp; Effective Rate</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#1a4a8a"></div>Federal</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div>State</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#5a2d8a"></div>NIIT</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#0d6e6e"></div>IRMAA</div>
+      <div class="legend-item"><div style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:4px;background:#d97706;border-radius:2px;margin-right:4px;position:relative"><div style="width:7px;height:7px;border-radius:50%;background:#ffffff;border:2px solid #d97706;position:absolute"></div></div>All-In %</div>
+    </div>
+    <div style="position:relative;height:220px"><canvas id="taxChart"></canvas></div>
+  </div>
+</div>
+
+<!-- PROMPT -->
+<div class="prompt-card" id="promptCard" style="display:none">
+  <div class="prompt-header">
+    <div class="prompt-label">&#128196; Regeneration Prompt</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="copy-status" id="copyStatus">Copied!</span>
+      <button class="btn" style="height:28px;padding:0 12px;font-size:11px" onclick="copyPrompt()">Copy</button>
+    </div>
+  </div>
+  <div class="prompt-text" id="promptText"></div>
+</div>
+
+<!-- TABLE -->
+<div class="table-card">
+  <div class="table-header">
+    <div class="table-header-title">Annual Breakdown — All Taxes &amp; Limits</div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <div class="show-toggle">
+        <button class="toggle-btn active" id="toggleAll" onclick="setView('all')">All years</button>
+        <button class="toggle-btn" id="toggle5" onclick="setView('5')">Every 5 yrs</button>
+      </div>
+      <button class="btn" id="exportCsvBtn" style="height:26px;padding:0 10px;font-size:11px;font-family:'DM Mono',monospace;" onclick="exportCSV()">⬇ CSV</button>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Age</th>
+          <th>IRA Start</th>
+          <th>Withdrawn</th>
+          <th>MAGI</th>
+          <th class="group-fed">Fed Tax</th>
+          <th class="group-fed">Fed Marg.</th>
+          <th class="group-ca">State Tax</th>
+          <th class="group-other">NIIT</th>
+          <th class="group-other">IRMAA</th>
+          <th class="group-total">Total Tax</th>
+          <th class="group-total" style="color:#d97706;font-weight:600;">All-In Rate</th>
+          <th style="color:var(--accent)">Net to Roth</th>
+          <th>Roth Bal.</th>
+          <th>IRA End</th>
+        </tr>
+      </thead>
+      <tbody id="tBody">
+        <tr><td colspan="14" style="text-align:center;padding:2rem;color:var(--ink-faint);font-family:'DM Mono',monospace">Enter your inputs and click Calculate Plan</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="disclaimer">
+  <strong>Important — modeling assumptions (Version 3.0):</strong><br>
+  <strong>Legislation:</strong> TCJA individual tax brackets (10%, 12%, 22%, 24%, 32%, 35%, 37%) are modeled as permanent per the One Big Beautiful Bill Act (P.L. 119-21). Brackets held constant (unindexed) for simplicity.<br>
+  <strong>Strategies:</strong> "Target All-In Effective Rate" uses binary search to convert up to a combined marginal ceiling. "Fill Federal Tax Bracket" calculates dynamic annual conversion headroom to fill ordinary income up to the selected federal bracket ceiling.<br>
+  <strong>Tax payment method:</strong> "Outside savings" — full IRA withdrawal enters Roth; tax paid separately (maximizes Roth growth). "From conversion (withheld)" — taxes are withheld directly from the IRA withdrawal, and only after-tax proceeds enter the Roth account.<br>
+  <strong>Social Security:</strong> Gated by SS Start Age (benefits only factored when age &ge; SS Start Age). Taxability follows standard IRS provisional income formula (up to 85% taxable federally; California exempts SS entirely).<br>
+  <strong>California State Tax:</strong> 2024 brackets up to 12.3% plus 1% Mental Health Services tax on taxable income over $1M. CA standard deduction ($11,080 MFJ / $5,540 Single) included.<br>
+  <strong>NIIT (Net Investment Income Tax):</strong> IRS Form 8960 rule strictly enforced: 3.8% on the lesser of Net Investment Income or MAGI excess above threshold ($250K MFJ / $200K Single). If NII is $0, NIIT is $0.<br>
+  <strong>IRMAA:</strong> Medicare Part B + D surcharges applied starting at Medicare age using the statutory <strong>2-year lookback</strong> rule (age A surcharge based on age A-2 MAGI). Pre-plan baseline MAGI is used for early-year lookbacks.<br>
+  <em>This tool is for educational planning only and does not constitute financial, tax, or legal advice. Consult a licensed CPA and/or CFP before executing any conversion strategy.</em>
+</div>
+
+</div>
+
+<script>
+// ── FEDERAL TAX ────────────────────────────────────────────────────────────
+const FED_BRACKETS = {
+  mfj:[{max:23200,r:.10},{max:94300,r:.12},{max:201050,r:.22},{max:383900,r:.24},
+       {max:487450,r:.32},{max:731200,r:.35},{max:1e15,r:.37}],
+  single:[{max:11600,r:.10},{max:47150,r:.12},{max:100525,r:.22},{max:191950,r:.24},
+          {max:243725,r:.32},{max:609350,r:.35},{max:1e15,r:.37}]
+};
+
+function fedTax(ti, status) {
+  let t=0, p=0;
+  for(const b of FED_BRACKETS[status]){
+    if(ti <= p) break;
+    t += (Math.min(ti, b.max) - p) * b.r;
+    p = b.max;
+  }
+  return t;
+}
+
+function margRate(ti, status) {
+  for(const b of FED_BRACKETS[status]) {
+    if(ti <= b.max) return b.r;
+  }
+  return .37;
+}
+
+function getFedBracketMax(rate, status) {
+  const brackets = FED_BRACKETS[status];
+  const b = brackets.find(item => Math.abs(item.r - rate) < 0.001);
+  return b ? b.max : brackets[brackets.length - 1].max;
+}
+
+// ── CA STATE TAX ───────────────────────────────────────────────────────────
+const CA_BRACKETS_MFJ = [
+  {max:20824,r:.01},{max:49368,r:.02},{max:77918,r:.04},{max:108162,r:.06},
+  {max:136700,r:.08},{max:698274,r:.093},{max:837922,r:.103},
+  {max:1000000,r:.113},{max:1e15,r:.123}
+];
+const CA_BRACKETS_SINGLE = [
+  {max:10412,r:.01},{max:24684,r:.02},{max:38959,r:.04},{max:54081,r:.06},
+  {max:68350,r:.08},{max:349137,r:.093},{max:418961,r:.103},
+  {max:1000000,r:.113},{max:1e15,r:.123}
+];
+const CA_STD_DED = { mfj: 11080, single: 5540 };
+
+function caTax(income, status) {
+  const stdDed = CA_STD_DED[status] || 0;
+  const taxable = Math.max(0, income - stdDed);
+  if(taxable <= 0) return 0;
+  const brackets = status === 'mfj' ? CA_BRACKETS_MFJ : CA_BRACKETS_SINGLE;
+  let t=0, p=0;
+  for(const b of brackets){
+    if(taxable <= p) break;
+    t += (Math.min(taxable, b.max) - p) * b.r;
+    p = b.max;
+  }
+  // 1% Mental Health Services surtax on taxable income > $1M
+  if(taxable > 1000000) t += (taxable - 1000000) * 0.01;
+  return t;
+}
+
+function caStateTaxOnConv(baseIncome, conv, status) {
+  // CA does not tax Social Security income
+  return Math.max(0, caTax(baseIncome + conv, status) - caTax(baseIncome, status));
+}
+
+// ── SOCIAL SECURITY TAXABILITY ─────────────────────────────────────────────
+function ssTaxableAmount(otherAGI, ssIncome, status) {
+  if(ssIncome <= 0) return 0;
+  const provisional = otherAGI + 0.5 * ssIncome;
+  const t1 = status === 'mfj' ? 32000 : 25000;
+  const t2 = status === 'mfj' ? 44000 : 34000;
+  if(provisional <= t1) return 0;
+  if(provisional <= t2) return Math.min(0.5 * (provisional - t1), 0.5 * ssIncome);
+  const phase1 = Math.min(0.5 * (t2 - t1), 0.5 * ssIncome);
+  const phase2 = Math.min(0.85 * (provisional - t2), 0.85 * ssIncome - phase1);
+  return Math.min(phase1 + phase2, 0.85 * ssIncome);
+}
+
+// ── NIIT (Form 8960 Rule) ──────────────────────────────────────────────────
+function niitAmount(magi, nii, threshold) {
+  if(nii <= 0 || magi <= threshold) return 0;
+  return 0.038 * Math.min(nii, magi - threshold);
+}
+
+// ── IRMAA (Medicare Part B + D) ────────────────────────────────────────────
+const IRMAA_TIERS_MFJ = [
+  {min:0,      max:206000, bExtra:0,     dExtra:0},
+  {min:206000, max:258000, bExtra:2376,  dExtra:462},
+  {min:258000, max:334000, bExtra:5940,  dExtra:1188},
+  {min:334000, max:410000, bExtra:9516,  dExtra:1944},
+  {min:410000, max:750000, bExtra:13092, dExtra:2700},
+  {min:750000, max:1e15,   bExtra:14172, dExtra:2988},
+];
+const IRMAA_TIERS_SINGLE = [
+  {min:0,      max:103000, bExtra:0,     dExtra:0},
+  {min:103000, max:129000, bExtra:2376,  dExtra:462},
+  {min:129000, max:167000, bExtra:5940,  dExtra:1188},
+  {min:167000, max:205000, bExtra:9516,  dExtra:1944},
+  {min:205000, max:500000, bExtra:13092, dExtra:2700},
+  {min:500000, max:1e15,   bExtra:14172, dExtra:2988},
+];
+
+function irmaaAmount(magi, status) {
+  const tiers = status === 'mfj' ? IRMAA_TIERS_MFJ : IRMAA_TIERS_SINGLE;
+  for(const t of tiers) {
+    if(magi >= t.min && magi < t.max) return t.bExtra + t.dExtra;
+  }
+  return 0;
+}
+
+function irmaaTierLabel(magi, status) {
+  const tiers = status === 'mfj' ? IRMAA_TIERS_MFJ : IRMAA_TIERS_SINGLE;
+  for(let i=0; i<tiers.length; i++) {
+    if(magi >= tiers[i].min && magi < tiers[i].max) return i === 0 ? '—' : `Tier ${i}`;
+  }
+  return '—';
+}
+
+// ── ANNUITY ────────────────────────────────────────────────────────────────
+function annuityPayment(pv, r, n) {
+  if(r === 0) return pv / n;
+  return pv * r / (1 - Math.pow(1 + r, -n));
+}
+
+// ── STATE TAX HELPER ───────────────────────────────────────────────────────
+function stateConvTax(baseIncome, conv, status, stateKey, customRate) {
+  if(stateKey === 'none') return 0;
+  if(stateKey === 'custom') return conv * (customRate / 100);
+  return caStateTaxOnConv(baseIncome, conv, status);
+}
+
+// ── HELPERS & STATE ────────────────────────────────────────────────────────
+let planRows = [], viewMode = 'all', balChartInst = null, taxChartInst = null;
+function gv(id){ return parseFloat(document.getElementById(id).value) || 0; }
+function gs(id){ return document.getElementById(id).value; }
+function fmtM(n){ return n >= 1e6 ? '$' + (n/1e6).toFixed(2) + 'M' : '$' + (n/1000).toFixed(0) + 'K'; }
+function fmt(n){ return '$' + Math.round(n).toLocaleString(); }
+function pct(n){ return (n*100).toFixed(1) + '%'; }
+
+function autoFillStdDed() {
+  const status = gs('filingStatus');
+  document.getElementById('stdDed').value = status === 'mfj' ? 29200 : 14600;
+  document.getElementById('niitThreshold').value = status === 'mfj' ? 250000 : 200000;
+}
+
+function toggleStrategyUI() {
+  const mode = gs('strategyMode');
+  document.getElementById('targetRateField').style.display = mode === 'rate' ? '' : 'none';
+  document.getElementById('targetBracketField').style.display = mode === 'bracket' ? '' : 'none';
+}
+
+document.getElementById('stateSelect').addEventListener('change', function(){
+  document.getElementById('customRateField').style.display = this.value === 'custom' ? '' : 'none';
+  calculate();
+});
+
+// ── TOTAL TAX ON CONVERSION ────────────────────────────────────────────────
+function totalConvTax(conv, other, ssIncome, stdDed, status, stateKey, customRate, niitThresh, niiIncome, lookbackMagi, baseLookbackMagi, age, irmaaAge) {
+  // Federal
+  const ssTaxable = ssTaxableAmount(other + conv, ssIncome, status);
+  const totalTI   = Math.max(0, other + conv + ssTaxable - stdDed);
+  const baseSSTaxable = ssTaxableAmount(other, ssIncome, status);
+  const baseTI    = Math.max(0, other + baseSSTaxable - stdDed);
+  const fedConv   = Math.max(0, fedTax(totalTI, status) - fedTax(baseTI, status));
+
+  // State (CA doesn't tax SS)
+  const stConv = stateConvTax(other, conv, status, stateKey, customRate);
+
+  // NIIT — on excess MAGI up to NII
+  const currentMagi = other + ssIncome + conv;
+  const baseMagi = other + ssIncome;
+  const niitConv = Math.max(0, niitAmount(currentMagi, niiIncome, niitThresh) - niitAmount(baseMagi, niiIncome, niitThresh));
+
+  // IRMAA — 2-year lookback paid surcharge difference
+  let irmaaConv = 0;
+  if(age >= irmaaAge) {
+    irmaaConv = Math.max(0, irmaaAmount(lookbackMagi, status) - irmaaAmount(baseLookbackMagi, status));
+  }
+
+  return { fedConv, stConv, niitConv, irmaaConv, total: fedConv + stConv + niitConv + irmaaConv };
+}
+
+// ── CALCULATE ──────────────────────────────────────────────────────────────
+function calculate() {
+  const ira0        = gv('iraBalance');
+  const other       = gv('otherIncome');
+  const rawSS       = gv('ssIncome');
+  const ssStartAge  = Math.max(62, Math.min(70, Math.round(gv('ssStartAge'))));
+  const ret         = gv('returnRate') / 100;
+  const strategy    = gs('strategyMode');
+  const targetAll   = gv('targetRate') / 100;
+  const targetBrkR  = parseFloat(gs('targetBracket')) || 0.24;
+  const status      = gs('filingStatus');
+  const stdDed      = gv('stdDed');
+  const startAge    = Math.max(18, Math.min(80, Math.round(gv('startAge'))));
+  const dur         = Math.max(1,  Math.min(35, Math.round(gv('duration'))));
+  const endAge      = startAge + dur;
+  const stateKey    = gs('stateSelect');
+  const customRate  = gv('customStateRate');
+  const niitThresh  = gv('niitThreshold');
+  const niiIncome   = gv('niiIncome');
+  const irmaaAge    = Math.round(gv('irmaaAge'));
+  const payFromConv = gs('taxPayMethod') === 'conversion';
+
+  // Update dynamic labels
+  document.getElementById('headerSub').textContent    = `${dur}-Year IRA → Roth · ${strategy === 'bracket' ? 'Federal Bracket Filling' : 'Rate Cap Strategy'} · ${payFromConv ? 'Tax Withheld from Conversion' : 'Tax Paid Outside'}`;
+  document.getElementById('balChartTitle').textContent = `IRA vs Roth Balance (${dur} years)`;
+  document.getElementById('kpiRothLabel').textContent  = `Final Roth Balance (age ${endAge})`;
+  document.getElementById('reqDurLabel').textContent   = dur;
+  document.getElementById('kpiNetRothSub').textContent = payFromConv ? 'after tax withheld from IRA' : 'equals gross (tax paid outside)';
+  document.getElementById('kpiStateLabel').textContent = stateKey === 'CA' ? 'Total CA State Tax' : 'Total State Tax';
+
+  // Dynamic cap evaluator for a given age and conversion amount
+  function evalAnnualCap(age, currentSS) {
+    if (strategy === 'bracket') {
+      const bracketMax = getFedBracketMax(targetBrkR, status);
+      // Binary search for conv where taxable income equals bracketMax
+      let lo = 0, hi = Math.max(0, bracketMax + stdDed + 50000);
+      for (let k = 0; k < 40; k++) {
+        const mid = (lo + hi) / 2;
+        const ti = Math.max(0, other + mid + ssTaxableAmount(other + mid, currentSS, status) - stdDed);
+        if (ti <= bracketMax) lo = mid; else hi = mid;
+      }
+      return lo;
+    } else {
+      // Rate cap mode: binary search where marginal incurred rate <= targetAll
+      function testRate(conv) {
+        if (conv <= 0) return 0;
+        const ssTaxable = ssTaxableAmount(other + conv, currentSS, status);
+        const totalTI   = Math.max(0, other + conv + ssTaxable - stdDed);
+        const baseSSTaxable = ssTaxableAmount(other, currentSS, status);
+        const baseTI    = Math.max(0, other + baseSSTaxable - stdDed);
+        const fedConv   = Math.max(0, fedTax(totalTI, status) - fedTax(baseTI, status));
+        const stConv    = stateConvTax(other, conv, status, stateKey, customRate);
+        const magi      = other + currentSS + conv;
+        const baseMagi  = other + currentSS;
+        const niitConv  = Math.max(0, niitAmount(magi, niiIncome, niitThresh) - niitAmount(baseMagi, niiIncome, niitThresh));
+        // Conversion at age A triggers IRMAA at age A + 2 if A + 2 >= irmaaAge
+        let irmaaConv = 0;
+        if (age + 2 >= irmaaAge) {
+          irmaaConv = Math.max(0, irmaaAmount(magi, status) - irmaaAmount(baseMagi, status));
+        }
+        return (fedConv + stConv + niitConv + irmaaConv) / conv;
+      }
+      let lo = 0, hi = ira0 * 3;
+      for (let k = 0; k < 64; k++) {
+        const mid = (lo + hi) / 2;
+        if (testRate(mid) <= targetAll) lo = mid; else hi = mid;
+      }
+      return lo;
+    }
+  }
+
+  // Year 1 preview calculations for Banner
+  const year1SS   = startAge >= ssStartAge ? rawSS : 0;
+  const year1Cap  = evalAnnualCap(startAge, year1SS);
+  const reqAnnual = annuityPayment(ira0, ret, dur);
+
+  document.getElementById('reqConvAmount').textContent = fmt(reqAnnual);
+  document.getElementById('reqConvNote').textContent   =
+    `Gross IRA withdrawal to convert $${(ira0/1e6).toFixed(2)}M in ${dur} yrs @ ${(ret*100).toFixed(1)}% growth`;
+
+  const strategyStatLabel = document.getElementById('strategyStatLabel');
+  strategyStatLabel.textContent = strategy === 'bracket' ? 'Target Bracket Allows (Yr 1)' : 'All-In Rate Cap Allows (Yr 1)';
+  document.getElementById('rateCapAmount').textContent = fmt(year1Cap);
+
+  const yr1LookbackMagi = other + (startAge - 2 >= ssStartAge ? rawSS : 0);
+  const year1Tax = totalConvTax(year1Cap, other, year1SS, stdDed, status, stateKey, customRate, niitThresh, niiIncome, yr1LookbackMagi, yr1LookbackMagi, startAge, irmaaAge);
+  const year1Net = payFromConv ? Math.max(0, year1Cap - year1Tax.total) : year1Cap;
+
+  if (strategy === 'bracket') {
+    const targetBracketMax = getFedBracketMax(targetBrkR, status);
+    document.getElementById('rateCapNote').textContent =
+      `Top of ${(targetBrkR*100).toFixed(0)}% bracket (${fmt(targetBracketMax)} taxable) · Net: ${fmt(year1Net)}`;
+  } else {
+    document.getElementById('rateCapNote').textContent =
+      `${(targetAll*100).toFixed(1)}% all-in · MAGI ${fmt(other + year1SS + year1Cap)} · Net: ${fmt(year1Net)}`;
+  }
+
+  const feasEl = document.getElementById('feasibilityMsg');
+  if (year1Cap >= reqAnnual) {
+    const surplus = year1Cap - reqAnnual;
+    feasEl.style.cssText = 'background:var(--accent-light);color:var(--accent);border:1px solid #b0ccb8;';
+    feasEl.innerHTML = `<strong>✓ Feasible.</strong> Year 1 limit ${fmt(year1Cap)}/yr exceeds required ${fmt(reqAnnual)}/yr by ${fmt(surplus)}. Plan front-loads conversions safely.`;
+  } else {
+    const gap = reqAnnual - year1Cap;
+    feasEl.style.cssText = 'background:var(--warn-light);color:var(--warn);border:1px solid #e0b0a0;';
+    feasEl.innerHTML = `<strong>⚠ Limit below required pace.</strong> Year 1 allows ${fmt(year1Cap)} vs required ${fmt(reqAnnual)}/yr (${fmt(gap)} shortfall). Plan will force the annual minimum to deplete the IRA in ${dur} yrs.`;
+  }
+
+  // ── SIMULATION LOOP ──────────────────────────────────────────────────────
+  let ira = ira0, roth = 0;
+  const rows = [];
+
+  for (let i = 0; i < dur; i++) {
+    const age       = startAge + i;
+    const iraStart  = ira;
+    const yearsLeft = dur - i;
+    const minConv   = annuityPayment(ira, ret, yearsLeft);
+    const currentSS = age >= ssStartAge ? rawSS : 0;
+
+    // Dynamic annual cap for this specific year
+    const annualCap = evalAnnualCap(age, currentSS);
+    // Take at least minConv to guarantee full depletion within duration
+    const conv = Math.min(Math.max(annualCap, minConv), ira);
+
+    // Current year base MAGI
+    const baseMagi = other + currentSS;
+    const currentMagi = baseMagi + conv;
+
+    // 2-Year Lookback IRMAA Evaluation for Medicare Paid in this year
+    let lookbackMagi = baseMagi;
+    let baseLookbackMagi = baseMagi;
+
+    if (age >= irmaaAge) {
+      if (i >= 2) {
+        lookbackMagi = rows[i - 2].magi;
+        baseLookbackMagi = rows[i - 2].baseMagi;
+      } else {
+        // Fallback for first 2 years if starting at or near Medicare age
+        const lookbackAge = age - 2;
+        const lookbackSS = lookbackAge >= ssStartAge ? rawSS : 0;
+        lookbackMagi = other + lookbackSS;
+        baseLookbackMagi = other + lookbackSS;
+      }
+    }
+
+    const taxes = totalConvTax(conv, other, currentSS, stdDed, status, stateKey, customRate, niitThresh, niiIncome, lookbackMagi, baseLookbackMagi, age, irmaaAge);
+
+    // Net deposit into Roth depends on payment method
+    const netToRoth = payFromConv ? Math.max(0, conv - taxes.total) : conv;
+
+    // Balance update: IRA loses full gross withdrawal; Roth receives netToRoth; both grow
+    ira  = (ira  - conv)      * (1 + ret);
+    roth = (roth + netToRoth) * (1 + ret);
+
+    const ssTax   = ssTaxableAmount(other + conv, currentSS, status);
+    const totalTI = Math.max(0, other + conv + ssTax - stdDed);
+    const mr      = margRate(totalTI, status);
+    const allInEr = conv > 0 ? taxes.total / conv : 0;
+    const isRmd   = age >= 73;
+    const irmaaLbl = age >= irmaaAge ? irmaaTierLabel(lookbackMagi, status) : '—';
+
+    rows.push({
+      age,
+      iraStart,
+      conv,
+      baseMagi,
+      magi: currentMagi,
+      taxes,
+      mr,
+      allInEr,
+      netToRoth,
+      roth,
+      iraEnd: ira,
+      isRmd,
+      irmaaLbl,
+      payFromConv
+    });
+  }
+
+  planRows = rows;
+  renderKPIs(rows, endAge, payFromConv, stateKey);
+  renderCharts(rows);
+  renderTable();
+}
+
+// ── RENDER KPIs ────────────────────────────────────────────────────────────
+function renderKPIs(rows, endAge, payFromConv, stateKey) {
+  const totalConv    = rows.reduce((s,r) => s + r.conv, 0);
+  const totalNetRoth = rows.reduce((s,r) => s + r.netToRoth, 0);
+  const totalFed     = rows.reduce((s,r) => s + r.taxes.fedConv, 0);
+  const totalState   = rows.reduce((s,r) => s + r.taxes.stConv, 0);
+  const totalNiit    = rows.reduce((s,r) => s + r.taxes.niitConv, 0);
+  const totalIrmaa   = rows.reduce((s,r) => s + r.taxes.irmaaConv, 0);
+  const totalTax     = rows.reduce((s,r) => s + r.taxes.total, 0);
+  const finalRoth    = rows.length ? rows[rows.length - 1].roth : 0;
+  const avgAllIn     = totalConv > 0 ? totalTax / totalConv : 0;
+
+  const vals = [
+    [fmtM(finalRoth),    `tax-free at age ${endAge}`],
+    [fmtM(totalConv),    `gross over ${rows.length} years`],
+    [fmtM(totalNetRoth), payFromConv ? 'after tax withheld from IRA' : 'same as gross (tax paid outside)'],
+    [fmtM(totalFed),     'on conversions'],
+    [fmtM(totalState),   stateKey === 'none' ? 'no state tax applies' : 'on conversions'],
+    [fmtM(totalNiit),    '3.8% on net invest. income'],
+    [fmtM(totalIrmaa),   'Medicare Part B + D (2-yr lookback)'],
+    [fmtM(totalTax),     'fed + state + NIIT + IRMAA'],
+    [pct(avgAllIn),      'avg all-in on gross conversion'],
+  ];
+
+  const cards = document.querySelectorAll('#kpiGrid .kpi');
+  cards.forEach((c, i) => {
+    if (!vals[i]) return;
+    c.querySelector('.kpi-value').innerHTML = vals[i][0];
+    let sub = c.querySelector('.kpi-sub');
+    if (!sub) {
+      sub = document.createElement('div');
+      sub.className = 'kpi-sub';
+      c.appendChild(sub);
+    }
+    sub.innerHTML = vals[i][1];
+  });
+}
+
+// ── RENDER CHARTS ──────────────────────────────────────────────────────────
+function renderCharts(rows) {
+  const labels = rows.map(r => '' + r.age);
+
+  if (balChartInst) balChartInst.destroy();
+  balChartInst = new Chart(document.getElementById('balChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Roth', data: rows.map(r => Math.round(r.roth)), backgroundColor: '#1a3a2a', stack: 's' },
+        { label: 'IRA',  data: rows.map(r => Math.round(r.iraEnd)), backgroundColor: '#0d6e6e', stack: 's' },
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => `${c.dataset.label}: $${c.raw.toLocaleString()}` } }
+      },
+      scales: {
+        x: { stacked: true, ticks: { autoSkip: true, maxRotation: 0, font: { size: 9 }, color: '#9aa0b8' } },
+        y: { stacked: true, ticks: { callback: v => '$' + (v/1e6).toFixed(1) + 'M', font: { size: 9 }, color: '#9aa0b8' }, grid: { color: '#f0ede6' } }
+      }
+    }
+  });
+
+  if (taxChartInst) taxChartInst.destroy();
+  taxChartInst = new Chart(document.getElementById('taxChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { type: 'bar', label: 'Federal', data: rows.map(r => Math.round(r.taxes.fedConv)),  backgroundColor: '#1a4a8a', stack: 't', yAxisID: 'y' },
+        { type: 'bar', label: 'State',   data: rows.map(r => Math.round(r.taxes.stConv)),   backgroundColor: '#c0392b', stack: 't', yAxisID: 'y' },
+        { type: 'bar', label: 'NIIT',    data: rows.map(r => Math.round(r.taxes.niitConv)), backgroundColor: '#5a2d8a', stack: 't', yAxisID: 'y' },
+        { type: 'bar', label: 'IRMAA',   data: rows.map(r => Math.round(r.taxes.irmaaConv)),backgroundColor: '#0d6e6e', stack: 't', yAxisID: 'y' },
+        {
+          type: 'line',
+          label: 'All-In Rate',
+          data: rows.map(r => +(r.allInEr * 100).toFixed(1)),
+          borderColor: '#d97706',
+          backgroundColor: '#d97706',
+          borderWidth: 3.5,
+          pointRadius: 4.5,
+          pointHoverRadius: 7,
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#d97706',
+          pointBorderWidth: 2.5,
+          tension: 0.1,
+          order: -1,
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: c => {
+              if (c.dataset.yAxisID === 'y1') return `All-In Rate: ${c.raw}% (matches table)`;
+              return `${c.dataset.label}: $${c.raw.toLocaleString()}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { stacked: true, ticks: { autoSkip: true, maxRotation: 0, font: { size: 9 }, color: '#9aa0b8' } },
+        y: {
+          stacked: true,
+          position: 'left',
+          ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K', font: { size: 9 }, color: '#9aa0b8' },
+          grid: { color: '#f0ede6' }
+        },
+        y1: {
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          ticks: { callback: v => v + '%', font: { size: 9, weight: 'bold' }, color: '#d97706', stepSize: 20 },
+          min: 0,
+          max: 100
+        }
+      }
+    }
+  });
+}
+
+// ── RENDER TABLE ───────────────────────────────────────────────────────────
+function renderTable() {
+  const dispRows = viewMode === '5' ? planRows.filter((_, i) => i % 5 === 0 || i === planRows.length - 1) : planRows;
+  document.getElementById('tBody').innerHTML = dispRows.map(r => {
+    const niitTag  = r.taxes.niitConv > 0  ? `<span class="tag tag-niit">NIIT</span>` : '';
+    const rmdTag   = r.isRmd               ? `<span class="tag tag-rmd">RMD</span>`   : '';
+    const irmaaTag = r.taxes.irmaaConv > 0 ? `<span class="tag tag-irmaa">${r.irmaaLbl}</span>` : '';
+    const arPct    = r.allInEr * 100;
+    const arTag    = arPct > 40 ? `<span class="tag tag-high">high</span>` : arPct < 20 ? `<span class="tag tag-good">low</span>` : '';
+    const barPct   = Math.min(100, Math.round(arPct / 55 * 100));
+    const barColor = arPct > 40 ? '#8b3a0f' : arPct > 30 ? '#d97706' : '#1a3a2a';
+    const netStyle = r.payFromConv ? 'color:var(--warn);font-weight:600' : 'color:var(--accent);font-weight:600';
+    return `<tr>
+      <td>Age ${r.age}${rmdTag}</td>
+      <td>${fmtM(r.iraStart)}</td>
+      <td>${fmt(r.conv)}</td>
+      <td><div class="num-cell">${niitTag}<span>${fmt(r.magi)}</span></div></td>
+      <td class="td-fed">${fmt(r.taxes.fedConv)}</td>
+      <td class="td-fed">${pct(r.mr)}</td>
+      <td class="td-ca">${r.taxes.stConv > 0 ? fmt(r.taxes.stConv) : '—'}</td>
+      <td class="td-other">${r.taxes.niitConv > 0 ? fmt(r.taxes.niitConv) : '—'}</td>
+      <td class="td-other"><div class="num-cell">${irmaaTag}<span>${r.taxes.irmaaConv > 0 ? fmt(r.taxes.irmaaConv) : '—'}</span></div></td>
+      <td class="td-total">${fmt(r.taxes.total)}</td>
+      <td class="td-total"><div class="rate-cell"><span>${pct(r.allInEr)}${arTag}</span><div class="rate-bar-bg"><div class="rate-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div></div></td>
+      <td style="${netStyle}">${fmt(r.netToRoth)}</td>
+      <td>${fmtM(r.roth)}</td>
+      <td>${fmtM(r.iraEnd)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function setView(v) {
+  viewMode = v;
+  document.getElementById('toggleAll').classList.toggle('active', v === 'all');
+  document.getElementById('toggle5').classList.toggle('active', v === '5');
+  if(planRows.length) renderTable();
+}
+
+function exportCSV() {
+  if (!planRows || !planRows.length) return;
+  const headers = [
+    "Age",
+    "IRA Start ($)",
+    "IRA Withdrawn ($)",
+    "MAGI ($)",
+    "Federal Tax ($)",
+    "Federal Marginal Rate",
+    "State Tax ($)",
+    "NIIT ($)",
+    "IRMAA Surcharge ($)",
+    "Total Tax ($)",
+    "All-In Effective Rate",
+    "Net to Roth ($)",
+    "Roth Balance ($)",
+    "IRA End ($)"
+  ];
+  const csvLines = [headers.join(",")];
+  for (const r of planRows) {
+    const row = [
+      r.age,
+      Math.round(r.iraStart),
+      Math.round(r.conv),
+      Math.round(r.magi),
+      Math.round(r.taxes.fedConv),
+      (r.mr * 100).toFixed(1) + "%",
+      Math.round(r.taxes.stConv),
+      Math.round(r.taxes.niitConv),
+      Math.round(r.taxes.irmaaConv),
+      Math.round(r.taxes.total),
+      (r.allInEr * 100).toFixed(2) + "%",
+      Math.round(r.netToRoth),
+      Math.round(r.roth),
+      Math.round(r.iraEnd)
+    ];
+    csvLines.push(row.join(","));
+  }
+  const blob = new Blob([csvLines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `roth_conversion_plan_v3_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function resetDefaults() {
+  document.getElementById('iraBalance').value = 3000000;
+  document.getElementById('otherIncome').value = 90000;
+  document.getElementById('ssIncome').value = 0;
+  document.getElementById('ssStartAge').value = 67;
+  document.getElementById('returnRate').value = 7; document.getElementById('returnVal').textContent = '7%';
+  document.getElementById('strategyMode').value = 'rate';
+  document.getElementById('targetRate').value = 30; document.getElementById('targetRateVal').textContent = '30%';
+  document.getElementById('targetBracket').value = '0.24';
+  document.getElementById('filingStatus').value = 'mfj';
+  document.getElementById('stdDed').value = 29200;
+  document.getElementById('startAge').value = 55;
+  document.getElementById('duration').value = 25; document.getElementById('durationVal').textContent = '25 yrs';
+  document.getElementById('stateSelect').value = 'CA';
+  document.getElementById('customRateField').style.display = 'none';
+  document.getElementById('niiIncome').value = 0;
+  document.getElementById('niitThreshold').value = 250000;
+  document.getElementById('irmaaAge').value = 65;
+  document.getElementById('taxPayMethod').value = 'outside';
+  document.getElementById('promptCard').style.display = 'none';
+  toggleStrategyUI();
+  calculate();
+}
+
+function showPrompt() {
+  const ira = gv('iraBalance'), other = gv('otherIncome'), ss = gv('ssIncome'), ssAge = Math.round(gv('ssStartAge'));
+  const ret = gv('returnRate'), strategy = gs('strategyMode');
+  const rate = gv('targetRate'), bracketRate = parseFloat(gs('targetBracket')) || 0.24;
+  const status = gs('filingStatus'), ded = gv('stdDed');
+  const startAge = Math.round(gv('startAge')), dur = Math.round(gv('duration'));
+  const endAge = startAge + dur, stateKey = gs('stateSelect'), customRate = gv('customStateRate');
+  const niitThresh = gv('niitThreshold'), nii = gv('niiIncome'), irmaaAge = Math.round(gv('irmaaAge'));
+  const req = annuityPayment(ira, ret/100, dur);
+  const payFromConv = gs('taxPayMethod') === 'conversion';
+  const taxMethodLabel = payFromConv
+    ? 'Pay tax from conversion (withheld from IRA withdrawal — only after-tax amount enters Roth)'
+    : 'Pay tax from outside savings (full IRA withdrawal enters Roth — maximizes Roth balance)';
+  const statusLabel = status === 'mfj' ? 'Married Filing Jointly' : 'Single';
+  const stateLabel = stateKey === 'CA' ? 'California (full 2024 CA brackets up to 12.3% + 1% MHS, standard deduction included)' : stateKey === 'none' ? 'No state income tax' : `Custom flat rate: ${customRate}%`;
+  const strategyLabel = strategy === 'bracket' ? `Fill Federal ${(bracketRate*100).toFixed(0)}% Tax Bracket` : `Target All-In Effective Rate Cap (${rate}%)`;
+
+  const prompt = `I need a ${dur}-year Roth IRA conversion plan (Version 3.0) with ALL taxes and statutory rules modeled.
+
+PROFILE:
+- IRA balance: $${ira.toLocaleString()} (pre-tax)
+- Other ordinary income: $${other.toLocaleString()}/yr (pension, wages, interest — excludes SS)
+- Social Security benefit: $${ss.toLocaleString()}/yr starting at age ${ssAge} (up to 85% taxable federally; CA exempt)
+- Annual return: ${ret}% (IRA and Roth)
+- Filing status: ${statusLabel}
+- Federal Standard deduction: $${ded.toLocaleString()}
+- Starting age: ${startAge}, completing at age ${endAge} (${dur} years)
+- State: ${stateLabel}
+- Net Investment Income (NII): $${nii.toLocaleString()}/yr
+- NIIT threshold: $${niitThresh.toLocaleString()} MAGI
+- IRMAA Medicare Part B/D applies from age: ${irmaaAge} (with statutory 2-year lookback)
+- Conversion Strategy: ${strategyLabel}
+- Tax payment: ${taxMethodLabel}
+
+KEY FORMULAS & RULES:
+1. Federal Income Tax: Permanent TCJA rates (One Big Beautiful Bill Act, P.L. 119-21) up to 37%.
+2. Social Security: Gated by SS Start Age (${ssAge}). Provisional income = AGI + 0.5×SS; up to 85% taxable federally.
+3. CA State Tax: Includes CA standard deduction ($11,080 MFJ / $5,540 Single) + 1% MHS surtax >$1M; CA exempts SS.
+4. NIIT: 3.8% on min(NII, max(0, MAGI - threshold)) per IRS Form 8960.
+5. IRMAA: Medicare Part B & D surcharges based on MAGI from 2 years prior (age - 2).
+6. Required annual gross withdrawal: $${Math.round(req).toLocaleString()}/yr (annuity formula PMT = PV × r / (1-(1+r)^-n)).
+7. ${payFromConv ? 'Net to Roth each year = gross withdrawal − total tax (withheld mode)' : 'Net to Roth each year = full gross withdrawal (outside savings mode)'}
+
+OUTPUT TABLE per year (${dur} rows):
+Age | IRA Start | IRA Withdrawn (gross) | MAGI | Fed Tax | Marg Rate | State Tax | NIIT | IRMAA | Total Tax | All-In Rate | Net to Roth | Roth Balance | IRA End
+
+SUMMARY: Final Roth balance, total gross withdrawn, total net to Roth, total by tax type, avg all-in rate.
+For planning only — consult a CPA/CFP before executing.`;
+
+  document.getElementById('promptText').textContent = prompt;
+  document.getElementById('promptCard').style.display = 'block';
+  document.getElementById('promptCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyPrompt() {
+  navigator.clipboard.writeText(document.getElementById('promptText').textContent).then(() => {
+    const s = document.getElementById('copyStatus');
+    s.classList.add('show');
+    setTimeout(() => s.classList.remove('show'), 2000);
+  });
+}
+
+// Initial calculation on page load
+calculate();
+</script>
+</body>
+</html>

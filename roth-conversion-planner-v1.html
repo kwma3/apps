@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roth Conversion Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --ink: #0f1117;
+    --ink-muted: #4a5068;
+    --ink-faint: #9aa0b8;
+    --paper: #f7f6f2;
+    --surface: #ffffff;
+    --surface2: #f0efe9;
+    --accent: #1a3a2a;
+    --accent-light: #e8f0eb;
+    --gold: #b8860b;
+    --gold-light: #fdf6e3;
+    --teal: #0d6e6e;
+    --teal-light: #e0f2f2;
+    --warn: #8b3a0f;
+    --warn-light: #fdeee7;
+    --border: #dddbd4;
+    --radius: 4px;
+    --radius-lg: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .header-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .header-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .header-sub {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* INPUT PANEL */
+  .input-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .strategy-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    padding: 6px;
+    background: var(--paper);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .strategy-btn {
+    flex: 1;
+    height: 36px;
+    border: none;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--ink-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+
+  .strategy-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .strategy-btn:hover:not(.active) {
+    background: var(--surface2);
+  }
+
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+
+  .field label {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+  }
+
+  .field input, .field select {
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0 12px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .field input:focus, .field select:focus {
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .field .hint {
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    height: 40px;
+    padding: 0 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .btn:hover { background: var(--surface2); border-color: var(--ink-muted); }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn-primary:hover { background: #112819; border-color: #112819; }
+
+  /* KPI CARDS */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.1rem;
+  }
+
+  .kpi-label {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+
+  .kpi-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 3px;
+  }
+
+  .kpi-accent .kpi-value { color: var(--accent); }
+  .kpi-gold .kpi-value { color: var(--gold); }
+  .kpi-teal .kpi-value { color: var(--teal); }
+  .kpi-warn .kpi-value { color: var(--warn); }
+
+  /* CHARTS */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 800px) { .chart-grid { grid-template-columns: 1fr; } }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+  }
+
+  .chart-title {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+  }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink-muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* TABLE */
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .table-header-title {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+  }
+
+  .show-toggle { display: flex; gap: 6px; }
+  .toggle-btn {
+    height: 28px;
+    padding: 0 12px;
+    font-size: 11px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--ink-muted);
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    transition: all 0.1s;
+  }
+  .toggle-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .tbl-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  thead th {
+    padding: 8px 10px;
+    text-align: right;
+    font-weight: 500;
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-faint);
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  thead th:first-child { text-align: left; }
+
+  tbody tr { border-bottom: 1px solid #f0ede6; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--paper); }
+  tbody tr:nth-child(5n) { border-bottom: 1px solid var(--border); }
+
+  tbody td {
+    padding: 7px 10px;
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+  tbody td:first-child { text-align: left; font-family: 'Instrument Sans', sans-serif; font-size: 12px; font-weight: 500; }
+
+  .tag {
+    display: inline-block;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .tag-niit { background: var(--warn-light); color: var(--warn); }
+  .tag-rmd { background: var(--teal-light); color: var(--teal); }
+  .tag-high { background: var(--warn-light); color: var(--warn); }
+  .tag-good { background: var(--accent-light); color: var(--accent); }
+  .tag-ca { background: var(--gold-light); color: var(--gold); }
+
+  .rate-cell { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+  .rate-bar-bg { width: 50px; height: 5px; background: var(--surface2); border-radius: 3px; }
+  .rate-bar-fill { height: 5px; border-radius: 3px; }
+
+  /* PROMPT BOX */
+  .prompt-card {
+    background: var(--gold-light);
+    border: 1px solid #e0c870;
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .prompt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .prompt-label {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+  }
+
+  .prompt-text {
+    background: var(--surface);
+    border: 1px solid #e0c870;
+    border-radius: var(--radius);
+    padding: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.8;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .copy-status {
+    font-size: 11px;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .copy-status.show { opacity: 1; }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    font-size: 11px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    line-height: 1.7;
+  }
+
+  @media print {
+    body { background: white; }
+    .input-panel, .btn-row { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div>
+      <div class="header-title">Roth Conversion <em>Planner</em></div>
+      <div class="header-sub">25-Year IRA → Roth Strategy · Tax-Optimized · CA State Tax Included</div>
+    </div>
+    <div style="text-align:right; font-size:11px; color:var(--ink-faint); font-family:'DM Mono',monospace;">
+      Not financial advice<br>Consult a CPA / CFP
+    </div>
+  </header>
+
+  <!-- INPUTS -->
+  <div class="input-panel">
+    <div class="strategy-toggle">
+      <button class="strategy-btn active" id="optimizedBtn" onclick="setStrategy('optimized')">📈 Optimized (Even Tax Rate)</button>
+      <button class="strategy-btn" id="fixedBtn" onclick="setStrategy('fixed')">📊 Fixed Annual Amount</button>
+    </div>
+
+    <div class="input-grid">
+      <div class="field">
+        <label>IRA Balance ($)</label>
+        <input type="number" id="iraBalance" value="3500000" min="100000" max="20000000" step="50000">
+        <span class="hint">Pre-tax IRA starting value</span>
+      </div>
+      <div class="field">
+        <label>Other Annual Income ($)</label>
+        <input type="number" id="otherIncome" value="90000" min="0" max="500000" step="1000">
+        <span class="hint">Pension, SS, dividends, etc.</span>
+      </div>
+      <div class="field">
+        <label>Annual Return (%)</label>
+        <input type="number" id="returnRate" value="7" min="0" max="15" step="0.1">
+        <span class="hint">Expected annual growth (both accounts)</span>
+      </div>
+      <div class="field" id="fixedConversionField" style="display:none;">
+        <label>Fixed Annual Conversion ($)</label>
+        <input type="number" id="fixedConversion" value="140000" min="10000" max="500000" step="5000">
+        <span class="hint">Amount to convert each year</span>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="calculate()">▶ Calculate Plan</button>
+      <button class="btn" onclick="showPrompt()">📋 Get Regeneration Prompt</button>
+      <button class="btn" onclick="exportCSV()">📥 Export CSV</button>
+      <button class="btn" onclick="window.print()">🖨 Print</button>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi kpi-accent"><div class="kpi-label">Final Roth Balance</div><div class="kpi-value" id="kpi1">—</div><div class="kpi-sub">Tax-free at age 80</div></div>
+    <div class="kpi kpi-teal"><div class="kpi-label">Total Converted</div><div class="kpi-value" id="kpi2">—</div><div class="kpi-sub">Over 25 years</div></div>
+    <div class="kpi kpi-gold"><div class="kpi-label">Total Fed Tax</div><div class="kpi-value" id="kpi3">—</div><div class="kpi-sub">Federal only</div></div>
+    <div class="kpi kpi-warn"><div class="kpi-label">Total CA Tax</div><div class="kpi-value" id="kpi4">—</div><div class="kpi-sub">9.3% state tax</div></div>
+    <div class="kpi"><div class="kpi-label">Total Tax (Fed+CA)</div><div class="kpi-value" id="kpi5">—</div><div class="kpi-sub">All-in tax cost</div></div>
+    <div class="kpi"><div class="kpi-label">Avg Effective Rate</div><div class="kpi-value" id="kpi6">—</div><div class="kpi-sub">Total eff rate (Fed+CA)</div></div>
+    <div class="kpi"><div class="kpi-label">Effective Rate Spread</div><div class="kpi-value" id="kpi7">—</div><div class="kpi-sub">Max − Min (smoothness)</div></div>
+    <div class="kpi kpi-warn"><div class="kpi-label">Total NIIT Exposure</div><div class="kpi-value" id="kpi8">—</div><div class="kpi-sub">3.8% on MAGI &gt;$250K</div></div>
+  </div>
+
+  <!-- PROMPT BOX (hidden until requested) -->
+  <div class="prompt-card" id="promptCard" style="display:none">
+    <div class="prompt-header">
+      <div class="prompt-label">📋 Regeneration Prompt</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="copy-status" id="copyStatus">Copied!</span>
+        <button class="btn" style="height:30px;padding:0 14px;font-size:11px" onclick="copyPrompt()">Copy</button>
+      </div>
+    </div>
+    <div class="prompt-text" id="promptText"></div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">IRA vs Roth Balance (25 years)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#1a3a2a"></div>Roth balance</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0d6e6e"></div>IRA balance</div>
+      </div>
+      <div style="position:relative;height:220px">
+        <canvas id="balChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Effective Tax Rate (Fed + CA)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#b8860b"></div>Total effective</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0d6e6e"></div>Federal only</div>
+      </div>
+      <div style="position:relative;height:220px">
+        <canvas id="rateChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-header-title">Annual Breakdown</div>
+      <div class="show-toggle">
+        <button class="toggle-btn active" id="toggleAll" onclick="setView('all')">All years</button>
+        <button class="toggle-btn" id="toggle5" onclick="setView('5')">Every 5 yrs</button>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Age / Year</th>
+            <th>IRA Start</th>
+            <th>Conversion</th>
+            <th>MAGI</th>
+            <th>Fed Tax</th>
+            <th>CA Tax</th>
+            <th>Total Tax</th>
+            <th>Fed Eff %</th>
+            <th>Total Eff %</th>
+            <th>Marg %</th>
+            <th>NIIT</th>
+            <th>Roth End</th>
+            <th>IRA End</th>
+          </tr>
+        </thead>
+        <tbody id="tBody">
+          <tr><td colspan="13" style="text-align:center;padding:2rem;color:var(--ink-faint);font-family:'DM Mono',monospace;font-size:12px">Enter your inputs and click Calculate Plan</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <strong>Important:</strong> This tool is for educational and planning purposes only. It does not constitute financial, tax, or legal advice. California state income tax (9.3% marginal) is included in all calculations. Medicare IRMAA surcharges apply above ~$206K MAGI after age 65. RMDs are mandatory from age 73 but do not prevent additional conversions. Figures use 2024 tax brackets held constant; actual brackets adjust annually for inflation. Always consult a licensed CPA and/or CFP before executing a Roth conversion strategy.
+  </div>
+
+</div>
+
+<script>
+const BRACKETS_MFJ = [
+  {max:22000,r:.10},{max:89075,r:.12},{max:190750,r:.22},
+  {max:364200,r:.24},{max:462500,r:.32},{max:693750,r:.35},{max:1e15,r:.37}
+];
+const STANDARD_DEDUCTION = 29200;
+const NIIT_THRESHOLD = 250000;
+const NIIT_RATE = 0.038;
+const CA_TAX_RATE = 0.093;
+const TARGET_EFFECTIVE_RATE = 0.24;
+const TOP_24_BRACKET = 364200 + STANDARD_DEDUCTION;
+const YEARS = 25;
+const START_AGE = 55;
+const RMD_AGE = 73;
+
+let STRATEGY = 'optimized';
+let planRows = [];
+let viewMode = 'all';
+let balChartInst = null, rateChartInst = null;
+
+function fedTax(taxableIncome) {
+  let tax = 0, prev = 0;
+  for(const b of BRACKETS_MFJ) {
+    if(taxableIncome <= prev) break;
+    tax += (Math.min(taxableIncome, b.max) - prev) * b.r;
+    prev = b.max;
+  }
+  return tax;
+}
+
+function margRate(taxableIncome) {
+  for(const b of BRACKETS_MFJ) if(taxableIncome <= b.max) return b.r;
+  return 0.37;
+}
+
+function gv(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+function fmtM(n) { return n>=1e6 ? '$'+(n/1e6).toFixed(2)+'M' : '$'+(n/1000).toFixed(0)+'K'; }
+function fmt(n) { return '$'+Math.round(n).toLocaleString(); }
+function pct(n) { return (n*100).toFixed(1)+'%'; }
+
+function setStrategy(s) {
+  STRATEGY = s;
+  document.getElementById('optimizedBtn').classList.toggle('active', s==='optimized');
+  document.getElementById('fixedBtn').classList.toggle('active', s==='fixed');
+  document.getElementById('fixedConversionField').style.display = s==='fixed' ? 'flex' : 'none';
+}
+
+function calculateConversionForRate(iraBalance, otherIncome, targetRate) {
+  const baseTax = fedTax(Math.max(0, otherIncome - STANDARD_DEDUCTION));
+  const maxConv = TOP_24_BRACKET - otherIncome;
+
+  let lo = 0, hi = Math.min(maxConv, iraBalance);
+  for(let i = 0; i < 100; i++) {
+    const mid = (lo + hi) / 2;
+    const magi = otherIncome + mid;
+    const taxable = Math.max(0, magi - STANDARD_DEDUCTION);
+    let taxOnConv = fedTax(taxable) - baseTax;
+
+    if(magi > NIIT_THRESHOLD) {
+      taxOnConv += (magi - NIIT_THRESHOLD) * NIIT_RATE;
+      if(otherIncome > NIIT_THRESHOLD) {
+        taxOnConv -= (otherIncome - NIIT_THRESHOLD) * NIIT_RATE;
+      }
+    }
+
+    taxOnConv += mid * CA_TAX_RATE;
+    const eff = mid > 0 ? taxOnConv / mid : 0;
+
+    if(Math.abs(eff - targetRate) < 0.0001) return mid;
+    if(eff < targetRate) lo = mid; else hi = mid;
+  }
+  return lo;
+}
+
+function calculate() {
+  const ira0 = gv('iraBalance');
+  const other = gv('otherIncome');
+  const ret = gv('returnRate') / 100;
+  const fixedConv = gv('fixedConversion');
+
+  const baseTax = fedTax(Math.max(0, other - STANDARD_DEDUCTION));
+
+  let ira = ira0, roth = 0;
+  const rows = [];
+
+  for(let i = 0; i < YEARS; i++) {
+    const age = START_AGE + i;
+    const iraStart = ira;
+    const yearsLeft = YEARS - i;
+
+    let conv;
+    if(STRATEGY === 'fixed') {
+      conv = Math.min(fixedConv, ira);
+    } else {
+      const minConv = ira / yearsLeft;
+      const targetConv = calculateConversionForRate(ira, other, TARGET_EFFECTIVE_RATE);
+      conv = Math.min(Math.max(minConv, targetConv), ira);
+    }
+
+    const magi = other + conv;
+    const taxable = Math.max(0, magi - STANDARD_DEDUCTION);
+    const totalFedTax = fedTax(taxable);
+    let fedTaxOnConv = totalFedTax - baseTax;
+
+    let niit = 0;
+    if(magi > NIIT_THRESHOLD) {
+      const totalNiit = (magi - NIIT_THRESHOLD) * NIIT_RATE;
+      const baseNiit = other > NIIT_THRESHOLD ? (other - NIIT_THRESHOLD) * NIIT_RATE : 0;
+      niit = totalNiit - baseNiit;
+      fedTaxOnConv += niit;
+    }
+
+    const caTax = conv * CA_TAX_RATE;
+    const totalTax = fedTaxOnConv + caTax;
+    const fedEff = conv > 0 ? fedTaxOnConv / conv : 0;
+    const totalEff = conv > 0 ? totalTax / conv : 0;
+    const mr = margRate(taxable);
+
+    ira = (ira - conv) * (1 + ret);
+    roth = (roth + conv) * (1 + ret);
+
+    rows.push({
+      age, iraStart, conv, magi, fedTax: fedTaxOnConv, caTax, totalTax,
+      fedEff, totalEff, mr, niit, roth, iraEnd: ira
+    });
+  }
+
+  planRows = rows;
+  renderKPIs(rows);
+  renderCharts(rows);
+  renderTable();
+}
+
+function renderKPIs(rows) {
+  const totalConv = rows.reduce((s,r)=>s+r.conv,0);
+  const totalFedTax = rows.reduce((s,r)=>s+r.fedTax,0);
+  const totalCaTax = rows.reduce((s,r)=>s+r.caTax,0);
+  const totalTax = rows.reduce((s,r)=>s+r.totalTax,0);
+  const totalNiit = rows.reduce((s,r)=>s+r.niit,0);
+  const finalRoth = rows[rows.length-1].roth;
+  const avgEff = totalConv>0 ? totalTax/totalConv : 0;
+  const rates = rows.map(r=>r.totalEff*100);
+  const spread = (Math.max(...rates)-Math.min(...rates)).toFixed(1);
+
+  document.getElementById('kpi1').textContent = fmtM(finalRoth);
+  document.getElementById('kpi2').textContent = fmtM(totalConv);
+  document.getElementById('kpi3').textContent = fmtM(totalFedTax);
+  document.getElementById('kpi4').textContent = fmtM(totalCaTax);
+  document.getElementById('kpi5').textContent = fmtM(totalTax);
+  document.getElementById('kpi6').textContent = pct(avgEff);
+  document.getElementById('kpi7').textContent = spread+' pts';
+  document.getElementById('kpi8').textContent = fmtM(totalNiit);
+}
+
+function renderCharts(rows) {
+  const labels = rows.map(r=>''+r.age);
+
+  if(balChartInst) balChartInst.destroy();
+  balChartInst = new Chart(document.getElementById('balChart'), {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'Roth',data:rows.map(r=>Math.round(r.roth)),backgroundColor:'#1a3a2a',stack:'s'},
+        {label:'IRA',data:rows.map(r=>Math.round(r.iraEnd)),backgroundColor:'#0d6e6e',stack:'s'},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: $${c.raw.toLocaleString()}`}}},
+      scales:{
+        x:{stacked:true,ticks:{autoSkip:true,maxRotation:0,font:{size:9},color:'#9aa0b8'}},
+        y:{stacked:true,ticks:{callback:v=>'$'+(v/1e6).toFixed(1)+'M',font:{size:9},color:'#9aa0b8'},grid:{color:'#f0ede6'}}
+      }
+    }
+  });
+
+  if(rateChartInst) rateChartInst.destroy();
+  rateChartInst = new Chart(document.getElementById('rateChart'), {
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Total Eff',data:rows.map(r=>parseFloat((r.totalEff*100).toFixed(2))),borderColor:'#b8860b',backgroundColor:'rgba(184,134,11,0.07)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#b8860b',borderWidth:2},
+        {label:'Fed Eff',data:rows.map(r=>parseFloat((r.fedEff*100).toFixed(2))),borderColor:'#0d6e6e',fill:false,tension:0.3,pointRadius:2,pointBackgroundColor:'#0d6e6e',borderWidth:1.5},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw.toFixed(1)}%`}}},
+      scales:{
+        x:{ticks:{autoSkip:true,maxRotation:0,font:{size:9},color:'#9aa0b8'}},
+        y:{min:0,max:40,ticks:{callback:v=>v+'%',font:{size:9},color:'#9aa0b8'},grid:{color:'#f0ede6'}}
+      }
+    }
+  });
+}
+
+function renderTable() {
+  const dispRows = viewMode==='5' ? planRows.filter((_,i)=>i%5===0||i===planRows.length-1) : planRows;
+  document.getElementById('tBody').innerHTML = dispRows.map((r,i)=>{
+    const niitTag = r.niit>0 ? `<span class="tag tag-niit">NIIT</span>` : '';
+    const rmdTag = r.age>=RMD_AGE ? `<span class="tag tag-rmd">RMD</span>` : '';
+    const caTag = `<span class="tag tag-ca">CA</span>`;
+    const barPct = Math.round(r.totalEff*100/40*100);
+    const barColor = r.totalEff>0.35 ? '#8b3a0f' : r.totalEff>0.30 ? '#b8860b' : '#1a3a2a';
+    return `<tr>
+      <td>Age ${r.age}${rmdTag}</td>
+      <td>${fmtM(r.iraStart)}</td>
+      <td>${fmt(r.conv)}</td>
+      <td>${fmt(r.magi)}${niitTag}</td>
+      <td>${fmt(r.fedTax)}</td>
+      <td>${fmt(r.caTax)}${caTag}</td>
+      <td>${fmt(r.totalTax)}</td>
+      <td>${pct(r.fedEff)}</td>
+      <td><div class="rate-cell"><span>${pct(r.totalEff)}</span><div class="rate-bar-bg"><div class="rate-bar-fill" style="width:${barPct}%;background:${barColor}"></div></div></div></td>
+      <td>${pct(r.mr)}</td>
+      <td>${r.niit>0 ? fmt(r.niit) : '—'}</td>
+      <td>${fmtM(r.roth)}</td>
+      <td>${fmtM(r.iraEnd)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function setView(v) {
+  viewMode = v;
+  document.getElementById('toggleAll').classList.toggle('active', v==='all');
+  document.getElementById('toggle5').classList.toggle('active', v==='5');
+  if(planRows.length) renderTable();
+}
+
+function exportCSV() {
+  let csv = 'Age,IRA Start,Conversion,MAGI,Fed Tax,CA Tax,Total Tax,Fed Eff %,Total Eff %,Marg %,NIIT,Roth End,IRA End\n';
+  planRows.forEach(r => {
+    csv += `${r.age},${r.iraStart.toFixed(2)},${r.conv.toFixed(2)},${r.magi.toFixed(2)},${r.fedTax.toFixed(2)},${r.caTax.toFixed(2)},${r.totalTax.toFixed(2)},${(r.fedEff*100).toFixed(2)},${(r.totalEff*100).toFixed(2)},${(r.mr*100).toFixed(2)},${r.niit.toFixed(2)},${r.roth.toFixed(2)},${r.iraEnd.toFixed(2)}\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'roth_conversion_plan.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function showPrompt() {
+  const ira = gv('iraBalance');
+  const other = gv('otherIncome');
+  const ret = gv('returnRate');
+  const fixedConv = gv('fixedConversion');
+
+  const strategyDesc = STRATEGY === 'fixed'
+    ? `Fixed annual conversion of $${fixedConv.toLocaleString()}`
+    : `Front-loaded even-tax-rate optimization targeting 24% effective federal rate`;
+
+  const prompt = `I need a 25-year Roth IRA conversion plan with the following parameters:
+
+PROFILE:
+- Starting IRA balance: $${ira.toLocaleString()} (pre-tax)
+- Other annual income: $${other.toLocaleString()} (pension, SS, dividends, etc.)
+- Expected annual return: ${ret}% (applied to both IRA and Roth accounts)
+- Filing status: Married Filing Jointly
+- Standard deduction: $29,200
+- Duration: 25 years (starting age 55, completing at age 80)
+- All taxes paid from outside savings (conversions deposited fully into Roth)
+
+STRATEGY REQUIREMENTS:
+${STRATEGY === 'optimized'
+  ? `- Use a front-loaded even-tax-rate optimization: convert the LARGER of (IRA balance ÷ remaining years) or the amount that keeps the effective rate near 24%
+- This prevents the IRA from outgrowing the conversion pace and avoids late-window bracket spikes
+- Cap conversions at the top of the 24% federal bracket (~$393,400 MAGI for MFJ)`
+  : `- Use a FIXED annual conversion strategy: convert exactly $${fixedConv.toLocaleString()} per year (or remaining IRA balance if less)
+- This provides predictable annual tax bills and simpler planning`}
+- Flag NIIT exposure: 3.8% surcharge applies on MAGI above $250,000
+- Flag RMD years starting at age 73
+- California state income tax (9.3%) must be included in all calculations
+- Tax paid from outside savings (full conversion deposited to Roth)
+
+OUTPUT:
+Create an interactive HTML app with:
+
+1. INPUT SECTION:
+   - Toggle between "Optimized" and "Fixed Annual Amount" strategies
+   - Input fields: IRA Balance, Other Annual Income, Annual Return %, Fixed Conversion Amount (shown only for fixed strategy)
+   - Buttons: Calculate Plan, Get Regeneration Prompt, Export CSV, Print
+
+2. KPI CARDS (8 metrics):
+   - Final Roth Balance (age 80)
+   - Total Converted (25 years)
+   - Total Federal Tax Paid
+   - Total CA State Tax Paid (9.3%)
+   - Total Tax (Fed + CA)
+   - Average Effective Rate (all-in)
+   - Effective Rate Spread (max - min, measures smoothness)
+   - Total NIIT Exposure
+
+3. CHARTS (using Chart.js):
+   - Stacked bar chart: IRA declining, Roth growing over 25 years
+   - Line chart: Total effective rate (Fed+CA) and Federal-only effective rate
+
+4. TABLE with columns:
+   Age | IRA Start | Conversion | MAGI | Fed Tax | CA Tax | Total Tax | Fed Eff % | Total Eff % | Marg % | NIIT | Roth End | IRA End
+   - Add tags for: NIIT (when MAGI > $250K), RMD (age ≥ 73), CA (on CA Tax column)
+   - Visual rate bars showing effective rate as colored bar
+   - Toggle to show "All years" or "Every 5 years"
+   - Every 5th row has border accent
+
+5. DESIGN STYLE:
+   - Use fonts: DM Serif Display (headings), DM Mono (numbers/labels), Instrument Sans (body)
+   - Color palette: warm paper background (#f7f6f2), dark green accent (#1a3a2a), gold (#b8860b), teal (#0d6e6e)
+   - Editorial/journal aesthetic with clean borders and subtle styling
+   - Header: "Roth Conversion Planner" with italic emphasis
+   - All number formatting: monospace font, M/K suffixes for large numbers
+
+6. TAX CALCULATIONS:
+   - 2024 MFJ federal brackets with standard deduction of $29,200
+   - California state tax: 9.3% flat on conversion amount
+   - NIIT: 3.8% on MAGI above $250,000
+   - Marginal rate: federal bracket at taxable income level
+   - Federal effective rate: (Federal tax + NIIT) / Conversion
+   - Total effective rate: (Federal tax + NIIT + CA tax) / Conversion
+
+NOTES TO INCLUDE IN DISCLAIMER:
+- Medicare IRMAA surcharges apply above ~$206K MAGI after age 65
+- RMDs are mandatory from age 73 but do not prevent additional conversions
+- Figures assume 2024 tax brackets held constant (inflation-adjusted in practice)
+- This is for PLANNING PURPOSES ONLY — consult a CPA/CFP before executing
+
+Make it a single self-contained HTML file with all JavaScript and CSS inline.`;
+
+  document.getElementById('promptText').textContent = prompt;
+  document.getElementById('promptCard').style.display = 'block';
+  document.getElementById('promptCard').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const s = document.getElementById('copyStatus');
+    s.classList.add('show');
+    setTimeout(()=>s.classList.remove('show'), 2000);
+  });
+}
+
+calculate();
+</script>
+</body>
+</html>
