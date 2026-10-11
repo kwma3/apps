@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UC & CSU Engineering Admissions & Major Strategy</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#0f1117; --ink-muted:#4a5068; --ink-faint:#9aa0b8;
+  --paper:#f7f6f2; --surface:#fff; --surface2:#f0efe9;
+  --accent:#1a3a2a; --accent-light:#e8f0eb;
+  --gold:#b8860b; --gold-light:#fdf6e3;
+  --teal:#0d6e6e; --teal-light:#e0f2f2;
+  --warn:#8b3a0f; --warn-light:#fdeee7;
+  --blue:#1a4a8a; --blue-light:#e8eef8;
+  --purple:#5a2d8a; --purple-light:#f0eaf8;
+  --border:#dddbd4; --radius:4px; --radius-lg:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:'Instrument Sans',sans-serif;line-height:1.5;}
+.page{max-width:1560px;width:96%;margin:0 auto;padding:2rem 1.25rem 4rem;}
+
+header{border-bottom:1px solid var(--border);padding-bottom:1.5rem;margin-bottom:1.75rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;}
+.header-title{font-family:'DM Serif Display',serif;font-size:2.2rem;color:var(--accent);letter-spacing:-0.02em;line-height:1.15;}
+.header-title em{font-style:italic;color:var(--gold);}
+.version-badge{font-size:11px;font-family:'DM Mono',monospace;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:10px;vertical-align:middle;margin-left:8px;font-weight:500;}
+.v-link{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);background:var(--paper);border:1px solid var(--border);padding:5px 12px;border-radius:var(--radius);text-decoration:none;transition:all 0.15s;font-weight:500;}
+.v-link:hover{background:var(--surface2);color:var(--ink);border-color:var(--ink-muted);}
+.header-sub{font-size:12px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;margin-top:5px;}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:1.5rem;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.15rem;display:flex;flex-direction:column;justify-content:space-between;}
+.kpi-label{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink-faint);margin-bottom:4px;}
+.kpi-value{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);line-height:1.15;}
+.kpi-sub{font-size:11px;color:var(--ink-muted);margin-top:4px;}
+.kpi-accent .kpi-value{color:var(--accent);}
+.kpi-gold .kpi-value{color:var(--gold);}
+.kpi-teal .kpi-value{color:var(--teal);}
+.kpi-blue .kpi-value{color:var(--blue);}
+.kpi-warn .kpi-value{color:var(--warn);}
+.kpi-purple .kpi-value{color:var(--purple);}
+
+/* STRATEGIC BANNER */
+.banner{background:var(--gold-light);border:1px solid #e0c870;border-radius:var(--radius-lg);padding:1.1rem 1.4rem;margin-bottom:1.5rem;display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap;}
+.banner-badge{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;background:var(--gold);color:#fff;padding:3px 8px;border-radius:3px;font-weight:600;letter-spacing:0.06em;white-space:nowrap;}
+.banner-body{flex:1;min-width:280px;}
+.banner-title{font-size:13px;font-weight:600;color:#6b4d02;margin-bottom:4px;font-family:'Instrument Sans',sans-serif;}
+.banner-desc{font-size:12px;color:#5c4718;line-height:1.55;}
+
+/* FILTER & CONTROLS */
+.controls-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.5rem;}
+.controls-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.search-box{flex:1;min-width:260px;position:relative;}
+.search-input{width:100%;height:38px;border:1px solid var(--border);border-radius:var(--radius);padding:0 12px 0 34px;font-family:'Instrument Sans',sans-serif;font-size:13px;background:var(--paper);color:var(--ink);outline:none;transition:border-color 0.15s;}
+.search-input:focus{border-color:var(--accent);background:#fff;}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink-faint);font-size:13px;pointer-events:none;}
+
+.filter-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.filter-label{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-faint);margin-right:4px;}
+.pill-btn{height:30px;padding:0 11px;font-size:11px;border:1px solid var(--border);border-radius:var(--radius);background:var(--paper);color:var(--ink-muted);cursor:pointer;font-family:'DM Mono',monospace;transition:all 0.15s;display:inline-flex;align-items:center;gap:4px;}
+.pill-btn:hover{background:var(--surface2);color:var(--ink);border-color:var(--ink-muted);}
+.pill-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+.action-btns{display:flex;align-items:center;gap:8px;}
+.action-btn{height:30px;padding:0 12px;font-size:11px;border:1px solid var(--border);border-radius:var(--radius);background:var(--paper);color:var(--ink);cursor:pointer;font-family:'DM Mono',monospace;font-weight:500;transition:all 0.15s;display:inline-flex;align-items:center;gap:5px;}
+.action-btn:hover{background:var(--surface2);border-color:var(--ink-muted);}
+
+/* TABLE CARD */
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1.5rem;}
+.table-header{display:flex;justify-content:space-between;align-items:center;padding:0.9rem 1.25rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;background:var(--paper);}
+.table-title{font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-muted);font-weight:600;}
+.table-meta{font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-faint);}
+
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;table-layout:auto;}
+thead th{padding:10px 10px;text-align:left;font-weight:600;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap;user-select:none;cursor:pointer;transition:background 0.1s;}
+thead th:hover{background:#e5e4dc;color:var(--ink);}
+thead th .sort-arrow{font-size:9px;margin-left:4px;color:var(--ink-faint);}
+thead th.sorted{color:var(--accent);}
+thead th.sorted .sort-arrow{color:var(--accent);}
+
+tbody tr{transition:background 0.1s;border-bottom:1px solid #ebe9e1;}
+tbody tr:hover{background:#faf9f5;}
+tbody tr:last-child td{border-bottom:none;}
+tbody td{padding:12px 10px;border-bottom:1px solid #eeebe2;vertical-align:top;color:var(--ink);font-size:12px;line-height:1.45;}
+
+/* BADGES & TAGS */
+.tag{display:inline-flex;align-items:center;font-size:10px;padding:2px 6px;border-radius:3px;font-family:'DM Mono',monospace;font-weight:500;white-space:nowrap;}
+.tag-uc{background:var(--blue-light);color:var(--blue);border:1px solid #c9daf8;}
+.tag-csu{background:var(--accent-light);color:var(--accent);border:1px solid #b7dcbe;}
+.tag-civil{background:var(--teal-light);color:var(--teal);border:1px solid #b3e3e3;font-weight:600;}
+.tag-me{background:var(--blue-light);color:var(--blue);border:1px solid #c0d4f2;font-weight:600;}
+.tag-either{background:var(--gold-light);color:var(--gold);border:1px solid #eddca4;font-weight:600;}
+.tag-alt{background:var(--purple-light);color:var(--purple);border:1px solid #decbf2;font-weight:600;}
+.tag-rank{background:#eee8d5;color:#65531d;font-size:9px;padding:1px 5px;border-radius:2px;font-family:'DM Mono',monospace;margin-left:4px;}
+.tag-na{background:var(--surface2);color:var(--ink-faint);border:1px solid var(--border);}
+
+.campus-cell{display:flex;flex-direction:column;gap:3px;min-width:170px;}
+.campus-name{font-weight:600;font-size:13px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;}
+.campus-link{font-size:10px;font-family:'DM Mono',monospace;color:var(--teal);text-decoration:none;display:inline-flex;align-items:center;gap:3px;}
+.campus-link:hover{text-decoration:underline;color:var(--accent);}
+
+.rate-badge{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--ink);}
+.gpa-cell{font-family:'DM Mono',monospace;font-size:11px;min-width:130px;color:var(--ink-muted);}
+.program-desc{font-size:11px;color:var(--ink-muted);margin-top:3px;line-height:1.35;max-width:240px;}
+.rationale-text{font-size:11px;color:var(--ink);line-height:1.45;max-width:260px;}
+
+/* COPY ALERT */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;font-family:'DM Mono',monospace;font-size:12px;padding:10px 18px;border-radius:var(--radius);box-shadow:0 4px 14px rgba(0,0,0,0.2);display:none;z-index:999;align-items:center;gap:8px;}
+
+/* FOOTER NOTE */
+.disclaimer{font-size:11px;color:var(--ink-faint);border-top:1px solid var(--border);padding-top:1.25rem;line-height:1.6;font-family:'DM Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div>
+    <div class="header-title">UC &amp; CSU Engineering <em>Admissions &amp; Major Strategy</em> <span class="version-badge">v1.0</span></div>
+    <div class="header-sub">9 Undergraduate UCs · Top 10 CSU Engineering Schools · Mechanical vs Civil Engineering · 4.10 GPA Strategy</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+    <a href="../taxable-investment-planner.html" class="v-link" title="Open Taxable Investment Planner">📈 Investment Planner</a>
+    <a href="../index.html" class="v-link" title="Open Roth Conversion Planner">← Roth Planner (v3)</a>
+    <div style="text-align:right;font-size:11px;color:var(--ink-faint);font-family:'DM Mono',monospace;line-height:1.4;">Official Institutional &amp;<br>US News Ranking Data</div>
+  </div>
+</header>
+
+<!-- KPI SUMMARY CARDS -->
+<div class="kpi-grid">
+  <div class="kpi kpi-blue">
+    <div class="kpi-label">Campuses Included</div>
+    <div class="kpi-value">19 Schools</div>
+    <div class="kpi-sub">9 UC Campuses · Top 10 CSUs</div>
+  </div>
+  <div class="kpi kpi-gold">
+    <div class="kpi-label">Strategy Profile</div>
+    <div class="kpi-value">4.10 GPA</div>
+    <div class="kpi-sub">Core Subject Weighted Target</div>
+  </div>
+  <div class="kpi kpi-teal">
+    <div class="kpi-label">Highest Admit Major</div>
+    <div class="kpi-value">Civil Eng.</div>
+    <div class="kpi-sub">1.5× to 2.5× higher odds vs ME</div>
+  </div>
+  <div class="kpi kpi-accent">
+    <div class="kpi-label">#1 Programs In Nation</div>
+    <div class="kpi-value">Berkeley &amp; SLO</div>
+    <div class="kpi-sub">UCB (Nat'l #1 CE) · SLO (Non-Doc #1 CE)</div>
+  </div>
+  <div class="kpi kpi-purple">
+    <div class="kpi-label">Selectivity Tiers</div>
+    <div class="kpi-value">4 Reach · 7 Target</div>
+    <div class="kpi-sub">8 High-Certainty / Safety Schools</div>
+  </div>
+</div>
+
+<!-- STRATEGIC RATIONALE BANNER -->
+<div class="banner">
+  <div class="banner-badge">Strategic Takeaway</div>
+  <div class="banner-body">
+    <div class="banner-title">Why Civil Engineering Is the Optimal Selection for 4.10 GPA Candidates</div>
+    <div class="banner-desc">
+      Across both UC and CSU systems, Mechanical Engineering admissions are intensely congested by aerospace and automotive applicants, creating single-digit admit rates (e.g. UCLA 3.9%, Cal Poly SLO 5–8%, UC Berkeley 7–9%). In contrast, Civil Engineering offers almost double the admission odds (UCLA 7.6%, Cal Poly SLO 12–15%, UC Davis 30–35%) while holding <strong>#1 national ranking prestige</strong> at UC Berkeley and Cal Poly SLO.
+    </div>
+  </div>
+</div>
+
+<!-- CONTROLS & FILTERS -->
+<div class="controls-card">
+  <div class="controls-row">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search by college name, system, city, or ranking..." oninput="filterData()">
+    </div>
+    
+    <div class="filter-group">
+      <span class="filter-label">System:</span>
+      <button class="pill-btn active" data-filter="system" data-val="all" onclick="setSystemFilter('all', this)">All (19)</button>
+      <button class="pill-btn" data-filter="system" data-val="UC" onclick="setSystemFilter('UC', this)">UC Only (9)</button>
+      <button class="pill-btn" data-filter="system" data-val="CSU" onclick="setSystemFilter('CSU', this)">CSU Only (10)</button>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-label">Recommended Major:</span>
+      <button class="pill-btn active" data-filter="major" data-val="all" onclick="setMajorFilter('all', this)">All</button>
+      <button class="pill-btn" data-filter="major" data-val="Civil" onclick="setMajorFilter('Civil', this)">Civil Eng</button>
+      <button class="pill-btn" data-filter="major" data-val="Mechanical" onclick="setMajorFilter('Mechanical', this)">Mechanical Eng</button>
+      <button class="pill-btn" data-filter="major" data-val="Either" onclick="setMajorFilter('Either', this)">Either / Safe</button>
+      <button class="pill-btn" data-filter="major" data-val="Alt" onclick="setMajorFilter('Alt', this)">Alternatives</button>
+    </div>
+
+    <div class="action-btns">
+      <button class="action-btn" onclick="copyTableTSV()" title="Copy formatted table to paste into Google Sheets or Excel">📋 Copy to Sheet</button>
+      <button class="action-btn" onclick="downloadCSV()" title="Download raw CSV file">📥 Download CSV</button>
+      <button class="action-btn" onclick="resetFilters()">↺ Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- MASTER DATA TABLE -->
+<div class="table-card">
+  <div class="table-header">
+    <div class="table-title">Engineering Admissions &amp; Program Comparison Table</div>
+    <div class="table-meta" id="tableCounter">Showing 19 of 19 campuses</div>
+  </div>
+  <div class="tbl-wrap">
+    <table id="admissionsTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable('name')">College / Campus <span class="sort-arrow" id="sort-name">↕</span></th>
+          <th onclick="sortTable('system')">System <span class="sort-arrow" id="sort-system">↕</span></th>
+          <th onclick="sortTable('overall')">Overall Admit <span class="sort-arrow" id="sort-overall">↕</span></th>
+          <th onclick="sortTable('gpa')">Recommended GPA (W / UW) <span class="sort-arrow" id="sort-gpa">↕</span></th>
+          <th onclick="sortTable('me')">Mechanical Eng. Admit &amp; Rank <span class="sort-arrow" id="sort-me">↕</span></th>
+          <th>Known for ME? / Details</th>
+          <th onclick="sortTable('ce')">Civil Eng. Admit &amp; Rank <span class="sort-arrow" id="sort-ce">↕</span></th>
+          <th>Known for CE? / Details</th>
+          <th onclick="sortTable('rec')">Rec. Major (4.10 GPA) <span class="sort-arrow" id="sort-rec">↕</span></th>
+          <th>Strategic Rationale (4.10 GPA)</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <!-- Rendered via JavaScript -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="disclaimer">
+  <strong>Data Sources &amp; Notes:</strong> Admission statistics reflect latest institutional common datasets (Fall 2023–2024 cycles) and UC Infocenter / CSU Impaction data. Engineering national rankings reference U.S. News &amp; World Report (Ph.D.-granting Doctoral institutions for UCs; Non-Doctoral category for CSUs like Cal Poly SLO, Pomona, Long Beach). GPA ranges refer to UC capped weighted (10–11th grade) / CSU eligibility index.
+</div>
+
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast" class="toast">✓ Copied table to clipboard! Ready to paste into Google Sheets.</div>
+
+<script>
+const collegeData = [
+  {
+    name: "UC Berkeley",
+    system: "UC",
+    rankNum: 1,
+    url: "https://www.berkeley.edu",
+    overallRate: "~11%",
+    overallNum: 11,
+    gpaRange: "4.20 - 4.30+ (3.92 - 4.00)",
+    gpaMin: 4.20,
+    meRate: "~7% - 9% (Nat'l #3)",
+    meNum: 8,
+    meKnown: "Yes (Global Elite) - Robotics, MEMS, fluid dynamics, energy systems.",
+    ceRate: "~10% - 13% (Nat'l #1)",
+    ceNum: 11.5,
+    ceKnown: "Yes (#1 in US) - Benchmark for seismic, structural, geotechnical.",
+    recMajor: "Civil Engineering",
+    recKey: "Civil",
+    rationale: "Civil offers noticeably higher statistical odds and is the #1 program in the country."
+  },
+  {
+    name: "UCLA",
+    system: "UC",
+    rankNum: 2,
+    url: "https://www.ucla.edu",
+    overallRate: "~9%",
+    overallNum: 9,
+    gpaRange: "4.25 - 4.31+ (3.95 - 4.00)",
+    gpaMin: 4.25,
+    meRate: "~3.9% (Nat'l #11)",
+    meNum: 3.9,
+    meKnown: "Yes (Elite) - Prime feeder for SoCal aerospace (SpaceX, Boeing, Northrop).",
+    ceRate: "~7.6% (Nat'l #14)",
+    ceNum: 7.6,
+    ceKnown: "Yes (Elite) - Major feeder for structural design and water infrastructure.",
+    recMajor: "Civil Engineering",
+    recKey: "Civil",
+    rationale: "Nearly doubles your odds compared to ME (7.6% vs 3.9%)."
+  },
+  {
+    name: "UC San Diego",
+    system: "UC",
+    rankNum: 3,
+    url: "https://ucsd.edu",
+    overallRate: "~24%",
+    overallNum: 24,
+    gpaRange: "4.15 - 4.28+ (3.88 - 4.00)",
+    gpaMin: 4.15,
+    meRate: "~12% - 16% (Nat'l #17)",
+    meNum: 14,
+    meKnown: "Yes (Top-Tier) - Elite research in controls, robotics, aerospace ME.",
+    ceRate: "~18% - 22% (Structural #5)",
+    ceNum: 20,
+    ceKnown: "Yes (World-Renowned) - Famous dedicated Structural Eng. dept. and giant shake table.",
+    recMajor: "Civil / Structural Engineering",
+    recKey: "Civil",
+    rationale: "4.10 is in competitive window; Civil/Structural gives ~18-22% admit rate vs 12% in ME."
+  },
+  {
+    name: "UC Davis",
+    system: "UC",
+    rankNum: 4,
+    url: "https://www.ucdavis.edu",
+    overallRate: "~42%",
+    overallNum: 42,
+    gpaRange: "4.05 - 4.25+ (3.80 - 3.95)",
+    gpaMin: 4.05,
+    meRate: "~20% - 26% (Nat'l #29)",
+    meNum: 23,
+    meKnown: "Yes (Strong) - Vehicle dynamics, aeronautics, agricultural automation.",
+    ceRate: "~30% - 35% (Nat'l #11)",
+    ceNum: 32.5,
+    ceKnown: "Yes (National Leader) - Top-tier (#11 in US) for water resources, transit, environmental civil.",
+    recMajor: "Civil Engineering",
+    recKey: "Civil",
+    rationale: "High probability target. A 4.10 is well within middle 50% for Civil (~35% admit rate)."
+  },
+  {
+    name: "UC Santa Barbara",
+    system: "UC",
+    rankNum: 5,
+    url: "https://www.ucsb.edu",
+    overallRate: "~26%",
+    overallNum: 26,
+    gpaRange: "4.15 - 4.28+ (3.85 - 4.00)",
+    gpaMin: 4.15,
+    meRate: "~10% - 14% (Nat'l #28)",
+    meNum: 12,
+    meKnown: "Yes (Top-Tier) - World-renowned research in materials science and microfluidics.",
+    ceRate: "Not Offered",
+    ceNum: 0,
+    ceKnown: "Not Offered (Close Alt: Environmental Studies B.S. or Chemical Eng.)",
+    recMajor: "Mechanical Engineering",
+    recKey: "Mechanical",
+    rationale: "Only direct engineering option between the two; reasonable reach/target (~10-14%)."
+  },
+  {
+    name: "UC Irvine",
+    system: "UC",
+    rankNum: 6,
+    url: "https://uci.edu",
+    overallRate: "~26%",
+    overallNum: 26,
+    gpaRange: "4.08 - 4.25+ (3.82 - 3.98)",
+    gpaMin: 4.08,
+    meRate: "~12% - 15% (Nat'l #37)",
+    meNum: 13.5,
+    meKnown: "Yes (Strong Regional) - Solid industry placement across Orange County aerospace & auto.",
+    ceRate: "~20% - 25% (Nat'l #36)",
+    ceNum: 22.5,
+    ceKnown: "Yes (Strong Regional) - High local placement with regional transit and water districts.",
+    recMajor: "Civil Engineering",
+    recKey: "Civil",
+    rationale: "4.10 aligns with median. Civil provides ~20-25% admit rate vs ~12% for ME."
+  },
+  {
+    name: "UC Riverside",
+    system: "UC",
+    rankNum: 7,
+    url: "https://www.ucr.edu",
+    overallRate: "~70%",
+    overallNum: 70,
+    gpaRange: "3.80 - 4.12+ (3.55 - 3.85)",
+    gpaMin: 3.80,
+    meRate: "~45% - 55% (Nat'l #72)",
+    meNum: 50,
+    meKnown: "Moderate - Solid regional program; focus on clean energy and nanomaterials.",
+    ceRate: "Not Offered (Env. Only)",
+    ceNum: 0,
+    ceKnown: "Not Offered (Close Alt: Environmental Eng. B.S. - ABET accredited)",
+    recMajor: "Mechanical Engineering",
+    recKey: "Mechanical",
+    rationale: "Near-safety. 4.10 is well above median; ME has ~50% admit rate (Civil not offered)."
+  },
+  {
+    name: "UC Santa Cruz",
+    system: "UC",
+    rankNum: 8,
+    url: "https://www.ucsc.edu",
+    overallRate: "~62%",
+    overallNum: 62,
+    gpaRange: "3.85 - 4.15+ (3.60 - 3.90)",
+    gpaMin: 3.85,
+    meRate: "Not Offered",
+    meNum: 0,
+    meKnown: "Not Offered (Close Alt: Robotics Eng. B.S. - mechanical & mechatronics focus)",
+    ceRate: "Not Offered",
+    ceNum: 0,
+    ceKnown: "Not Offered (Close Alt: Environmental Sciences B.S. or Earth Sciences)",
+    recMajor: "Robotics Engineering (Alt)",
+    recKey: "Alt",
+    rationale: "Neither traditional ME nor CE offered. Robotics is closest ME alternative."
+  },
+  {
+    name: "UC Merced",
+    system: "UC",
+    rankNum: 9,
+    url: "https://www.ucmerced.edu",
+    overallRate: "~93%",
+    overallNum: 93,
+    gpaRange: "3.50 - 3.90+ (3.30 - 3.70)",
+    gpaMin: 3.50,
+    meRate: "~75% - 82% (Nat'l #128)",
+    meNum: 78.5,
+    meKnown: "Emerging / Regional - Solar thermal systems and regional manufacturing.",
+    ceRate: "~80% - 86% (Nat'l #135)",
+    ceNum: 83,
+    ceKnown: "Emerging / Regional - Central Valley water management and infrastructure.",
+    recMajor: "Either (Civil = Safety)",
+    recKey: "Either",
+    rationale: "4.10 is virtual guaranteed admit for both. Pick Civil for 80%+ certainty."
+  },
+  {
+    name: "Cal Poly San Luis Obispo",
+    system: "CSU",
+    rankNum: 10,
+    csuRank: "CSU #1",
+    url: "https://www.calpoly.edu",
+    overallRate: "~29%",
+    overallNum: 29,
+    gpaRange: "4.15 - 4.25+ (3.92 - 4.00)",
+    gpaMin: 4.15,
+    meRate: "~5% - 8% (Non-Doc #2)",
+    meNum: 6.5,
+    meKnown: "Yes (Premier Powerhouse) - On par with top UCs; premier feeder for aerospace & tech.",
+    ceRate: "~12% - 15% (Non-Doc #1)",
+    ceNum: 13.5,
+    ceKnown: "Yes (#1 Undergrad in US) - Tied for #1 nationwide; top hiring preference across CA.",
+    recMajor: "Civil Engineering",
+    recKey: "Civil",
+    rationale: "Crucial choice. SLO ME median is 4.20+ (5-8% admit). Civil is 12-15% and ranked #1 in US."
+  },
+  {
+    name: "Cal Poly Pomona",
+    system: "CSU",
+    rankNum: 11,
+    csuRank: "CSU #2",
+    url: "https://www.cpp.edu",
+    overallRate: "~55%",
+    overallNum: 55,
+    gpaRange: "3.90 - 4.18+ (3.65 - 3.90)",
+    gpaMin: 3.90,
+    meRate: "~25% - 30% (Non-Doc #8)",
+    meNum: 27.5,
+    meKnown: "Yes (High Prestige) - Major recruiting engine for defense, aerospace, heavy industry.",
+    ceRate: "~30% - 35% (Non-Doc #5)",
+    ceNum: 32.5,
+    ceKnown: "Yes (High Prestige) - Massive pipeline into LADWP, Caltrans, county public works.",
+    recMajor: "Civil Engineering",
+    recKey: "Civil",
+    rationale: "4.10 is comfortably above average; Civil gives higher safety margin (~35% vs 25%)."
+  },
+  {
+    name: "San Jose State University",
+    system: "CSU",
+    rankNum: 12,
+    csuRank: "CSU #3",
+    url: "https://www.sjsu.edu",
+    overallRate: "~84%",
+    overallNum: 84,
+    gpaRange: "3.75 - 4.10+ (Math GPA: 3.8+)",
+    gpaMin: 3.75,
+    meRate: "Impacted (~30%) (Nat'l #120)",
+    meNum: 30,
+    meKnown: "Yes (Silicon Valley Hub) - Major pipeline to Apple, Tesla, Applied Materials.",
+    ceRate: "Impacted (~35%) (Nat'l #130)",
+    ceNum: 35,
+    ceKnown: "Yes (High Regional) - Major supplier of civil engineers for Bay Area infrastructure.",
+    recMajor: "Either (Civil = Safer)",
+    recKey: "Either",
+    rationale: "4.10 clears impaction for both. Civil is slightly safer if math GPA is closer to 3.8."
+  },
+  {
+    name: "San Diego State University",
+    system: "CSU",
+    rankNum: 13,
+    csuRank: "CSU #4",
+    url: "https://www.sdsu.edu",
+    overallRate: "~34%",
+    overallNum: 34,
+    gpaRange: "3.85 - 4.15+ (3.65 - 3.90)",
+    gpaMin: 3.85,
+    meRate: "~20% - 25% (Nat'l #105)",
+    meNum: 22.5,
+    meKnown: "Yes (Regional Leader) - Top supplier for San Diego defense, navy, bio-devices.",
+    ceRate: "~25% - 30% (Nat'l #95)",
+    ceNum: 27.5,
+    ceKnown: "Yes (Regional Leader) - Dominant in San Diego municipal infrastructure & coastal civil.",
+    recMajor: "Civil Engineering",
+    recKey: "Civil",
+    rationale: "4.10 is well above median. Civil offers the highest probability (~30%)."
+  },
+  {
+    name: "CSU Long Beach",
+    system: "CSU",
+    rankNum: 14,
+    csuRank: "CSU #5",
+    url: "https://www.csulb.edu",
+    overallRate: "~40%",
+    overallNum: 40,
+    gpaRange: "3.80 - 4.12+ (3.60 - 3.88)",
+    gpaMin: 3.80,
+    meRate: "~22% - 28% (Non-Doc #18)",
+    meNum: 25,
+    meKnown: "Yes (High Regional) - Historic ties to aerospace corridor and marine engineering.",
+    ceRate: "~30% - 35% (Non-Doc #16)",
+    ceNum: 32.5,
+    ceKnown: "Yes (Strong) - Known for structural/transit design and port infrastructure.",
+    recMajor: "Civil Engineering",
+    recKey: "Civil",
+    rationale: "4.10 makes CSULB a strong target for Civil (~35% admit rate vs 22% for ME)."
+  },
+  {
+    name: "CSU Sacramento",
+    system: "CSU",
+    rankNum: 15,
+    csuRank: "CSU #6",
+    url: "https://www.csus.edu",
+    overallRate: "~82%",
+    overallNum: 82,
+    gpaRange: "3.40 - 3.85+ (3.25 - 3.65)",
+    gpaMin: 3.40,
+    meRate: "Impacted (~45%) (Non-Doc #38)",
+    meNum: 45,
+    meKnown: "Moderate - Solid regional program tied to local equipment manufacturers.",
+    ceRate: "Impacted (~50%) (Non-Doc #25)",
+    ceNum: 50,
+    ceKnown: "Yes (Standout for State Civil) - Direct pipeline into Caltrans HQ and Dept. of Water Resources.",
+    recMajor: "Civil Engineering",
+    recKey: "Civil",
+    rationale: "Best Match. 4.10 is an easy admit, and Sac State has unmatched state government civil pipeline."
+  },
+  {
+    name: "CSU Fullerton",
+    system: "CSU",
+    rankNum: 16,
+    csuRank: "CSU #7",
+    url: "https://www.fullerton.edu",
+    overallRate: "~67%",
+    overallNum: 67,
+    gpaRange: "3.55 - 3.95+ (3.35 - 3.75)",
+    gpaMin: 3.55,
+    meRate: "~40% - 48% (Non-Doc #40)",
+    meNum: 44,
+    meKnown: "Moderate - Practical education tied to local Orange County manufacturing.",
+    ceRate: "~48% - 55% (Non-Doc #32)",
+    ceNum: 51.5,
+    ceKnown: "Moderate - Reliable pipeline for local public works and commercial building.",
+    recMajor: "Either (Civil = Safest)",
+    recKey: "Either",
+    rationale: "4.10 is well above engineering median; both safe, Civil offers ~55% odds."
+  },
+  {
+    name: "CSU Northridge",
+    system: "CSU",
+    rankNum: 17,
+    csuRank: "CSU #8",
+    url: "https://www.csun.edu",
+    overallRate: "~88%",
+    overallNum: 88,
+    gpaRange: "3.30 - 3.75+ (3.15 - 3.55)",
+    gpaMin: 3.30,
+    meRate: "Impacted (~55%) (Non-Doc #45)",
+    meNum: 55,
+    meKnown: "Yes (Strong Hands-On) - Competitive Formula SAE race team and local aerospace ties.",
+    ceRate: "Impacted (~60%) (Non-Doc #35)",
+    ceNum: 60,
+    ceKnown: "Moderate - Solid reputation for municipal public works and structural engineering.",
+    recMajor: "Either (Safe)",
+    recKey: "Either",
+    rationale: "4.10 clears impaction for both comfortably."
+  },
+  {
+    name: "Fresno State",
+    system: "CSU",
+    rankNum: 18,
+    csuRank: "CSU #9",
+    url: "https://www.fresnostate.edu",
+    overallRate: "~95%",
+    overallNum: 95,
+    gpaRange: "3.30 - 3.70+ (3.15 - 3.50)",
+    gpaMin: 3.30,
+    meRate: "Impacted (~60%) (Non-Doc #48)",
+    meNum: 60,
+    meKnown: "Moderate - Focus on agricultural equipment and processing machinery.",
+    ceRate: "Impacted (~65%) (Non-Doc #36)",
+    ceNum: 65,
+    ceKnown: "Yes (Central Valley Leader) - Dominates regional water infrastructure, canals, highways.",
+    recMajor: "Civil Engineering",
+    recKey: "Civil",
+    rationale: "Safe for both with 4.10; Civil is the standout star program in Central Valley."
+  },
+  {
+    name: "CSU Los Angeles",
+    system: "CSU",
+    rankNum: 19,
+    csuRank: "CSU #10",
+    url: "https://www.calstatela.edu",
+    overallRate: "~87%",
+    overallNum: 87,
+    gpaRange: "3.30 - 3.75+ (3.15 - 3.50)",
+    gpaMin: 3.30,
+    meRate: "Impacted (~55%) (Non-Doc #52)",
+    meNum: 55,
+    meKnown: "Moderate - Capstone clinic with direct project ties to NASA JPL and aerospace.",
+    ceRate: "Impacted (~60%) (Non-Doc #42)",
+    ceNum: 60,
+    ceKnown: "Moderate - Pipeline into LA County Public Works and transit projects.",
+    recMajor: "Either (Safe)",
+    recKey: "Either",
+    rationale: "4.10 clears all impaction thresholds for either major."
+  }
+];
+
+let currentSystemFilter = 'all';
+let currentMajorFilter = 'all';
+let currentSearch = '';
+let currentSortCol = 'rankNum';
+let currentSortAsc = true;
+
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  
+  let filtered = collegeData.filter(item => {
+    // System filter
+    if (currentSystemFilter !== 'all' && item.system !== currentSystemFilter) return false;
+    
+    // Major filter
+    if (currentMajorFilter !== 'all') {
+      if (currentMajorFilter === 'Civil' && !item.recKey.includes('Civil')) return false;
+      if (currentMajorFilter === 'Mechanical' && !item.recKey.includes('Mechanical')) return false;
+      if (currentMajorFilter === 'Either' && !item.recKey.includes('Either')) return false;
+      if (currentMajorFilter === 'Alt' && !item.recKey.includes('Alt')) return false;
+    }
+    
+    // Search query
+    if (currentSearch.trim() !== '') {
+      const q = currentSearch.toLowerCase();
+      const match = item.name.toLowerCase().includes(q) ||
+                    item.system.toLowerCase().includes(q) ||
+                    (item.csuRank && item.csuRank.toLowerCase().includes(q)) ||
+                    item.recMajor.toLowerCase().includes(q) ||
+                    item.meRate.toLowerCase().includes(q) ||
+                    item.ceRate.toLowerCase().includes(q) ||
+                    item.meKnown.toLowerCase().includes(q) ||
+                    item.ceKnown.toLowerCase().includes(q) ||
+                    item.rationale.toLowerCase().includes(q);
+      if (!match) return false;
+    }
+    
+    return true;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    let valA, valB;
+    switch(currentSortCol) {
+      case 'name':
+        valA = a.name; valB = b.name;
+        return currentSortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      case 'system':
+        valA = a.system; valB = b.system;
+        return currentSortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      case 'overall':
+        valA = a.overallNum; valB = b.overallNum;
+        break;
+      case 'gpa':
+        valA = a.gpaMin; valB = b.gpaMin;
+        break;
+      case 'me':
+        valA = a.meNum; valB = b.meNum;
+        break;
+      case 'ce':
+        valA = a.ceNum; valB = b.ceNum;
+        break;
+      case 'rec':
+        valA = a.recMajor; valB = b.recMajor;
+        return currentSortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      case 'rankNum':
+      default:
+        valA = a.rankNum; valB = b.rankNum;
+        break;
+    }
+    if (valA < valB) return currentSortAsc ? -1 : 1;
+    if (valA > valB) return currentSortAsc ? 1 : -1;
+    return 0;
+  });
+
+  document.getElementById('tableCounter').textContent = `Showing ${filtered.length} of ${collegeData.length} campuses`;
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:3rem;color:var(--ink-faint);font-family:'DM Mono',monospace;">No matching colleges found. Try adjusting your filters or search term.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(item => {
+    const sysTag = item.system === 'UC' 
+      ? `<span class="tag tag-uc">UC</span>` 
+      : `<span class="tag tag-csu">${item.csuRank || 'CSU'}</span>`;
+      
+    let recBadgeClass = 'tag-civil';
+    if (item.recKey === 'Mechanical') recBadgeClass = 'tag-me';
+    else if (item.recKey === 'Either') recBadgeClass = 'tag-either';
+    else if (item.recKey === 'Alt') recBadgeClass = 'tag-alt';
+
+    return `
+      <tr>
+        <td>
+          <div class="campus-cell">
+            <span class="campus-name">${item.name}</span>
+            <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="campus-link">
+              Visit official site ↗
+            </a>
+          </div>
+        </td>
+        <td>${sysTag}</td>
+        <td><span class="rate-badge">${item.overallRate}</span></td>
+        <td><div class="gpa-cell">${item.gpaRange}</div></td>
+        <td>
+          <span class="rate-badge ${item.meNum < 15 && item.meNum > 0 ? 'color:var(--warn)' : ''}">${item.meRate}</span>
+        </td>
+        <td><div class="program-desc">${item.meKnown}</div></td>
+        <td>
+          <span class="rate-badge">${item.ceRate}</span>
+        </td>
+        <td><div class="program-desc">${item.ceKnown}</div></td>
+        <td><span class="tag ${recBadgeClass}">${item.recMajor}</span></td>
+        <td><div class="rationale-text">${item.rationale}</div></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function setSystemFilter(sys, btn) {
+  currentSystemFilter = sys;
+  document.querySelectorAll('[data-filter="system"]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function setMajorFilter(major, btn) {
+  currentMajorFilter = major;
+  document.querySelectorAll('[data-filter="major"]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function filterData() {
+  currentSearch = document.getElementById('searchInput').value;
+  renderTable();
+}
+
+function resetFilters() {
+  currentSystemFilter = 'all';
+  currentMajorFilter = 'all';
+  currentSearch = '';
+  currentSortCol = 'rankNum';
+  currentSortAsc = true;
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('[data-filter="system"]').forEach(b => b.classList.toggle('active', b.dataset.val === 'all'));
+  document.querySelectorAll('[data-filter="major"]').forEach(b => b.classList.toggle('active', b.dataset.val === 'all'));
+  updateSortIndicators();
+  renderTable();
+}
+
+function sortTable(col) {
+  if (currentSortCol === col) {
+    currentSortAsc = !currentSortAsc;
+  } else {
+    currentSortCol = col;
+    currentSortAsc = true;
+  }
+  updateSortIndicators();
+  renderTable();
+}
+
+function updateSortIndicators() {
+  const cols = ['name', 'system', 'overall', 'gpa', 'me', 'ce', 'rec'];
+  cols.forEach(c => {
+    const el = document.getElementById(`sort-${c}`);
+    if (!el) return;
+    const th = el.parentElement;
+    if (currentSortCol === c) {
+      th.classList.add('sorted');
+      el.textContent = currentSortAsc ? '▲' : '▼';
+    } else {
+      th.classList.remove('sorted');
+      el.textContent = '↕';
+    }
+  });
+}
+
+function copyTableTSV() {
+  const headers = [
+    "College Name", "Website Link", "System", "Overall Admit Rate", 
+    "Recommended GPA (W / UW)", "Mechanical Eng. Admit & Rank", 
+    "Known for ME? (or Alternative)", "Civil Eng. Admit & Rank", 
+    "Known for CE? (or Alternative)", "Recommended Major (4.10 GPA)", 
+    "Strategic Rationale for 4.10 GPA"
+  ];
+  
+  const rows = collegeData.map(c => [
+    c.name, c.url, c.csuRank ? `${c.csuRank}` : c.system, c.overallRate,
+    c.gpaRange, c.meRate, c.meKnown, c.ceRate, c.ceKnown,
+    c.recMajor, c.rationale
+  ]);
+
+  const tsv = [headers.join('\t'), ...rows.map(r => r.join('\t'))].join('\n');
+  
+  navigator.clipboard.writeText(tsv).then(() => {
+    const toast = document.getElementById('toast');
+    toast.style.display = 'flex';
+    setTimeout(() => { toast.style.display = 'none'; }, 3500);
+  }).catch(err => {
+    alert("Could not copy automatically. You can download the CSV directly.");
+  });
+}
+
+function downloadCSV() {
+  const headers = [
+    "College Name", "Website Link", "System", "Overall Admit Rate", 
+    "Recommended GPA (W / UW)", "Mechanical Eng. Admit & Rank", 
+    "Known for ME? (or Alternative)", "Civil Eng. Admit & Rank", 
+    "Known for CE? (or Alternative)", "Recommended Major (4.10 GPA)", 
+    "Strategic Rationale for 4.10 GPA"
+  ];
+  
+  const csvRows = [headers.map(escapeCSV).join(',')];
+  
+  collegeData.forEach(c => {
+    csvRows.push([
+      escapeCSV(c.name),
+      escapeCSV(c.url),
+      escapeCSV(c.csuRank || c.system),
+      escapeCSV(c.overallRate),
+      escapeCSV(c.gpaRange),
+      escapeCSV(c.meRate),
+      escapeCSV(c.meKnown),
+      escapeCSV(c.ceRate),
+      escapeCSV(c.ceKnown),
+      escapeCSV(c.recMajor),
+      escapeCSV(c.rationale)
+    ].join(','));
+  });
+
+  const blob = new Blob([csvRows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'UC_CSU_Engineering_Admissions.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function escapeCSV(text) {
+  if (!text) return '""';
+  const str = String(text).replace(/"/g, '""');
+  return `"${str}"`;
+}
+
+// Initial render
+renderTable();
+</script>
+</body>
+</html>
