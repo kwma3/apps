@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UC & CSU Engineering Admissions & Major Strategy</title>
+<title>UC &amp; CSU Engineering Admissions &amp; Major Strategy (4.10, 4.15 &amp; 4.20 GPA)</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
 :root {
   --ink:#0f1117; --ink-muted:#4a5068; --ink-faint:#9aa0b8;
   --paper:#f7f6f2; --surface:#fff; --surface2:#f0efe9;
@@ -19,19 +20,32 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--paper);color:var(--ink);font-family:'Instrument Sans',sans-serif;line-height:1.5;}
-.page{max-width:1560px;width:96%;margin:0 auto;padding:2rem 1.25rem 4rem;}
+.page{max-width:99vw;width:98%;margin:0 auto;padding:1.25rem 1rem 4rem;}
 
-header{border-bottom:1px solid var(--border);padding-bottom:1.5rem;margin-bottom:1.75rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;}
+header{border-bottom:1px solid var(--border);padding-bottom:1.25rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;}
 .header-title{font-family:'DM Serif Display',serif;font-size:2.2rem;color:var(--accent);letter-spacing:-0.02em;line-height:1.15;}
 .header-title em{font-style:italic;color:var(--gold);}
 .version-badge{font-size:11px;font-family:'DM Mono',monospace;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:10px;vertical-align:middle;margin-left:8px;font-weight:500;}
 .v-link{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);background:var(--paper);border:1px solid var(--border);padding:5px 12px;border-radius:var(--radius);text-decoration:none;transition:all 0.15s;font-weight:500;}
 .v-link:hover{background:var(--surface2);color:var(--ink);border-color:var(--ink-muted);}
+.v-link.active{background:var(--accent);color:#fff;border-color:var(--accent);}
 .header-sub{font-size:12px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;margin-top:5px;}
 
+/* SCENARIO BAR */
+.scenario-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0.9rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
+.scenario-selector{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.scenario-title{font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);font-weight:700;display:flex;align-items:center;gap:6px;}
+.gpa-dropdown{height:34px;padding:0 12px;font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--accent);background:var(--paper);border:1.5px solid var(--accent);border-radius:var(--radius);cursor:pointer;outline:none;transition:all 0.15s;}
+.gpa-dropdown:hover,.gpa-dropdown:focus{background:#fff;border-color:var(--gold);}
+.scenario-buttons{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.scenario-btn{height:34px;padding:0 14px;font-size:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--paper);color:var(--ink-muted);cursor:pointer;font-family:'DM Mono',monospace;font-weight:600;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
+.scenario-btn:hover{background:var(--surface2);color:var(--ink);border-color:var(--ink-muted);}
+.scenario-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 6px rgba(26,58,42,0.25);}
+.scenario-meta-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+
 /* KPI CARDS */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:1.5rem;}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.15rem;display:flex;flex-direction:column;justify-content:space-between;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:1.25rem;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0.9rem 1.15rem;display:flex;flex-direction:column;justify-content:space-between;}
 .kpi-label{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink-faint);margin-bottom:4px;}
 .kpi-value{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);line-height:1.15;}
 .kpi-sub{font-size:11px;color:var(--ink-muted);margin-top:4px;}
@@ -39,18 +53,17 @@ header{border-bottom:1px solid var(--border);padding-bottom:1.5rem;margin-bottom
 .kpi-gold .kpi-value{color:var(--gold);}
 .kpi-teal .kpi-value{color:var(--teal);}
 .kpi-blue .kpi-value{color:var(--blue);}
-.kpi-warn .kpi-value{color:var(--warn);}
 .kpi-purple .kpi-value{color:var(--purple);}
 
 /* STRATEGIC BANNER */
-.banner{background:var(--gold-light);border:1px solid #e0c870;border-radius:var(--radius-lg);padding:1.1rem 1.4rem;margin-bottom:1.5rem;display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap;}
+.banner{background:var(--gold-light);border:1px solid #e0c870;border-radius:var(--radius-lg);padding:1rem 1.3rem;margin-bottom:1.25rem;display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap;}
 .banner-badge{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;background:var(--gold);color:#fff;padding:3px 8px;border-radius:3px;font-weight:600;letter-spacing:0.06em;white-space:nowrap;}
 .banner-body{flex:1;min-width:280px;}
-.banner-title{font-size:13px;font-weight:600;color:#6b4d02;margin-bottom:4px;font-family:'Instrument Sans',sans-serif;}
+.banner-title{font-size:14px;font-weight:700;color:#6b4d02;margin-bottom:4px;font-family:'Instrument Sans',sans-serif;}
 .banner-desc{font-size:12px;color:#5c4718;line-height:1.55;}
 
 /* FILTER & CONTROLS */
-.controls-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.5rem;}
+.controls-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem;margin-bottom:1.25rem;}
 .controls-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
 .search-box{flex:1;min-width:260px;position:relative;}
 .search-input{width:100%;height:38px;border:1px solid var(--border);border-radius:var(--radius);padding:0 12px 0 34px;font-family:'Instrument Sans',sans-serif;font-size:13px;background:var(--paper);color:var(--ink);outline:none;transition:border-color 0.15s;}
@@ -67,24 +80,24 @@ header{border-bottom:1px solid var(--border);padding-bottom:1.5rem;margin-bottom
 .action-btn{height:30px;padding:0 12px;font-size:11px;border:1px solid var(--border);border-radius:var(--radius);background:var(--paper);color:var(--ink);cursor:pointer;font-family:'DM Mono',monospace;font-weight:500;transition:all 0.15s;display:inline-flex;align-items:center;gap:5px;}
 .action-btn:hover{background:var(--surface2);border-color:var(--ink-muted);}
 
-/* TABLE CARD */
-.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1.5rem;}
-.table-header{display:flex;justify-content:space-between;align-items:center;padding:0.9rem 1.25rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;background:var(--paper);}
+/* TABLE CARD & FLUID FULL-WIDTH EXPANSION */
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:visible;margin-bottom:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
+.table-header{display:flex;justify-content:space-between;align-items:center;padding:0.9rem 1.25rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;background:var(--paper);border-top-left-radius:var(--radius-lg);border-top-right-radius:var(--radius-lg);}
 .table-title{font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-muted);font-weight:600;}
 .table-meta{font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-faint);}
 
-.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;border-bottom-left-radius:var(--radius-lg);border-bottom-right-radius:var(--radius-lg);}
 table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;table-layout:auto;}
-thead th{padding:10px 10px;text-align:left;font-weight:600;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap;user-select:none;cursor:pointer;transition:background 0.1s;}
+thead th{position:sticky;top:0;z-index:10;padding:10px 8px;text-align:left;font-weight:600;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-muted);background:var(--surface2);border-bottom:2px solid var(--border);user-select:none;cursor:pointer;transition:background 0.1s;box-shadow:0 1px 2px rgba(0,0,0,0.03);}
 thead th:hover{background:#e5e4dc;color:var(--ink);}
-thead th .sort-arrow{font-size:9px;margin-left:4px;color:var(--ink-faint);}
+thead th .sort-arrow{font-size:9px;margin-left:4px;color:var(--ink-faint);white-space:nowrap;}
 thead th.sorted{color:var(--accent);}
 thead th.sorted .sort-arrow{color:var(--accent);}
 
 tbody tr{transition:background 0.1s;border-bottom:1px solid #ebe9e1;}
 tbody tr:hover{background:#faf9f5;}
 tbody tr:last-child td{border-bottom:none;}
-tbody td{padding:12px 10px;border-bottom:1px solid #eeebe2;vertical-align:top;color:var(--ink);font-size:12px;line-height:1.45;}
+tbody td{padding:10px 8px;border-bottom:1px solid #eeebe2;vertical-align:top;color:var(--ink);font-size:12px;line-height:1.42;}
 
 /* BADGES & TAGS */
 .tag{display:inline-flex;align-items:center;font-size:10px;padding:2px 6px;border-radius:3px;font-family:'DM Mono',monospace;font-weight:500;white-space:nowrap;}
@@ -97,21 +110,31 @@ tbody td{padding:12px 10px;border-bottom:1px solid #eeebe2;vertical-align:top;co
 .tag-rank{background:#eee8d5;color:#65531d;font-size:9px;padding:1px 5px;border-radius:2px;font-family:'DM Mono',monospace;margin-left:4px;}
 .tag-na{background:var(--surface2);color:var(--ink-faint);border:1px solid var(--border);}
 
-.campus-cell{display:flex;flex-direction:column;gap:3px;min-width:170px;}
-.campus-name{font-weight:600;font-size:13px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;}
+.campus-cell{display:flex;flex-direction:column;gap:3px;min-width:140px;}
+.campus-name{font-weight:600;font-size:12.5px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;}
 .campus-link{font-size:10px;font-family:'DM Mono',monospace;color:var(--teal);text-decoration:none;display:inline-flex;align-items:center;gap:3px;}
 .campus-link:hover{text-decoration:underline;color:var(--accent);}
 
-.rate-badge{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--ink);}
-.gpa-cell{font-family:'DM Mono',monospace;font-size:11px;min-width:130px;color:var(--ink-muted);}
-.program-desc{font-size:11px;color:var(--ink-muted);margin-top:3px;line-height:1.35;max-width:240px;}
-.rationale-text{font-size:11px;color:var(--ink);line-height:1.45;max-width:260px;}
+.rate-badge{font-family:'DM Mono',monospace;font-size:11.5px;font-weight:600;color:var(--ink);white-space:nowrap;}
+.gpa-cell{font-family:'DM Mono',monospace;font-size:11px;min-width:115px;color:var(--ink-muted);}
+
+/* FEEDBACK CARDS (REPUTATION, RANK, INTERNSHIPS, JOB CHANCE) */
+.feedback-card{font-size:11px;line-height:1.42;min-width:200px;display:flex;flex-direction:column;gap:4px;}
+.feedback-card.fb-not-offered{color:var(--ink-faint);font-style:italic;}
+.fb-row{color:var(--ink);}
+.fb-row strong{color:var(--ink);font-weight:600;}
+.fb-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;padding:1px 6px;border-radius:3px;font-weight:600;white-space:nowrap;}
+.fb-rank{background:var(--gold-light);color:#7a5a04;border:1px solid #eddca4;}
+.fb-outcome{color:#1a4a8a;background:#f0f4fa;padding:3px 6px;border-radius:3px;border-left:2px solid var(--blue);margin-top:2px;font-size:10.5px;}
+
+.rationale-text{font-size:11px;color:var(--ink);line-height:1.42;min-width:160px;}
 
 /* COPY ALERT */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;font-family:'DM Mono',monospace;font-size:12px;padding:10px 18px;border-radius:var(--radius);box-shadow:0 4px 14px rgba(0,0,0,0.2);display:none;z-index:999;align-items:center;gap:8px;}
 
 /* FOOTER NOTE */
 .disclaimer{font-size:11px;color:var(--ink-faint);border-top:1px solid var(--border);padding-top:1.25rem;line-height:1.6;font-family:'DM Mono',monospace;}
+
 </style>
 </head>
 <body>
@@ -119,42 +142,63 @@ tbody td{padding:12px 10px;border-bottom:1px solid #eeebe2;vertical-align:top;co
 
 <header>
   <div>
-    <div class="header-title">UC &amp; CSU Engineering <em>Admissions &amp; Major Strategy</em> <span class="version-badge">v1.0</span></div>
-    <div class="header-sub">9 Undergraduate UCs · Top 10 CSU Engineering Schools · Mechanical vs Civil Engineering · 4.10 GPA Strategy</div>
+    <div class="header-title">UC &amp; CSU Engineering <em>Admissions &amp; Major Strategy</em> <span class="version-badge">v2.1</span></div>
+    <div class="header-sub" id="headerSub">9 Undergraduate UCs · Top 10 CSU Engineering Schools · 4.20 GPA Strategy Active</div>
   </div>
   <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-    <a href="../taxable-investment-planner.html" class="v-link" title="Open Taxable Investment Planner">📈 Investment Planner</a>
-    <a href="../index.html" class="v-link" title="Open Roth Conversion Planner">← Roth Planner (v3)</a>
+    <a href="college-admissions-4.10.html" class="v-link">📄 4.10 Page</a>
+    <a href="college-admissions-4.15.html" class="v-link">📄 4.15 Page</a>
+    <a href="college-admissions-4.20.html" class="v-link">📄 4.20 Page</a>
     <div style="text-align:right;font-size:11px;color:var(--ink-faint);font-family:'DM Mono',monospace;line-height:1.4;">Official Institutional &amp;<br>US News Ranking Data</div>
   </div>
 </header>
 
-<!-- KPI SUMMARY CARDS -->
-<div class="kpi-grid">
-  <div class="kpi kpi-blue">
-    <div class="kpi-label">Campuses Included</div>
-    <div class="kpi-value">19 Schools</div>
-    <div class="kpi-sub">9 UC Campuses · Top 10 CSUs</div>
+<!-- INTERACTIVE SCENARIO SELECTOR BAR -->
+<div class="scenario-bar">
+  <div class="scenario-selector">
+    <span class="scenario-title">🎯 Select GPA Scenario:</span>
+    <select id="gpaDropdown" class="gpa-dropdown" onchange="onDropdownGPAChange(this.value)">
+      <option value="4.10">4.10 GPA — Conservative / Civil Hedge Strategy</option>
+      <option value="4.15">4.15 GPA — Strategic Pivot (ME Opens at Davis/UCI/CPP/SDSU)</option>
+      <option value="4.20" selected>4.20 GPA — Upper Quartile / Direct ME Aggressive</option>
+    </select>
+    
+    <div class="scenario-buttons">
+      <button class="scenario-btn" data-gpa="4.10" onclick="setGPAScenario('4.10', this)">4.10 GPA</button>
+      <button class="scenario-btn" data-gpa="4.15" onclick="setGPAScenario('4.15', this)">4.15 GPA</button>
+      <button class="scenario-btn active" data-gpa="4.20" onclick="setGPAScenario('4.20', this)">4.20 GPA</button>
+    </div>
   </div>
-  <div class="kpi kpi-gold">
-    <div class="kpi-label">Strategy Profile</div>
-    <div class="kpi-value">4.10 GPA</div>
-    <div class="kpi-sub">Core Subject Weighted Target</div>
+
+  <div class="scenario-meta-links">
+    <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--ink-muted);">Dedicated Standalones:</span>
+    <a href="college-admissions-4.10.html" class="v-link">4.10 Report ↗</a>
+    <a href="college-admissions-4.15.html" class="v-link">4.15 Report ↗</a>
+    <a href="college-admissions-4.20.html" class="v-link">4.20 Report ↗</a>
+  </div>
+</div>
+
+<!-- DYNAMIC KPI SUMMARY CARDS -->
+<div class="kpi-grid">
+  <div class="kpi kpi-accent">
+    <div class="kpi-label">Active Scenario</div>
+    <div class="kpi-value" id="kpiGpaVal">4.20 GPA</div>
+    <div class="kpi-sub" id="kpiGpaSub">Upper Quartile · Aggressive ME Track</div>
   </div>
   <div class="kpi kpi-teal">
-    <div class="kpi-label">Highest Admit Major</div>
-    <div class="kpi-value">Civil Eng.</div>
-    <div class="kpi-sub">1.5× to 2.5× higher odds vs ME</div>
+    <div class="kpi-label">Strategic Major Pivot</div>
+    <div class="kpi-value" id="kpiPivotVal">Mechanical Opens</div>
+    <div class="kpi-sub" id="kpiPivotSub">Viable at Davis, UCI, Pomona, SDSU, SJSU</div>
   </div>
-  <div class="kpi kpi-accent">
-    <div class="kpi-label">#1 Programs In Nation</div>
+  <div class="kpi kpi-gold">
+    <div class="kpi-label">Flagship High-Value Hedge</div>
     <div class="kpi-value">Berkeley &amp; SLO</div>
     <div class="kpi-sub">UCB (Nat'l #1 CE) · SLO (Non-Doc #1 CE)</div>
   </div>
   <div class="kpi kpi-purple">
-    <div class="kpi-label">Selectivity Tiers</div>
-    <div class="kpi-value">4 Reach · 7 Target</div>
-    <div class="kpi-sub">8 High-Certainty / Safety Schools</div>
+    <div class="kpi-label">Selectivity Breakdown</div>
+    <div class="kpi-value" id="kpiTiersVal">3 Reach · 11 Target</div>
+    <div class="kpi-sub" id="kpiTiersSub">5 High-Certainty / Safety Schools</div>
   </div>
 </div>
 
@@ -162,9 +206,9 @@ tbody td{padding:12px 10px;border-bottom:1px solid #eeebe2;vertical-align:top;co
 <div class="banner">
   <div class="banner-badge">Strategic Takeaway</div>
   <div class="banner-body">
-    <div class="banner-title">Why Civil Engineering Is the Optimal Selection for 4.10 GPA Candidates</div>
-    <div class="banner-desc">
-      Across both UC and CSU systems, Mechanical Engineering admissions are intensely congested by aerospace and automotive applicants, creating single-digit admit rates (e.g. UCLA 3.9%, Cal Poly SLO 5–8%, UC Berkeley 7–9%). In contrast, Civil Engineering offers almost double the admission odds (UCLA 7.6%, Cal Poly SLO 12–15%, UC Davis 30–35%) while holding <strong>#1 national ranking prestige</strong> at UC Berkeley and Cal Poly SLO.
+    <div class="banner-title" id="bannerTitle">4.20 Strategy: High Confidence — Mechanical Is Realistic Across Targets; Civil Secures Flagships</div>
+    <div class="banner-desc" id="bannerDesc">
+      At 4.20+, your student enters the competitive middle 50% for UC Berkeley and Cal Poly SLO, and comfortably hits the upper quartile for UCSD, UC Davis, UC Irvine, and top CSUs. Mechanical Engineering can be selected with high confidence across almost all mid-tier and regional campuses. For Berkeley and SLO, Civil remains a game-changer if seeking maximum admission odds into the nation's #1 ranked programs.
     </div>
   </div>
 </div>
@@ -185,17 +229,17 @@ tbody td{padding:12px 10px;border-bottom:1px solid #eeebe2;vertical-align:top;co
     </div>
 
     <div class="filter-group">
-      <span class="filter-label">Recommended Major:</span>
-      <button class="pill-btn active" data-filter="major" data-val="all" onclick="setMajorFilter('all', this)">All</button>
+      <span class="filter-label">Filter Major:</span>
+      <button class="pill-btn active" data-filter="major" data-val="all" onclick="setMajorFilter('all', this)">All (19)</button>
       <button class="pill-btn" data-filter="major" data-val="Civil" onclick="setMajorFilter('Civil', this)">Civil Eng</button>
       <button class="pill-btn" data-filter="major" data-val="Mechanical" onclick="setMajorFilter('Mechanical', this)">Mechanical Eng</button>
       <button class="pill-btn" data-filter="major" data-val="Either" onclick="setMajorFilter('Either', this)">Either / Safe</button>
-      <button class="pill-btn" data-filter="major" data-val="Alt" onclick="setMajorFilter('Alt', this)">Alternatives</button>
+      <button class="pill-btn" data-filter="major" data-val="None" onclick="setMajorFilter('None', this)">Not Offered</button>
     </div>
 
     <div class="action-btns">
-      <button class="action-btn" onclick="copyTableTSV()" title="Copy formatted table to paste into Google Sheets or Excel">📋 Copy to Sheet</button>
-      <button class="action-btn" onclick="downloadCSV()" title="Download raw CSV file">📥 Download CSV</button>
+      <button class="action-btn" onclick="copyTableTSV()" title="Copy active table to paste into Google Sheets or Excel">📋 Copy Active to Sheet</button>
+      <button class="action-btn" onclick="downloadActiveCSV()" title="Download active GPA scenario as CSV">📥 Download Active CSV</button>
       <button class="action-btn" onclick="resetFilters()">↺ Reset</button>
     </div>
   </div>
@@ -216,11 +260,11 @@ tbody td{padding:12px 10px;border-bottom:1px solid #eeebe2;vertical-align:top;co
           <th onclick="sortTable('overall')">Overall Admit <span class="sort-arrow" id="sort-overall">↕</span></th>
           <th onclick="sortTable('gpa')">Recommended GPA (W / UW) <span class="sort-arrow" id="sort-gpa">↕</span></th>
           <th onclick="sortTable('me')">Mechanical Eng. Admit &amp; Rank <span class="sort-arrow" id="sort-me">↕</span></th>
-          <th>Known for ME? / Details</th>
+          <th>Mechanical Program Feedback (Rank, Internships, Job Chance)</th>
           <th onclick="sortTable('ce')">Civil Eng. Admit &amp; Rank <span class="sort-arrow" id="sort-ce">↕</span></th>
-          <th>Known for CE? / Details</th>
-          <th onclick="sortTable('rec')">Rec. Major (4.10 GPA) <span class="sort-arrow" id="sort-rec">↕</span></th>
-          <th>Strategic Rationale (4.10 GPA)</th>
+          <th>Civil Program Feedback (Rank, Internships, Job Chance)</th>
+          <th onclick="sortTable('rec')" id="thRecMajor">Rec. Major (4.20 GPA) <span class="sort-arrow" id="sort-rec">↕</span></th>
+          <th id="thRationale">Strategic Rationale (4.20 GPA)</th>
         </tr>
       </thead>
       <tbody id="tableBody">
@@ -231,394 +275,884 @@ tbody td{padding:12px 10px;border-bottom:1px solid #eeebe2;vertical-align:top;co
 </div>
 
 <div class="disclaimer">
-  <strong>Data Sources &amp; Notes:</strong> Admission statistics reflect latest institutional common datasets (Fall 2023–2024 cycles) and UC Infocenter / CSU Impaction data. Engineering national rankings reference U.S. News &amp; World Report (Ph.D.-granting Doctoral institutions for UCs; Non-Doctoral category for CSUs like Cal Poly SLO, Pomona, Long Beach). GPA ranges refer to UC capped weighted (10–11th grade) / CSU eligibility index.
+  <strong>Data Sources &amp; Program Notes:</strong> Admission statistics reflect latest institutional common datasets (Fall 2023–2024 cycles) and UC Infocenter / CSU Impaction data. Engineering national rankings reference U.S. News &amp; World Report (Ph.D.-granting Doctoral institutions for UCs; Non-Doctoral category for CSUs like Cal Poly SLO, Pomona, Long Beach). GPA ranges refer to UC capped weighted (10–11th grade) / CSU eligibility index.
 </div>
 
 </div>
 
 <!-- TOAST NOTIFICATION -->
-<div id="toast" class="toast">✓ Copied table to clipboard! Ready to paste into Google Sheets.</div>
+<div id="toast" class="toast">✓ Copied active table to clipboard! Ready to paste into Google Sheets.</div>
 
 <script>
-const collegeData = [
-  {
-    name: "UC Berkeley",
-    system: "UC",
-    rankNum: 1,
-    url: "https://www.berkeley.edu",
-    overallRate: "~11%",
-    overallNum: 11,
-    gpaRange: "4.20 - 4.30+ (3.92 - 4.00)",
-    gpaMin: 4.20,
-    meRate: "~7% - 9% (Nat'l #3)",
-    meNum: 8,
-    meKnown: "Yes (Global Elite) - Robotics, MEMS, fluid dynamics, energy systems.",
-    ceRate: "~10% - 13% (Nat'l #1)",
-    ceNum: 11.5,
-    ceKnown: "Yes (#1 in US) - Benchmark for seismic, structural, geotechnical.",
-    recMajor: "Civil Engineering",
-    recKey: "Civil",
-    rationale: "Civil offers noticeably higher statistical odds and is the #1 program in the country."
-  },
-  {
-    name: "UCLA",
-    system: "UC",
-    rankNum: 2,
-    url: "https://www.ucla.edu",
-    overallRate: "~9%",
-    overallNum: 9,
-    gpaRange: "4.25 - 4.31+ (3.95 - 4.00)",
-    gpaMin: 4.25,
-    meRate: "~3.9% (Nat'l #11)",
-    meNum: 3.9,
-    meKnown: "Yes (Elite) - Prime feeder for SoCal aerospace (SpaceX, Boeing, Northrop).",
-    ceRate: "~7.6% (Nat'l #14)",
-    ceNum: 7.6,
-    ceKnown: "Yes (Elite) - Major feeder for structural design and water infrastructure.",
-    recMajor: "Civil Engineering",
-    recKey: "Civil",
-    rationale: "Nearly doubles your odds compared to ME (7.6% vs 3.9%)."
-  },
-  {
-    name: "UC San Diego",
-    system: "UC",
-    rankNum: 3,
-    url: "https://ucsd.edu",
-    overallRate: "~24%",
-    overallNum: 24,
-    gpaRange: "4.15 - 4.28+ (3.88 - 4.00)",
-    gpaMin: 4.15,
-    meRate: "~12% - 16% (Nat'l #17)",
-    meNum: 14,
-    meKnown: "Yes (Top-Tier) - Elite research in controls, robotics, aerospace ME.",
-    ceRate: "~18% - 22% (Structural #5)",
-    ceNum: 20,
-    ceKnown: "Yes (World-Renowned) - Famous dedicated Structural Eng. dept. and giant shake table.",
-    recMajor: "Civil / Structural Engineering",
-    recKey: "Civil",
-    rationale: "4.10 is in competitive window; Civil/Structural gives ~18-22% admit rate vs 12% in ME."
-  },
-  {
-    name: "UC Davis",
-    system: "UC",
-    rankNum: 4,
-    url: "https://www.ucdavis.edu",
-    overallRate: "~42%",
-    overallNum: 42,
-    gpaRange: "4.05 - 4.25+ (3.80 - 3.95)",
-    gpaMin: 4.05,
-    meRate: "~20% - 26% (Nat'l #29)",
-    meNum: 23,
-    meKnown: "Yes (Strong) - Vehicle dynamics, aeronautics, agricultural automation.",
-    ceRate: "~30% - 35% (Nat'l #11)",
-    ceNum: 32.5,
-    ceKnown: "Yes (National Leader) - Top-tier (#11 in US) for water resources, transit, environmental civil.",
-    recMajor: "Civil Engineering",
-    recKey: "Civil",
-    rationale: "High probability target. A 4.10 is well within middle 50% for Civil (~35% admit rate)."
-  },
-  {
-    name: "UC Santa Barbara",
-    system: "UC",
-    rankNum: 5,
-    url: "https://www.ucsb.edu",
-    overallRate: "~26%",
-    overallNum: 26,
-    gpaRange: "4.15 - 4.28+ (3.85 - 4.00)",
-    gpaMin: 4.15,
-    meRate: "~10% - 14% (Nat'l #28)",
-    meNum: 12,
-    meKnown: "Yes (Top-Tier) - World-renowned research in materials science and microfluidics.",
-    ceRate: "Not Offered",
-    ceNum: 0,
-    ceKnown: "Not Offered (Close Alt: Environmental Studies B.S. or Chemical Eng.)",
-    recMajor: "Mechanical Engineering",
-    recKey: "Mechanical",
-    rationale: "Only direct engineering option between the two; reasonable reach/target (~10-14%)."
-  },
-  {
-    name: "UC Irvine",
-    system: "UC",
-    rankNum: 6,
-    url: "https://uci.edu",
-    overallRate: "~26%",
-    overallNum: 26,
-    gpaRange: "4.08 - 4.25+ (3.82 - 3.98)",
-    gpaMin: 4.08,
-    meRate: "~12% - 15% (Nat'l #37)",
-    meNum: 13.5,
-    meKnown: "Yes (Strong Regional) - Solid industry placement across Orange County aerospace & auto.",
-    ceRate: "~20% - 25% (Nat'l #36)",
-    ceNum: 22.5,
-    ceKnown: "Yes (Strong Regional) - High local placement with regional transit and water districts.",
-    recMajor: "Civil Engineering",
-    recKey: "Civil",
-    rationale: "4.10 aligns with median. Civil provides ~20-25% admit rate vs ~12% for ME."
-  },
-  {
-    name: "UC Riverside",
-    system: "UC",
-    rankNum: 7,
-    url: "https://www.ucr.edu",
-    overallRate: "~70%",
-    overallNum: 70,
-    gpaRange: "3.80 - 4.12+ (3.55 - 3.85)",
-    gpaMin: 3.80,
-    meRate: "~45% - 55% (Nat'l #72)",
-    meNum: 50,
-    meKnown: "Moderate - Solid regional program; focus on clean energy and nanomaterials.",
-    ceRate: "Not Offered (Env. Only)",
-    ceNum: 0,
-    ceKnown: "Not Offered (Close Alt: Environmental Eng. B.S. - ABET accredited)",
-    recMajor: "Mechanical Engineering",
-    recKey: "Mechanical",
-    rationale: "Near-safety. 4.10 is well above median; ME has ~50% admit rate (Civil not offered)."
-  },
-  {
-    name: "UC Santa Cruz",
-    system: "UC",
-    rankNum: 8,
-    url: "https://www.ucsc.edu",
-    overallRate: "~62%",
-    overallNum: 62,
-    gpaRange: "3.85 - 4.15+ (3.60 - 3.90)",
-    gpaMin: 3.85,
-    meRate: "Not Offered",
-    meNum: 0,
-    meKnown: "Not Offered (Close Alt: Robotics Eng. B.S. - mechanical & mechatronics focus)",
-    ceRate: "Not Offered",
-    ceNum: 0,
-    ceKnown: "Not Offered (Close Alt: Environmental Sciences B.S. or Earth Sciences)",
-    recMajor: "Robotics Engineering (Alt)",
-    recKey: "Alt",
-    rationale: "Neither traditional ME nor CE offered. Robotics is closest ME alternative."
-  },
-  {
-    name: "UC Merced",
-    system: "UC",
-    rankNum: 9,
-    url: "https://www.ucmerced.edu",
-    overallRate: "~93%",
-    overallNum: 93,
-    gpaRange: "3.50 - 3.90+ (3.30 - 3.70)",
-    gpaMin: 3.50,
-    meRate: "~75% - 82% (Nat'l #128)",
-    meNum: 78.5,
-    meKnown: "Emerging / Regional - Solar thermal systems and regional manufacturing.",
-    ceRate: "~80% - 86% (Nat'l #135)",
-    ceNum: 83,
-    ceKnown: "Emerging / Regional - Central Valley water management and infrastructure.",
-    recMajor: "Either (Civil = Safety)",
-    recKey: "Either",
-    rationale: "4.10 is virtual guaranteed admit for both. Pick Civil for 80%+ certainty."
-  },
-  {
-    name: "Cal Poly San Luis Obispo",
-    system: "CSU",
-    rankNum: 10,
-    csuRank: "CSU #1",
-    url: "https://www.calpoly.edu",
-    overallRate: "~29%",
-    overallNum: 29,
-    gpaRange: "4.15 - 4.25+ (3.92 - 4.00)",
-    gpaMin: 4.15,
-    meRate: "~5% - 8% (Non-Doc #2)",
-    meNum: 6.5,
-    meKnown: "Yes (Premier Powerhouse) - On par with top UCs; premier feeder for aerospace & tech.",
-    ceRate: "~12% - 15% (Non-Doc #1)",
-    ceNum: 13.5,
-    ceKnown: "Yes (#1 Undergrad in US) - Tied for #1 nationwide; top hiring preference across CA.",
-    recMajor: "Civil Engineering",
-    recKey: "Civil",
-    rationale: "Crucial choice. SLO ME median is 4.20+ (5-8% admit). Civil is 12-15% and ranked #1 in US."
-  },
-  {
-    name: "Cal Poly Pomona",
-    system: "CSU",
-    rankNum: 11,
-    csuRank: "CSU #2",
-    url: "https://www.cpp.edu",
-    overallRate: "~55%",
-    overallNum: 55,
-    gpaRange: "3.90 - 4.18+ (3.65 - 3.90)",
-    gpaMin: 3.90,
-    meRate: "~25% - 30% (Non-Doc #8)",
-    meNum: 27.5,
-    meKnown: "Yes (High Prestige) - Major recruiting engine for defense, aerospace, heavy industry.",
-    ceRate: "~30% - 35% (Non-Doc #5)",
-    ceNum: 32.5,
-    ceKnown: "Yes (High Prestige) - Massive pipeline into LADWP, Caltrans, county public works.",
-    recMajor: "Civil Engineering",
-    recKey: "Civil",
-    rationale: "4.10 is comfortably above average; Civil gives higher safety margin (~35% vs 25%)."
-  },
-  {
-    name: "San Jose State University",
-    system: "CSU",
-    rankNum: 12,
-    csuRank: "CSU #3",
-    url: "https://www.sjsu.edu",
-    overallRate: "~84%",
-    overallNum: 84,
-    gpaRange: "3.75 - 4.10+ (Math GPA: 3.8+)",
-    gpaMin: 3.75,
-    meRate: "Impacted (~30%) (Nat'l #120)",
-    meNum: 30,
-    meKnown: "Yes (Silicon Valley Hub) - Major pipeline to Apple, Tesla, Applied Materials.",
-    ceRate: "Impacted (~35%) (Nat'l #130)",
-    ceNum: 35,
-    ceKnown: "Yes (High Regional) - Major supplier of civil engineers for Bay Area infrastructure.",
-    recMajor: "Either (Civil = Safer)",
-    recKey: "Either",
-    rationale: "4.10 clears impaction for both. Civil is slightly safer if math GPA is closer to 3.8."
-  },
-  {
-    name: "San Diego State University",
-    system: "CSU",
-    rankNum: 13,
-    csuRank: "CSU #4",
-    url: "https://www.sdsu.edu",
-    overallRate: "~34%",
-    overallNum: 34,
-    gpaRange: "3.85 - 4.15+ (3.65 - 3.90)",
-    gpaMin: 3.85,
-    meRate: "~20% - 25% (Nat'l #105)",
-    meNum: 22.5,
-    meKnown: "Yes (Regional Leader) - Top supplier for San Diego defense, navy, bio-devices.",
-    ceRate: "~25% - 30% (Nat'l #95)",
-    ceNum: 27.5,
-    ceKnown: "Yes (Regional Leader) - Dominant in San Diego municipal infrastructure & coastal civil.",
-    recMajor: "Civil Engineering",
-    recKey: "Civil",
-    rationale: "4.10 is well above median. Civil offers the highest probability (~30%)."
-  },
-  {
-    name: "CSU Long Beach",
-    system: "CSU",
-    rankNum: 14,
-    csuRank: "CSU #5",
-    url: "https://www.csulb.edu",
-    overallRate: "~40%",
-    overallNum: 40,
-    gpaRange: "3.80 - 4.12+ (3.60 - 3.88)",
-    gpaMin: 3.80,
-    meRate: "~22% - 28% (Non-Doc #18)",
-    meNum: 25,
-    meKnown: "Yes (High Regional) - Historic ties to aerospace corridor and marine engineering.",
-    ceRate: "~30% - 35% (Non-Doc #16)",
-    ceNum: 32.5,
-    ceKnown: "Yes (Strong) - Known for structural/transit design and port infrastructure.",
-    recMajor: "Civil Engineering",
-    recKey: "Civil",
-    rationale: "4.10 makes CSULB a strong target for Civil (~35% admit rate vs 22% for ME)."
-  },
-  {
-    name: "CSU Sacramento",
-    system: "CSU",
-    rankNum: 15,
-    csuRank: "CSU #6",
-    url: "https://www.csus.edu",
-    overallRate: "~82%",
-    overallNum: 82,
-    gpaRange: "3.40 - 3.85+ (3.25 - 3.65)",
-    gpaMin: 3.40,
-    meRate: "Impacted (~45%) (Non-Doc #38)",
-    meNum: 45,
-    meKnown: "Moderate - Solid regional program tied to local equipment manufacturers.",
-    ceRate: "Impacted (~50%) (Non-Doc #25)",
-    ceNum: 50,
-    ceKnown: "Yes (Standout for State Civil) - Direct pipeline into Caltrans HQ and Dept. of Water Resources.",
-    recMajor: "Civil Engineering",
-    recKey: "Civil",
-    rationale: "Best Match. 4.10 is an easy admit, and Sac State has unmatched state government civil pipeline."
-  },
-  {
-    name: "CSU Fullerton",
-    system: "CSU",
-    rankNum: 16,
-    csuRank: "CSU #7",
-    url: "https://www.fullerton.edu",
-    overallRate: "~67%",
-    overallNum: 67,
-    gpaRange: "3.55 - 3.95+ (3.35 - 3.75)",
-    gpaMin: 3.55,
-    meRate: "~40% - 48% (Non-Doc #40)",
-    meNum: 44,
-    meKnown: "Moderate - Practical education tied to local Orange County manufacturing.",
-    ceRate: "~48% - 55% (Non-Doc #32)",
-    ceNum: 51.5,
-    ceKnown: "Moderate - Reliable pipeline for local public works and commercial building.",
-    recMajor: "Either (Civil = Safest)",
-    recKey: "Either",
-    rationale: "4.10 is well above engineering median; both safe, Civil offers ~55% odds."
-  },
-  {
-    name: "CSU Northridge",
-    system: "CSU",
-    rankNum: 17,
-    csuRank: "CSU #8",
-    url: "https://www.csun.edu",
-    overallRate: "~88%",
-    overallNum: 88,
-    gpaRange: "3.30 - 3.75+ (3.15 - 3.55)",
-    gpaMin: 3.30,
-    meRate: "Impacted (~55%) (Non-Doc #45)",
-    meNum: 55,
-    meKnown: "Yes (Strong Hands-On) - Competitive Formula SAE race team and local aerospace ties.",
-    ceRate: "Impacted (~60%) (Non-Doc #35)",
-    ceNum: 60,
-    ceKnown: "Moderate - Solid reputation for municipal public works and structural engineering.",
-    recMajor: "Either (Safe)",
-    recKey: "Either",
-    rationale: "4.10 clears impaction for both comfortably."
-  },
-  {
-    name: "Fresno State",
-    system: "CSU",
-    rankNum: 18,
-    csuRank: "CSU #9",
-    url: "https://www.fresnostate.edu",
-    overallRate: "~95%",
-    overallNum: 95,
-    gpaRange: "3.30 - 3.70+ (3.15 - 3.50)",
-    gpaMin: 3.30,
-    meRate: "Impacted (~60%) (Non-Doc #48)",
-    meNum: 60,
-    meKnown: "Moderate - Focus on agricultural equipment and processing machinery.",
-    ceRate: "Impacted (~65%) (Non-Doc #36)",
-    ceNum: 65,
-    ceKnown: "Yes (Central Valley Leader) - Dominates regional water infrastructure, canals, highways.",
-    recMajor: "Civil Engineering",
-    recKey: "Civil",
-    rationale: "Safe for both with 4.10; Civil is the standout star program in Central Valley."
-  },
-  {
-    name: "CSU Los Angeles",
-    system: "CSU",
-    rankNum: 19,
-    csuRank: "CSU #10",
-    url: "https://www.calstatela.edu",
-    overallRate: "~87%",
-    overallNum: 87,
-    gpaRange: "3.30 - 3.75+ (3.15 - 3.50)",
-    gpaMin: 3.30,
-    meRate: "Impacted (~55%) (Non-Doc #52)",
-    meNum: 55,
-    meKnown: "Moderate - Capstone clinic with direct project ties to NASA JPL and aerospace.",
-    ceRate: "Impacted (~60%) (Non-Doc #42)",
-    ceNum: 60,
-    ceKnown: "Moderate - Pipeline into LA County Public Works and transit projects.",
-    recMajor: "Either (Safe)",
-    recKey: "Either",
-    rationale: "4.10 clears all impaction thresholds for either major."
-  }
-];
-
+let currentGPA = '4.20';
 let currentSystemFilter = 'all';
 let currentMajorFilter = 'all';
 let currentSearch = '';
 let currentSortCol = 'rankNum';
 let currentSortAsc = true;
+
+const scenarioMeta = {
+  "4.10": {
+    label: "4.10 GPA",
+    sub: "Conservative Baseline · Civil Hedge Strategy",
+    pivotVal: "Civil Hedge",
+    pivotSub: "1.5× to 2.5× higher odds vs ME",
+    tiers: "4 Reach · 7 Target",
+    tiersSub: "8 High-Certainty / Safety Schools",
+    bannerTitle: "4.10 Strategy: Civil Engineering Is the Optimal Selection Across Most Campuses",
+    bannerDesc: "At 4.10, Mechanical Engineering admissions are intensely congested with single-digit acceptance rates at top campuses (UCLA 3.9%, Cal Poly SLO 5–8%, UC Berkeley 7–9%). Civil Engineering nearly doubles admission odds (UCLA 7.6%, Cal Poly SLO 12–15%, UC Davis 30–35%) while holding #1 national ranking prestige at UC Berkeley and Cal Poly SLO."
+  },
+  "4.15": {
+    label: "4.15 GPA",
+    sub: "Competitive Pivot · ME Opens at Mid-Tier UCs & CSUs",
+    pivotVal: "ME Opens at Targets",
+    pivotSub: "Viable at Davis, UCI, Pomona & SDSU",
+    tiers: "4 Reach · 9 Target",
+    tiersSub: "6 High-Certainty / Safety Schools",
+    bannerTitle: "4.15 Strategy: Strategic Flexibility — Mechanical Becomes Viable at Key Targets",
+    bannerDesc: "At 4.15, your student comfortably matches the 25th–50th percentile for UC Davis, UC Irvine, Cal Poly Pomona, and SDSU. Mechanical Engineering becomes a realistic, strong target at these schools. Civil Engineering remains the high-leverage hedge for top reaches (UC Berkeley, UCLA, Cal Poly SLO)."
+  },
+  "4.20": {
+    label: "4.20 GPA",
+    sub: "Upper Quartile · Aggressive ME Track",
+    pivotVal: "Mechanical Opens",
+    pivotSub: "Viable at Davis, UCI, Pomona, SDSU, SJSU",
+    tiers: "3 Reach · 11 Target",
+    tiersSub: "5 High-Certainty / Safety Schools",
+    bannerTitle: "4.20 Strategy: High Confidence — Mechanical Is Realistic Across Targets; Civil Secures Flagships",
+    bannerDesc: "At 4.20+, your student enters the competitive middle 50% for UC Berkeley and Cal Poly SLO, and comfortably hits the upper quartile for UCSD, UC Davis, UC Irvine, and top CSUs. Mechanical Engineering can be selected with high confidence across almost all mid-tier and regional campuses. For Berkeley and SLO, Civil remains a game-changer if seeking maximum admission odds into the nation's #1 ranked programs."
+  }
+};
+
+const collegeData = [
+  {
+    "name": "UC Berkeley",
+    "system": "UC",
+    "rankNum": 1,
+    "url": "https://www.berkeley.edu",
+    "overallRate": "~11%",
+    "overallNum": 11,
+    "gpaRange": "4.20 - 4.30+ (3.92 - 4.00)",
+    "gpaMin": 4.2,
+    "meRate": "~7% - 9% (Nat'l #3)",
+    "meNum": 8,
+    "meRank": "Nat'l #3 (US News Doctoral)",
+    "meKnownFor": "Robotics, MEMS, autonomous systems, AI hardware, renewable energy",
+    "meInternships": "Apple, Tesla, Google Hardware, Lawrence Berkeley Lab, NASA Ames, Applied Materials",
+    "meJobChance": "93%+ in 6 mos \u00b7 $98k\u2013$118k avg start \u00b7 Direct Silicon Valley tech feeder",
+    "ceRate": "~10% - 13% (Nat'l #1)",
+    "ceNum": 11.5,
+    "ceRank": "Nat'l #1 in US (World Leader)",
+    "ceKnownFor": "PEER Earthquake Center, smart structural design, sustainable environmental transit",
+    "ceInternships": "Arup, Jacobs, AECOM, DPR Construction, Webcor, USGS, Caltrans HQ, SF Public Works",
+    "ceJobChance": "95%+ in 6 mos \u00b7 $85k\u2013$102k avg start \u00b7 92% FE pass rate \u00b7 Instant industry hire",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "Clear Reach. At 4.10, ME is an extreme longshot (~7%). Civil (#1 in US) provides ~1.5x higher odds (~10-13%) and is the only realistic entry point."
+      },
+      "4.15": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "Competitive Reach. Still below Berkeley CoE 25th percentile (4.20). Civil remains essential to avoid ME's single-digit filter."
+      },
+      "4.20": {
+        "recMajor": "Civil Engineering (or ME Reach)",
+        "recKey": "Civil",
+        "rationale": "Enters Berkeley's middle 50% (4.20-4.30). Civil remains #1 in the US with ~10-13% odds, but ME is now approachable as a high-rigor reach."
+      }
+    },
+    "meKnown": "\u2605 Rank: Nat'l #3 (US News Doctoral) | Known For: Robotics, MEMS, autonomous systems, AI hardware, renewable energy | Intern/Industry: Apple, Tesla, Google Hardware, Lawrence Berkeley Lab, NASA Ames, Applied Materials | Job Placement: 93%+ in 6 mos \u00b7 $98k\u2013$118k avg start \u00b7 Direct Silicon Valley tech feeder",
+    "ceKnown": "\u2605 Rank: Nat'l #1 in US (World Leader) | Known For: PEER Earthquake Center, smart structural design, sustainable environmental transit | Intern/Industry: Arup, Jacobs, AECOM, DPR Construction, Webcor, USGS, Caltrans HQ, SF Public Works | Job Placement: 95%+ in 6 mos \u00b7 $85k\u2013$102k avg start \u00b7 92% FE pass rate \u00b7 Instant industry hire"
+  },
+  {
+    "name": "UCLA",
+    "system": "UC",
+    "rankNum": 2,
+    "url": "https://www.ucla.edu",
+    "overallRate": "~9%",
+    "overallNum": 9,
+    "gpaRange": "4.25 - 4.31+ (3.95 - 4.00)",
+    "gpaMin": 4.25,
+    "meRate": "~3.9% (Nat'l #11)",
+    "meNum": 3.9,
+    "meRank": "Nat'l #11 (US News Doctoral)",
+    "meKnownFor": "Aerospace propulsion, biomechanics, thermal fluids, autonomous robotics",
+    "meInternships": "SpaceX, Boeing, Northrop Grumman, NASA JPL, Raytheon, Lockheed Martin",
+    "meJobChance": "91%+ in 6 mos \u00b7 $90k\u2013$112k avg start \u00b7 Prime SoCal aerospace corridor recruiter",
+    "ceRate": "~7.6% (Nat'l #14)",
+    "ceNum": 7.6,
+    "ceRank": "Nat'l #14 (US News Doctoral)",
+    "ceKnownFor": "Earthquake engineering, hydrology & water resources, smart urban infrastructure",
+    "ceInternships": "LADWP, LA Metro, Parsons, Black & Veatch, Burns & McDonnell, HNTB, KPFF",
+    "ceJobChance": "92%+ in 6 mos \u00b7 $82k\u2013$98k avg start \u00b7 Top-tier regional infrastructure demand",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "Hard Reach. UCLA ME is brutally impacted at 3.9%. Civil nearly doubles acceptance probability to ~7.6%."
+      },
+      "4.15": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "Hard Reach. Still well below UCLA engineering median (4.25+). Civil remains mandatory if applying to UCLA to avoid ME's single-digit filter."
+      },
+      "4.20": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "Reach. Even at 4.20, ME at 3.9% is an extreme lottery. Civil (~7.6%) remains by far the smarter tactical play into Samueli Engineering."
+      }
+    },
+    "meKnown": "\u2605 Rank: Nat'l #11 (US News Doctoral) | Known For: Aerospace propulsion, biomechanics, thermal fluids, autonomous robotics | Intern/Industry: SpaceX, Boeing, Northrop Grumman, NASA JPL, Raytheon, Lockheed Martin | Job Placement: 91%+ in 6 mos \u00b7 $90k\u2013$112k avg start \u00b7 Prime SoCal aerospace corridor recruiter",
+    "ceKnown": "\u2605 Rank: Nat'l #14 (US News Doctoral) | Known For: Earthquake engineering, hydrology & water resources, smart urban infrastructure | Intern/Industry: LADWP, LA Metro, Parsons, Black & Veatch, Burns & McDonnell, HNTB, KPFF | Job Placement: 92%+ in 6 mos \u00b7 $82k\u2013$98k avg start \u00b7 Top-tier regional infrastructure demand"
+  },
+  {
+    "name": "UC San Diego",
+    "system": "UC",
+    "rankNum": 3,
+    "url": "https://ucsd.edu",
+    "overallRate": "~24%",
+    "overallNum": 24,
+    "gpaRange": "4.15 - 4.28+ (3.88 - 4.00)",
+    "gpaMin": 4.15,
+    "meRate": "~12% - 16% (Nat'l #17)",
+    "meNum": 14,
+    "meRank": "Nat'l #17 (US News Doctoral)",
+    "meKnownFor": "Controls, robotics (Contextual Robotics Inst.), marine/ocean tech, renewable energy",
+    "meInternships": "Qualcomm, General Atomics, Solar Turbines, Northrop Grumman, Illumina, Dexcom",
+    "meJobChance": "89%+ in 6 mos \u00b7 $86k\u2013$106k avg start \u00b7 High hiring in robotics & defense",
+    "ceRate": "~18% - 22% (Structural #5)",
+    "ceNum": 20,
+    "ceRank": "Structural #5 in US",
+    "ceKnownFor": "Englekirk Structural Testing (world's largest outdoor shake table), seismic & aerospace composites",
+    "ceInternships": "Degenkolb, KPFF, Caltrans District 11, General Dynamics NASSCO, Walter P Moore, Arup",
+    "ceJobChance": "92%+ in 6 mos \u00b7 $82k\u2013$98k avg start \u00b7 Renowned nationwide for advanced structural design",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Civil / Structural Engineering",
+        "recKey": "Civil",
+        "rationale": "Competitive window boundary. Structural (#5 in US) gives ~18-22% admit rate vs ~12% in ME, providing critical buffer."
+      },
+      "4.15": {
+        "recMajor": "Structural Engineering (or ME Target)",
+        "recKey": "Civil",
+        "rationale": "Hits the 25th percentile (4.15). Structural is still recommended for safety (~20%), but ME (~14%) is now approachable."
+      },
+      "4.20": {
+        "recMajor": "Either (Mechanical or Structural)",
+        "recKey": "Either",
+        "rationale": "Solid Target. 4.20 puts applicant comfortably in UCSD's competitive core. Confidently select Mechanical (~14%) or Structural (~20%)."
+      }
+    },
+    "meKnown": "\u2605 Rank: Nat'l #17 (US News Doctoral) | Known For: Controls, robotics (Contextual Robotics Inst.), marine/ocean tech, renewable energy | Intern/Industry: Qualcomm, General Atomics, Solar Turbines, Northrop Grumman, Illumina, Dexcom | Job Placement: 89%+ in 6 mos \u00b7 $86k\u2013$106k avg start \u00b7 High hiring in robotics & defense",
+    "ceKnown": "\u2605 Rank: Structural #5 in US | Known For: Englekirk Structural Testing (world's largest outdoor shake table), seismic & aerospace composites | Intern/Industry: Degenkolb, KPFF, Caltrans District 11, General Dynamics NASSCO, Walter P Moore, Arup | Job Placement: 92%+ in 6 mos \u00b7 $82k\u2013$98k avg start \u00b7 Renowned nationwide for advanced structural design"
+  },
+  {
+    "name": "UC Davis",
+    "system": "UC",
+    "rankNum": 4,
+    "url": "https://www.ucdavis.edu",
+    "overallRate": "~42%",
+    "overallNum": 42,
+    "gpaRange": "4.05 - 4.25+ (3.80 - 3.95)",
+    "gpaMin": 4.05,
+    "meRate": "~20% - 26% (Nat'l #29)",
+    "meNum": 23,
+    "meRank": "Nat'l #29 (US News Doctoral)",
+    "meKnownFor": "Vehicle dynamics (top Formula SAE team), aeronautics, mechatronics, ag-tech automation",
+    "meInternships": "Tesla, Chevron, Siemens Mobility, SMUD, Keysight Technologies, Bay Area hardware",
+    "meJobChance": "88%+ in 6 mos \u00b7 $82k\u2013$98k avg start \u00b7 Excellent mobility in automotive & clean tech",
+    "ceRate": "~30% - 35% (Nat'l #11)",
+    "ceNum": 32.5,
+    "ceRank": "Nat'l #11 (US News Doctoral)",
+    "ceKnownFor": "Water resources, environmental civil, hydrology, transportation (Institute of Transportation Studies)",
+    "ceInternships": "Caltrans HQ, CA Dept of Water Resources, US Army Corps of Engineers, Stantec, Brown & Caldwell",
+    "ceJobChance": "93%+ in 6 mos \u00b7 $80k\u2013$95k avg start \u00b7 Unmatched pipeline into CA water & transit agencies",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "High-probability target. 4.10 is well within middle 50% for Civil (~35% admit rate vs ~20-25% for ME)."
+      },
+      "4.15": {
+        "recMajor": "Either (Mechanical or Civil)",
+        "recKey": "Either",
+        "rationale": "Strong Target. 4.15 exceeds median. Student can confidently apply to Mechanical (~25%) without needing Civil as a defensive hedge."
+      },
+      "4.20": {
+        "recMajor": "Either (Student's Choice)",
+        "recKey": "Either",
+        "rationale": "Solid Target / Likely. 4.20 is at Davis 75th percentile. Direct mechanical admission is highly favorable (>80% confidence)."
+      }
+    },
+    "meKnown": "\u2605 Rank: Nat'l #29 (US News Doctoral) | Known For: Vehicle dynamics (top Formula SAE team), aeronautics, mechatronics, ag-tech automation | Intern/Industry: Tesla, Chevron, Siemens Mobility, SMUD, Keysight Technologies, Bay Area hardware | Job Placement: 88%+ in 6 mos \u00b7 $82k\u2013$98k avg start \u00b7 Excellent mobility in automotive & clean tech",
+    "ceKnown": "\u2605 Rank: Nat'l #11 (US News Doctoral) | Known For: Water resources, environmental civil, hydrology, transportation (Institute of Transportation Studies) | Intern/Industry: Caltrans HQ, CA Dept of Water Resources, US Army Corps of Engineers, Stantec, Brown & Caldwell | Job Placement: 93%+ in 6 mos \u00b7 $80k\u2013$95k avg start \u00b7 Unmatched pipeline into CA water & transit agencies"
+  },
+  {
+    "name": "UC Santa Barbara",
+    "system": "UC",
+    "rankNum": 5,
+    "url": "https://www.ucsb.edu",
+    "overallRate": "~26%",
+    "overallNum": 26,
+    "gpaRange": "4.15 - 4.28+ (3.85 - 4.00)",
+    "gpaMin": 4.15,
+    "meRate": "~10% - 14% (Nat'l #29)",
+    "meNum": 12,
+    "meRank": "Nat'l #29 (US News Doctoral)",
+    "meKnownFor": "Materials science synergy, microfluidics, MEMS, ocean engineering, controls",
+    "meInternships": "Raytheon Vision Systems, Teledyne FLIR, Northrop Grumman, Karl Storz, defense labs",
+    "meJobChance": "88%+ in 6 mos \u00b7 $84k\u2013$102k avg start \u00b7 High graduate school & defense placement",
+    "ceRate": "Not Offered",
+    "ceNum": 0,
+    "ceRank": "Not Offered",
+    "ceKnownFor": "Civil Engineering is NOT offered at UCSB (CoE offers ME, EE, CE, Chemical, Bio & Materials)",
+    "ceInternships": "N/A",
+    "ceJobChance": "N/A",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Mechanical Engineering",
+        "recKey": "Mechanical",
+        "rationale": "Selective Reach. Civil is not offered at UCSB. ME (~12% admit) is the only available pathway."
+      },
+      "4.15": {
+        "recMajor": "Mechanical Engineering",
+        "recKey": "Mechanical",
+        "rationale": "Target-Reach. Hits 25th percentile for UCSB Engineering. Mechanical is the sole relevant option."
+      },
+      "4.20": {
+        "recMajor": "Mechanical Engineering",
+        "recKey": "Mechanical",
+        "rationale": "Solid Target. 4.20 puts student in UCSB's middle 50% for Mechanical Engineering."
+      }
+    },
+    "meKnown": "\u2605 Rank: Nat'l #29 (US News Doctoral) | Known For: Materials science synergy, microfluidics, MEMS, ocean engineering, controls | Intern/Industry: Raytheon Vision Systems, Teledyne FLIR, Northrop Grumman, Karl Storz, defense labs | Job Placement: 88%+ in 6 mos \u00b7 $84k\u2013$102k avg start \u00b7 High graduate school & defense placement",
+    "ceKnown": "Not Offered (Civil Engineering is NOT offered at UCSB (CoE offers ME, EE, CE, Chemical, Bio & Materials))"
+  },
+  {
+    "name": "UC Irvine",
+    "system": "UC",
+    "rankNum": 6,
+    "url": "https://uci.edu",
+    "overallRate": "~26%",
+    "overallNum": 26,
+    "gpaRange": "4.08 - 4.25+ (3.82 - 3.98)",
+    "gpaMin": 4.08,
+    "meRate": "~12% - 15% (Nat'l #37)",
+    "meNum": 13.5,
+    "meRank": "Nat'l #37 (US News Doctoral)",
+    "meKnownFor": "Combustion/fuel cells (Nat'l Fuel Cell Research Ctr), aerospace, automotive, medical device hardware",
+    "meInternships": "Rivian, Edwards Lifesciences, Medtronic, Broadcom, Parker Aerospace, Blizzard, Western Digital",
+    "meJobChance": "87%+ in 6 mos \u00b7 $80k\u2013$98k avg start \u00b7 Thriving Irvine tech & medical device corridor",
+    "ceRate": "~20% - 25% (Nat'l #36)",
+    "ceNum": 22.5,
+    "ceRank": "Nat'l #36 (US News Doctoral)",
+    "ceKnownFor": "Urban water systems, earthquake structural analysis, transportation modeling & planning",
+    "ceInternships": "OCTA, Irvine Company, Kimley-Horn, Michael Baker Int'l, Sukut, OC Public Works",
+    "ceJobChance": "89%+ in 6 mos \u00b7 $78k\u2013$92k avg start \u00b7 High Orange County infrastructure & land development demand",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "4.10 aligns with lower quartile. Civil provides ~20-25% admit rate vs ~12% for ME."
+      },
+      "4.15": {
+        "recMajor": "Either (Mechanical or Civil)",
+        "recKey": "Either",
+        "rationale": "Solid Target. 4.15 hits UCI Engineering median. Student can realistically apply for Mechanical (~15%), though Civil is safer (~22%)."
+      },
+      "4.20": {
+        "recMajor": "Either (Mechanical Preferred)",
+        "recKey": "Either",
+        "rationale": "Strong Target / Likely. 4.20 is comfortably in the top tier of UCI applicants. Apply directly to Mechanical without hesitation."
+      }
+    },
+    "meKnown": "\u2605 Rank: Nat'l #37 (US News Doctoral) | Known For: Combustion/fuel cells (Nat'l Fuel Cell Research Ctr), aerospace, automotive, medical device hardware | Intern/Industry: Rivian, Edwards Lifesciences, Medtronic, Broadcom, Parker Aerospace, Blizzard, Western Digital | Job Placement: 87%+ in 6 mos \u00b7 $80k\u2013$98k avg start \u00b7 Thriving Irvine tech & medical device corridor",
+    "ceKnown": "\u2605 Rank: Nat'l #36 (US News Doctoral) | Known For: Urban water systems, earthquake structural analysis, transportation modeling & planning | Intern/Industry: OCTA, Irvine Company, Kimley-Horn, Michael Baker Int'l, Sukut, OC Public Works | Job Placement: 89%+ in 6 mos \u00b7 $78k\u2013$92k avg start \u00b7 High Orange County infrastructure & land development demand"
+  },
+  {
+    "name": "UC Riverside",
+    "system": "UC",
+    "rankNum": 7,
+    "url": "https://www.ucr.edu",
+    "overallRate": "~70%",
+    "overallNum": 70,
+    "gpaRange": "3.80 - 4.12+ (3.55 - 3.85)",
+    "gpaMin": 3.8,
+    "meRate": "~45% - 55% (Nat'l #72)",
+    "meNum": 50,
+    "meRank": "Nat'l #72 (US News Doctoral)",
+    "meKnownFor": "CE-CERT (Center for Environmental Research & Tech), emissions, nanomaterials, renewable energy",
+    "meInternships": "Naval Surface Warfare Center (Corona), Bourns Inc., Riverside County, local manufacturing",
+    "meJobChance": "82%+ in 6 mos \u00b7 $74k\u2013$88k avg start \u00b7 Solid Inland Empire defense & manufacturing base",
+    "ceRate": "Not Offered",
+    "ceNum": 0,
+    "ceRank": "Not Offered",
+    "ceKnownFor": "Civil Engineering is NOT offered at UCR (Bourns offers Environmental Engineering, Nat'l #48)",
+    "ceInternships": "N/A",
+    "ceJobChance": "N/A",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Mechanical Engineering",
+        "recKey": "Mechanical",
+        "rationale": "Near-safety. 4.10 is near the 75th percentile (4.12); ME has ~50% admit rate."
+      },
+      "4.15": {
+        "recMajor": "Mechanical Engineering",
+        "recKey": "Mechanical",
+        "rationale": "Academic Safety. 4.15 exceeds top quartile; ME is an academic safety (>55%)."
+      },
+      "4.20": {
+        "recMajor": "Mechanical Engineering",
+        "recKey": "Mechanical",
+        "rationale": "High-Certainty Safety. 4.20 far exceeds UCR medians; virtually guaranteed engineering admission."
+      }
+    },
+    "meKnown": "\u2605 Rank: Nat'l #72 (US News Doctoral) | Known For: CE-CERT (Center for Environmental Research & Tech), emissions, nanomaterials, renewable energy | Intern/Industry: Naval Surface Warfare Center (Corona), Bourns Inc., Riverside County, local manufacturing | Job Placement: 82%+ in 6 mos \u00b7 $74k\u2013$88k avg start \u00b7 Solid Inland Empire defense & manufacturing base",
+    "ceKnown": "Not Offered (Civil Engineering is NOT offered at UCR (Bourns offers Environmental Engineering, Nat'l #48))"
+  },
+  {
+    "name": "UC Santa Cruz",
+    "system": "UC",
+    "rankNum": 8,
+    "url": "https://www.ucsc.edu",
+    "overallRate": "~62%",
+    "overallNum": 62,
+    "gpaRange": "3.85 - 4.15+ (3.60 - 3.90)",
+    "gpaMin": 3.85,
+    "meRate": "Not Offered",
+    "meNum": 0,
+    "meRank": "Not Offered",
+    "meKnownFor": "Neither ME nor CE offered (Baskin School specializes in Robotics, Computer & Electrical Eng.)",
+    "meInternships": "N/A for ME/CE (Robotics feeds Tesla, Amazon Robotics, autonomous vehicle startups)",
+    "meJobChance": "N/A for ME/CE",
+    "ceRate": "Not Offered",
+    "ceNum": 0,
+    "ceRank": "Not Offered",
+    "ceKnownFor": "Civil Engineering is NOT offered at UCSC (Closest is Environmental Sciences / Earth Sciences)",
+    "ceInternships": "N/A",
+    "ceJobChance": "N/A",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Neither Offered",
+        "recKey": "None",
+        "rationale": "Neither Mechanical nor Civil Engineering is offered at UC Santa Cruz (Baskin only offers Robotics, Electrical, and Computer Engineering)."
+      },
+      "4.15": {
+        "recMajor": "Neither Offered",
+        "recKey": "None",
+        "rationale": "Neither Mechanical nor Civil Engineering is offered at UC Santa Cruz (Baskin only offers Robotics, Electrical, and Computer Engineering)."
+      },
+      "4.20": {
+        "recMajor": "Neither Offered",
+        "recKey": "None",
+        "rationale": "Neither Mechanical nor Civil Engineering is offered at UC Santa Cruz (Baskin only offers Robotics, Electrical, and Computer Engineering)."
+      }
+    },
+    "meKnown": "Not Offered (Focus: Neither ME nor CE offered (Baskin School specializes in Robotics, Computer & Electrical Eng.))",
+    "ceKnown": "Not Offered (Civil Engineering is NOT offered at UCSC (Closest is Environmental Sciences / Earth Sciences))"
+  },
+  {
+    "name": "UC Merced",
+    "system": "UC",
+    "rankNum": 9,
+    "url": "https://www.ucmerced.edu",
+    "overallRate": "~93%",
+    "overallNum": 93,
+    "gpaRange": "3.50 - 3.90+ (3.30 - 3.70)",
+    "gpaMin": 3.5,
+    "meRate": "~75% - 82% (Nat'l #128)",
+    "meNum": 78.5,
+    "meRank": "Nat'l #128 (US News Doctoral)",
+    "meKnownFor": "Solar thermal systems, drone robotics, agricultural machinery, sustainable energy",
+    "meInternships": "E. & J. Gallo, Foster Farms, Central Valley irrigation equipment, Caltrans District 10",
+    "meJobChance": "78%+ in 6 mos \u00b7 $70k\u2013$84k avg start \u00b7 High demand across Central Valley agribusiness",
+    "ceRate": "~80% - 86% (Nat'l #135)",
+    "ceNum": 83,
+    "ceRank": "Nat'l #135 (US News Doctoral)",
+    "ceKnownFor": "Central Valley water management, flood resilience, sustainable infrastructure design",
+    "ceInternships": "CA Dept of Water Resources, Granite Construction, Teichert, regional irrigation districts",
+    "ceJobChance": "80%+ in 6 mos \u00b7 $70k\u2013$82k avg start \u00b7 Urgent regional hiring for water conveyance & roads",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Either (Civil = Safety)",
+        "recKey": "Either",
+        "rationale": "Safety. 4.10 is well above 75th percentile; pick Civil for 80%+ certainty."
+      },
+      "4.15": {
+        "recMajor": "Either (Safety)",
+        "recKey": "Either",
+        "rationale": "Guaranteed Safety. Guaranteed admit for either major (>85%)."
+      },
+      "4.20": {
+        "recMajor": "Either (Safety)",
+        "recKey": "Either",
+        "rationale": "Guaranteed Safety. Guaranteed admit for either major (>90%)."
+      }
+    },
+    "meKnown": "\u2605 Rank: Nat'l #128 (US News Doctoral) | Known For: Solar thermal systems, drone robotics, agricultural machinery, sustainable energy | Intern/Industry: E. & J. Gallo, Foster Farms, Central Valley irrigation equipment, Caltrans District 10 | Job Placement: 78%+ in 6 mos \u00b7 $70k\u2013$84k avg start \u00b7 High demand across Central Valley agribusiness",
+    "ceKnown": "\u2605 Rank: Nat'l #135 (US News Doctoral) | Known For: Central Valley water management, flood resilience, sustainable infrastructure design | Intern/Industry: CA Dept of Water Resources, Granite Construction, Teichert, regional irrigation districts | Job Placement: 80%+ in 6 mos \u00b7 $70k\u2013$82k avg start \u00b7 Urgent regional hiring for water conveyance & roads"
+  },
+  {
+    "name": "Cal Poly San Luis Obispo",
+    "system": "CSU",
+    "rankNum": 10,
+    "csuRank": "CSU #1",
+    "url": "https://www.calpoly.edu",
+    "overallRate": "~29%",
+    "overallNum": 29,
+    "gpaRange": "4.15 - 4.25+ (3.92 - 4.00)",
+    "gpaMin": 4.15,
+    "meRate": "~5% - 8% (Non-Doc #2)",
+    "meNum": 6.5,
+    "meRank": "Non-Doc #2 in US (Premier)",
+    "meKnownFor": "Legendary 'Learn by Doing' hands-on engineering, massive machine shops, top Formula SAE / Supermileage teams",
+    "meInternships": "Apple, Tesla, SpaceX, Boeing, Northrop Grumman, Lockheed Martin, Lawrence Livermore Lab",
+    "meJobChance": "96%+ in 6 mos \u00b7 $88k\u2013$105k avg start \u00b7 Highest CSU starting salary; employers prioritize SLO grads",
+    "ceRate": "~12% - 15% (Non-Doc #1)",
+    "ceNum": 13.5,
+    "ceRank": "Non-Doc #1 in US (Tied #1)",
+    "ceKnownFor": "Tied for #1 undergrad civil in US; structural design, ASCE national champion in Concrete Canoe & Bridge",
+    "ceInternships": "DPR Construction, Webcor, Whiting-Turner, Hensel Phelps, Kimley-Horn, Arup, Caltrans",
+    "ceJobChance": "98%+ in 6 mos \u00b7 $82k\u2013$96k avg start \u00b7 92%+ FE exam pass rate \u00b7 Highest career certainty in CA",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "Crucial choice. SLO ME median is 4.20+ (5-8% admit). Civil is 12-15% and ranked #1 in US."
+      },
+      "4.15": {
+        "recMajor": "Civil Engineering (Preferred)",
+        "recKey": "Civil",
+        "rationale": "4.15 hits 25th percentile. Civil (#1 in US) offers ~13-15% admit rate vs ~6% for ME; Civil remains far superior strategic bet."
+      },
+      "4.20": {
+        "recMajor": "Civil Engineering (or ME Reach)",
+        "recKey": "Civil",
+        "rationale": "4.20 meets the median for SLO Engineering. Civil gives 2x the odds (~14% vs ~6%) for #1 ranked program, but ME is now viable as a reach."
+      }
+    },
+    "meKnown": "\u2605 Rank: Non-Doc #2 in US (Premier) | Known For: Legendary 'Learn by Doing' hands-on engineering, massive machine shops, top Formula SAE / Supermileage teams | Intern/Industry: Apple, Tesla, SpaceX, Boeing, Northrop Grumman, Lockheed Martin, Lawrence Livermore Lab | Job Placement: 96%+ in 6 mos \u00b7 $88k\u2013$105k avg start \u00b7 Highest CSU starting salary; employers prioritize SLO grads",
+    "ceKnown": "\u2605 Rank: Non-Doc #1 in US (Tied #1) | Known For: Tied for #1 undergrad civil in US; structural design, ASCE national champion in Concrete Canoe & Bridge | Intern/Industry: DPR Construction, Webcor, Whiting-Turner, Hensel Phelps, Kimley-Horn, Arup, Caltrans | Job Placement: 98%+ in 6 mos \u00b7 $82k\u2013$96k avg start \u00b7 92%+ FE exam pass rate \u00b7 Highest career certainty in CA"
+  },
+  {
+    "name": "Cal Poly Pomona",
+    "system": "CSU",
+    "rankNum": 11,
+    "csuRank": "CSU #2",
+    "url": "https://www.cpp.edu",
+    "overallRate": "~55%",
+    "overallNum": 55,
+    "gpaRange": "3.90 - 4.18+ (3.65 - 3.90)",
+    "gpaMin": 3.9,
+    "meRate": "~25% - 30% (Non-Doc #8)",
+    "meNum": 27.5,
+    "meRank": "Non-Doc #8 in US",
+    "meKnownFor": "Hands-on engineering, Liquid Rocket Lab, Rose Float tradition, Baja SAE; day-one work-ready reputation",
+    "meInternships": "NASA JPL, Northrop Grumman, Boeing, Raytheon, Southern California Edison, Parker Hannifin",
+    "meJobChance": "92%+ in 6 mos \u00b7 $78k\u2013$94k avg start \u00b7 Exceptional ROI; dominant recruiting across Greater LA",
+    "ceRate": "~30% - 35% (Non-Doc #5)",
+    "ceNum": 32.5,
+    "ceRank": "Non-Doc #5 in US",
+    "ceKnownFor": "Structural, geotechnical, water resources, construction engineering management",
+    "ceInternships": "LADWP, Caltrans Districts 7 & 8, Metropolitan Water District (MWD), Clark Construction, Flatiron, Kiewit",
+    "ceJobChance": "94%+ in 6 mos \u00b7 $76k\u2013$90k avg start \u00b7 #1 supplier of civil engineers to SoCal public infrastructure",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "4.10 is comfortably above average; Civil gives higher safety margin (~35% vs 25%)."
+      },
+      "4.15": {
+        "recMajor": "Either (Mechanical or Civil)",
+        "recKey": "Either",
+        "rationale": "Strong Target. 4.15 approaches the 75th percentile; student can confidently apply to Mechanical (~30%)."
+      },
+      "4.20": {
+        "recMajor": "Either (Mechanical Preferred)",
+        "recKey": "Either",
+        "rationale": "Likely / Near-Safety. 4.20 clears 75th percentile for CPP Engineering; choose Mechanical without safety concerns."
+      }
+    },
+    "meKnown": "\u2605 Rank: Non-Doc #8 in US | Known For: Hands-on engineering, Liquid Rocket Lab, Rose Float tradition, Baja SAE; day-one work-ready reputation | Intern/Industry: NASA JPL, Northrop Grumman, Boeing, Raytheon, Southern California Edison, Parker Hannifin | Job Placement: 92%+ in 6 mos \u00b7 $78k\u2013$94k avg start \u00b7 Exceptional ROI; dominant recruiting across Greater LA",
+    "ceKnown": "\u2605 Rank: Non-Doc #5 in US | Known For: Structural, geotechnical, water resources, construction engineering management | Intern/Industry: LADWP, Caltrans Districts 7 & 8, Metropolitan Water District (MWD), Clark Construction, Flatiron, Kiewit | Job Placement: 94%+ in 6 mos \u00b7 $76k\u2013$90k avg start \u00b7 #1 supplier of civil engineers to SoCal public infrastructure"
+  },
+  {
+    "name": "San Jose State University",
+    "system": "CSU",
+    "rankNum": 12,
+    "csuRank": "CSU #3",
+    "url": "https://www.sjsu.edu",
+    "overallRate": "~84%",
+    "overallNum": 84,
+    "gpaRange": "3.75 - 4.10+ (Math GPA: 3.8+)",
+    "gpaMin": 3.75,
+    "meRate": "Impacted (~30%) (Nat'l #120)",
+    "meNum": 30,
+    "meRank": "Non-Doc #16 / Nat'l #120",
+    "meKnownFor": "Silicon Valley's #1 workforce engine; mechatronics, semiconductor capital equipment, electronics packaging",
+    "meInternships": "Apple, Tesla, Applied Materials, Lam Research, Cisco, Intel, KLA, Western Digital",
+    "meJobChance": "91%+ in 6 mos \u00b7 $85k\u2013$102k avg start \u00b7 Tech-hub salaries; unmatched Silicon Valley hiring volume",
+    "ceRate": "Impacted (~35%) (Nat'l #130)",
+    "ceNum": 35,
+    "ceRank": "Nat'l #130 / High Regional",
+    "ceKnownFor": "Seismic structural design, municipal transit, water distribution systems",
+    "ceInternships": "VTA, City of San Jose, Caltrans District 4, BKF Engineers, Granite, Mark Thomas",
+    "ceJobChance": "90%+ in 6 mos \u00b7 $78k\u2013$92k avg start \u00b7 High demand for Bay Area transit & infrastructure expansion",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Either (Civil = Safer)",
+        "recKey": "Either",
+        "rationale": "4.10 clears impaction for both. Civil is slightly safer if math GPA is closer to 3.8."
+      },
+      "4.15": {
+        "recMajor": "Either (Mechanical = High Prob.)",
+        "recKey": "Either",
+        "rationale": "Likely. 4.15 clears impaction index comfortably for both majors."
+      },
+      "4.20": {
+        "recMajor": "Either (Mechanical = High Prob.)",
+        "recKey": "Either",
+        "rationale": "Academic Safety. 4.20 clears all historical impaction cutoffs with large point buffers."
+      }
+    },
+    "meKnown": "\u2605 Rank: Non-Doc #16 / Nat'l #120 | Known For: Silicon Valley's #1 workforce engine; mechatronics, semiconductor capital equipment, electronics packaging | Intern/Industry: Apple, Tesla, Applied Materials, Lam Research, Cisco, Intel, KLA, Western Digital | Job Placement: 91%+ in 6 mos \u00b7 $85k\u2013$102k avg start \u00b7 Tech-hub salaries; unmatched Silicon Valley hiring volume",
+    "ceKnown": "\u2605 Rank: Nat'l #130 / High Regional | Known For: Seismic structural design, municipal transit, water distribution systems | Intern/Industry: VTA, City of San Jose, Caltrans District 4, BKF Engineers, Granite, Mark Thomas | Job Placement: 90%+ in 6 mos \u00b7 $78k\u2013$92k avg start \u00b7 High demand for Bay Area transit & infrastructure expansion"
+  },
+  {
+    "name": "San Diego State University",
+    "system": "CSU",
+    "rankNum": 13,
+    "csuRank": "CSU #4",
+    "url": "https://www.sdsu.edu",
+    "overallRate": "~34%",
+    "overallNum": 34,
+    "gpaRange": "3.85 - 4.15+ (3.65 - 3.90)",
+    "gpaMin": 3.85,
+    "meRate": "~20% - 25% (Nat'l #105)",
+    "meNum": 22.5,
+    "meRank": "Nat'l #105 (US News Doctoral)",
+    "meKnownFor": "Aerospace systems, bio-mechanical devices, energy/thermal systems, dynamics",
+    "meInternships": "Naval Information Warfare Center (NIWC), General Atomics, Solar Turbines, Collins Aerospace",
+    "meJobChance": "86%+ in 6 mos \u00b7 $76k\u2013$90k avg start \u00b7 Direct hiring into San Diego defense & navy base",
+    "ceRate": "~25% - 30% (Nat'l #95)",
+    "ceNum": 27.5,
+    "ceRank": "Nat'l #95 (US News Doctoral)",
+    "ceKnownFor": "Coastal engineering, water & wastewater management, urban transportation",
+    "ceInternships": "City of San Diego, SANDAG, Rick Engineering, Kleinfelder, Caltrans District 11, KPFF",
+    "ceJobChance": "90%+ in 6 mos \u00b7 $74k\u2013$88k avg start \u00b7 Dominant placement across San Diego municipal agencies",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "4.10 is well above median. Civil offers the highest probability (~30% vs ~20%)."
+      },
+      "4.15": {
+        "recMajor": "Either (Mechanical or Civil)",
+        "recKey": "Either",
+        "rationale": "Strong Target. 4.15 reaches 75th percentile; Mechanical (~25%) is now a solid, realistic option."
+      },
+      "4.20": {
+        "recMajor": "Either (Mechanical Preferred)",
+        "recKey": "Either",
+        "rationale": "Likely / Near-Safety. 4.20 exceeds the top quartile; high confidence for direct Mechanical admission."
+      }
+    },
+    "meKnown": "\u2605 Rank: Nat'l #105 (US News Doctoral) | Known For: Aerospace systems, bio-mechanical devices, energy/thermal systems, dynamics | Intern/Industry: Naval Information Warfare Center (NIWC), General Atomics, Solar Turbines, Collins Aerospace | Job Placement: 86%+ in 6 mos \u00b7 $76k\u2013$90k avg start \u00b7 Direct hiring into San Diego defense & navy base",
+    "ceKnown": "\u2605 Rank: Nat'l #95 (US News Doctoral) | Known For: Coastal engineering, water & wastewater management, urban transportation | Intern/Industry: City of San Diego, SANDAG, Rick Engineering, Kleinfelder, Caltrans District 11, KPFF | Job Placement: 90%+ in 6 mos \u00b7 $74k\u2013$88k avg start \u00b7 Dominant placement across San Diego municipal agencies"
+  },
+  {
+    "name": "CSU Long Beach",
+    "system": "CSU",
+    "rankNum": 14,
+    "csuRank": "CSU #5",
+    "url": "https://www.csulb.edu",
+    "overallRate": "~40%",
+    "overallNum": 40,
+    "gpaRange": "3.80 - 4.12+ (3.60 - 3.88)",
+    "gpaMin": 3.8,
+    "meRate": "~22% - 28% (Non-Doc #18)",
+    "meNum": 25,
+    "meRank": "Non-Doc #18 in US",
+    "meKnownFor": "Aerospace corridor heritage, marine propulsion, automotive engineering, energy systems",
+    "meInternships": "Boeing, Relativity Space, Rocket Lab, Virgin Orbit, Northrop Grumman, Port of Long Beach",
+    "meJobChance": "87%+ in 6 mos \u00b7 $76k\u2013$90k avg start \u00b7 Feeder for Long Beach 'Space Beach' aerospace cluster",
+    "ceRate": "~30% - 35% (Non-Doc #16)",
+    "ceNum": 32.5,
+    "ceRank": "Non-Doc #16 in US",
+    "ceKnownFor": "Port & harbor engineering, earthquake structural engineering, urban water systems",
+    "ceInternships": "Port of Long Beach, Port of LA, LA County Public Works, Jacobs, Moffatt & Nichol",
+    "ceJobChance": "89%+ in 6 mos \u00b7 $75k\u2013$88k avg start \u00b7 Top choice for coastal and port infrastructure",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "4.10 makes CSULB a strong target for Civil (~35% admit rate vs 22% for ME)."
+      },
+      "4.15": {
+        "recMajor": "Either (Mechanical or Civil)",
+        "recKey": "Either",
+        "rationale": "Strong Target / Likely. 4.15 clears impaction threshold; apply to Mechanical (~28%) with confidence."
+      },
+      "4.20": {
+        "recMajor": "Either (Mechanical Preferred)",
+        "recKey": "Either",
+        "rationale": "Likely / Near-Safety. 4.20 provides high probability for either major."
+      }
+    },
+    "meKnown": "\u2605 Rank: Non-Doc #18 in US | Known For: Aerospace corridor heritage, marine propulsion, automotive engineering, energy systems | Intern/Industry: Boeing, Relativity Space, Rocket Lab, Virgin Orbit, Northrop Grumman, Port of Long Beach | Job Placement: 87%+ in 6 mos \u00b7 $76k\u2013$90k avg start \u00b7 Feeder for Long Beach 'Space Beach' aerospace cluster",
+    "ceKnown": "\u2605 Rank: Non-Doc #16 in US | Known For: Port & harbor engineering, earthquake structural engineering, urban water systems | Intern/Industry: Port of Long Beach, Port of LA, LA County Public Works, Jacobs, Moffatt & Nichol | Job Placement: 89%+ in 6 mos \u00b7 $75k\u2013$88k avg start \u00b7 Top choice for coastal and port infrastructure"
+  },
+  {
+    "name": "CSU Sacramento",
+    "system": "CSU",
+    "rankNum": 15,
+    "csuRank": "CSU #6",
+    "url": "https://www.csus.edu",
+    "overallRate": "~82%",
+    "overallNum": 82,
+    "gpaRange": "3.40 - 3.85+ (3.25 - 3.65)",
+    "gpaMin": 3.4,
+    "meRate": "Impacted (~45%) (Non-Doc #38)",
+    "meNum": 45,
+    "meRank": "Non-Doc #38 in US",
+    "meKnownFor": "Applied power generation, HVAC systems, robotics, thermal-fluid dynamics",
+    "meInternships": "SMUD, Siemens Mobility, California ISO, Intel Folsom campus, Aerojet heritage",
+    "meJobChance": "83%+ in 6 mos \u00b7 $72k\u2013$86k avg start \u00b7 Steady regional utility and machinery hiring",
+    "ceRate": "Impacted (~50%) (Non-Doc #25)",
+    "ceNum": 50,
+    "ceRank": "Non-Doc #25 / Nat'l #120",
+    "ceKnownFor": "Standout marquee program for state infrastructure; unrivaled capital connection",
+    "ceInternships": "Caltrans HQ, CA Dept of Water Resources (DWR), CalEPA, Regional San, Granite Construction",
+    "ceJobChance": "92%+ in 6 mos \u00b7 $75k\u2013$88k avg start \u00b7 Highest career security; direct entry to state civil service",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "Best Match. 4.10 is an easy admit, and Sac State has unmatched state government civil pipeline."
+      },
+      "4.15": {
+        "recMajor": "Either (Civil = Premier Pipeline)",
+        "recKey": "Either",
+        "rationale": "Safety. 4.15 is an easy admit for either; Civil remains the flagship program for direct state agency hiring."
+      },
+      "4.20": {
+        "recMajor": "Either (Civil = Premier Pipeline)",
+        "recKey": "Either",
+        "rationale": "Safety. Guaranteed admission level; Civil is standout for state career placement."
+      }
+    },
+    "meKnown": "\u2605 Rank: Non-Doc #38 in US | Known For: Applied power generation, HVAC systems, robotics, thermal-fluid dynamics | Intern/Industry: SMUD, Siemens Mobility, California ISO, Intel Folsom campus, Aerojet heritage | Job Placement: 83%+ in 6 mos \u00b7 $72k\u2013$86k avg start \u00b7 Steady regional utility and machinery hiring",
+    "ceKnown": "\u2605 Rank: Non-Doc #25 / Nat'l #120 | Known For: Standout marquee program for state infrastructure; unrivaled capital connection | Intern/Industry: Caltrans HQ, CA Dept of Water Resources (DWR), CalEPA, Regional San, Granite Construction | Job Placement: 92%+ in 6 mos \u00b7 $75k\u2013$88k avg start \u00b7 Highest career security; direct entry to state civil service"
+  },
+  {
+    "name": "CSU Fullerton",
+    "system": "CSU",
+    "rankNum": 16,
+    "csuRank": "CSU #7",
+    "url": "https://www.fullerton.edu",
+    "overallRate": "~67%",
+    "overallNum": 67,
+    "gpaRange": "3.55 - 3.95+ (3.35 - 3.75)",
+    "gpaMin": 3.55,
+    "meRate": "~40% - 48% (Non-Doc #40)",
+    "meNum": 44,
+    "meRank": "Non-Doc #40 in US",
+    "meKnownFor": "Manufacturing, automation, automotive engineering, thermal design",
+    "meInternships": "Boeing (Huntington Beach), Parker Aerospace, Alcon, local medical equipment makers",
+    "meJobChance": "83%+ in 6 mos \u00b7 $72k\u2013$85k avg start \u00b7 Strong local hiring in Orange County manufacturing",
+    "ceRate": "~48% - 55% (Non-Doc #32)",
+    "ceNum": 51.5,
+    "ceRank": "Non-Doc #32 in US",
+    "ceKnownFor": "Structural design, environmental engineering, geotechnical analysis",
+    "ceInternships": "Orange County Public Works, Caltrans District 12, Sukut Construction, Psomas, Huitt-Zollars",
+    "ceJobChance": "86%+ in 6 mos \u00b7 $72k\u2013$84k avg start \u00b7 Steady placement in OC/Inland Empire land development",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Either (Civil = Safest)",
+        "recKey": "Either",
+        "rationale": "4.10 is well above engineering median; both safe, Civil offers ~55% odds."
+      },
+      "4.15": {
+        "recMajor": "Either (Safety)",
+        "recKey": "Either",
+        "rationale": "Safety. Far above engineering median; both majors are safe."
+      },
+      "4.20": {
+        "recMajor": "Either (Safety)",
+        "recKey": "Either",
+        "rationale": "Safety. Guaranteed admit territory for both majors."
+      }
+    },
+    "meKnown": "\u2605 Rank: Non-Doc #40 in US | Known For: Manufacturing, automation, automotive engineering, thermal design | Intern/Industry: Boeing (Huntington Beach), Parker Aerospace, Alcon, local medical equipment makers | Job Placement: 83%+ in 6 mos \u00b7 $72k\u2013$85k avg start \u00b7 Strong local hiring in Orange County manufacturing",
+    "ceKnown": "\u2605 Rank: Non-Doc #32 in US | Known For: Structural design, environmental engineering, geotechnical analysis | Intern/Industry: Orange County Public Works, Caltrans District 12, Sukut Construction, Psomas, Huitt-Zollars | Job Placement: 86%+ in 6 mos \u00b7 $72k\u2013$84k avg start \u00b7 Steady placement in OC/Inland Empire land development"
+  },
+  {
+    "name": "CSU Northridge",
+    "system": "CSU",
+    "rankNum": 17,
+    "csuRank": "CSU #8",
+    "url": "https://www.csun.edu",
+    "overallRate": "~88%",
+    "overallNum": 88,
+    "gpaRange": "3.30 - 3.75+ (3.15 - 3.55)",
+    "gpaMin": 3.3,
+    "meRate": "Impacted (~55%) (Non-Doc #45)",
+    "meNum": 55,
+    "meRank": "Non-Doc #45 in US",
+    "meKnownFor": "Hands-on vehicle design (Formula SAE 'Matador Motorsports') and aerospace propulsion",
+    "meInternships": "Lockheed Martin Skunk Works (Palmdale), Northrop Grumman, Edwards AFB, Aerojet Rocketdyne",
+    "meJobChance": "84%+ in 6 mos \u00b7 $74k\u2013$88k avg start \u00b7 Excellent placement in Antelope Valley aerospace",
+    "ceRate": "Impacted (~60%) (Non-Doc #35)",
+    "ceNum": 60,
+    "ceRank": "Non-Doc #35 in US",
+    "ceKnownFor": "Seismic retrofit engineering (Northridge earthquake research heritage) and municipal infrastructure",
+    "ceInternships": "City of LA Dept of Building & Safety, LADWP, Caltrans District 7, Stantec, Shimmick",
+    "ceJobChance": "86%+ in 6 mos \u00b7 $72k\u2013$85k avg start \u00b7 Reliable demand across LA municipal & seismic projects",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Either (Safe)",
+        "recKey": "Either",
+        "rationale": "4.10 clears impaction for both comfortably."
+      },
+      "4.15": {
+        "recMajor": "Either (Safety)",
+        "recKey": "Either",
+        "rationale": "4.15 clears impaction easily for both majors."
+      },
+      "4.20": {
+        "recMajor": "Either (Safety)",
+        "recKey": "Either",
+        "rationale": "4.20 exceeds impaction cutoff by nearly 0.5 GPA points."
+      }
+    },
+    "meKnown": "\u2605 Rank: Non-Doc #45 in US | Known For: Hands-on vehicle design (Formula SAE 'Matador Motorsports') and aerospace propulsion | Intern/Industry: Lockheed Martin Skunk Works (Palmdale), Northrop Grumman, Edwards AFB, Aerojet Rocketdyne | Job Placement: 84%+ in 6 mos \u00b7 $74k\u2013$88k avg start \u00b7 Excellent placement in Antelope Valley aerospace",
+    "ceKnown": "\u2605 Rank: Non-Doc #35 in US | Known For: Seismic retrofit engineering (Northridge earthquake research heritage) and municipal infrastructure | Intern/Industry: City of LA Dept of Building & Safety, LADWP, Caltrans District 7, Stantec, Shimmick | Job Placement: 86%+ in 6 mos \u00b7 $72k\u2013$85k avg start \u00b7 Reliable demand across LA municipal & seismic projects"
+  },
+  {
+    "name": "Fresno State",
+    "system": "CSU",
+    "rankNum": 18,
+    "csuRank": "CSU #9",
+    "url": "https://www.fresnostate.edu",
+    "overallRate": "~95%",
+    "overallNum": 95,
+    "gpaRange": "3.30 - 3.70+ (3.15 - 3.50)",
+    "gpaMin": 3.3,
+    "meRate": "Impacted (~60%) (Non-Doc #48)",
+    "meNum": 60,
+    "meRank": "Non-Doc #48 in US",
+    "meKnownFor": "Agricultural machinery, heavy equipment automation, HVAC refrigeration, manufacturing",
+    "meInternships": "Central Valley agribusiness machinery makers, processing plants, irrigation designers, Caltrans D6",
+    "meJobChance": "82%+ in 6 mos \u00b7 $70k\u2013$82k avg start \u00b7 High regional loyalty; immediate Central Valley hiring",
+    "ceRate": "Impacted (~65%) (Non-Doc #36)",
+    "ceNum": 65,
+    "ceRank": "Non-Doc #36 in US",
+    "ceKnownFor": "Regional powerhouse; home to 1 of only 2 ABET-accredited Geomatics/Surveying programs in CA",
+    "ceInternships": "Friant Water Authority, CA High-Speed Rail contractors, Caltrans District 6, Teichert, Mark Thomas",
+    "ceJobChance": "88%+ in 6 mos \u00b7 $72k\u2013$85k avg start \u00b7 Severe regional shortage of civil/surveying engineers",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Civil Engineering",
+        "recKey": "Civil",
+        "rationale": "Safe for both with 4.10; Civil is the standout star program in Central Valley."
+      },
+      "4.15": {
+        "recMajor": "Either (Civil = Standout)",
+        "recKey": "Either",
+        "rationale": "Safe admit for both with 4.15; Civil is the regional star program in Central Valley."
+      },
+      "4.20": {
+        "recMajor": "Either (Civil = Standout)",
+        "recKey": "Either",
+        "rationale": "Safe admit for both with 4.20; Civil is the regional star program in Central Valley."
+      }
+    },
+    "meKnown": "\u2605 Rank: Non-Doc #48 in US | Known For: Agricultural machinery, heavy equipment automation, HVAC refrigeration, manufacturing | Intern/Industry: Central Valley agribusiness machinery makers, processing plants, irrigation designers, Caltrans D6 | Job Placement: 82%+ in 6 mos \u00b7 $70k\u2013$82k avg start \u00b7 High regional loyalty; immediate Central Valley hiring",
+    "ceKnown": "\u2605 Rank: Non-Doc #36 in US | Known For: Regional powerhouse; home to 1 of only 2 ABET-accredited Geomatics/Surveying programs in CA | Intern/Industry: Friant Water Authority, CA High-Speed Rail contractors, Caltrans District 6, Teichert, Mark Thomas | Job Placement: 88%+ in 6 mos \u00b7 $72k\u2013$85k avg start \u00b7 Severe regional shortage of civil/surveying engineers"
+  },
+  {
+    "name": "CSU Los Angeles",
+    "system": "CSU",
+    "rankNum": 19,
+    "csuRank": "CSU #10",
+    "url": "https://www.calstatela.edu",
+    "overallRate": "~87%",
+    "overallNum": 87,
+    "gpaRange": "3.30 - 3.75+ (3.15 - 3.50)",
+    "gpaMin": 3.3,
+    "meRate": "Impacted (~55%) (Non-Doc #52)",
+    "meNum": 55,
+    "meRank": "Non-Doc #52 in US",
+    "meKnownFor": "Automotive engineering (Eco-CAR challenge), thermal/energy systems, industrial manufacturing",
+    "meInternships": "Capstone clinic sponsored by NASA JPL, Boeing, LADWP, Northrop Grumman, local machine shops",
+    "meJobChance": "81%+ in 6 mos \u00b7 $70k\u2013$84k avg start \u00b7 Solid placement in urban LA aerospace & public utility",
+    "ceRate": "Impacted (~60%) (Non-Doc #42)",
+    "ceNum": 60,
+    "ceRank": "Non-Doc #42 in US",
+    "ceKnownFor": "Urban water management, seismic rehabilitation, municipal transportation",
+    "ceInternships": "LA County Dept of Public Works, City of LA Bureau of Engineering, Caltrans District 7",
+    "ceJobChance": "85%+ in 6 mos \u00b7 $72k\u2013$84k avg start \u00b7 High placement into local government civil service",
+    "scenarios": {
+      "4.10": {
+        "recMajor": "Either (Safe)",
+        "recKey": "Either",
+        "rationale": "4.10 clears all impaction thresholds for either major."
+      },
+      "4.15": {
+        "recMajor": "Either (Safety)",
+        "recKey": "Either",
+        "rationale": "4.15 clears all impaction thresholds for either major."
+      },
+      "4.20": {
+        "recMajor": "Either (Safety)",
+        "recKey": "Either",
+        "rationale": "4.20 clears all impaction thresholds for either major."
+      }
+    },
+    "meKnown": "\u2605 Rank: Non-Doc #52 in US | Known For: Automotive engineering (Eco-CAR challenge), thermal/energy systems, industrial manufacturing | Intern/Industry: Capstone clinic sponsored by NASA JPL, Boeing, LADWP, Northrop Grumman, local machine shops | Job Placement: 81%+ in 6 mos \u00b7 $70k\u2013$84k avg start \u00b7 Solid placement in urban LA aerospace & public utility",
+    "ceKnown": "\u2605 Rank: Non-Doc #42 in US | Known For: Urban water management, seismic rehabilitation, municipal transportation | Intern/Industry: LA County Dept of Public Works, City of LA Bureau of Engineering, Caltrans District 7 | Job Placement: 85%+ in 6 mos \u00b7 $72k\u2013$84k avg start \u00b7 High placement into local government civil service"
+  }
+];
+
+function onDropdownGPAChange(val) {
+  const targetBtn = document.querySelector(`.scenario-btn[data-gpa="${val}"]`);
+  setGPAScenario(val, targetBtn);
+}
+
+function setGPAScenario(gpa, btn) {
+  currentGPA = gpa;
+  document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const matchingBtn = document.querySelector(`.scenario-btn[data-gpa="${gpa}"]`);
+    if (matchingBtn) matchingBtn.classList.add('active');
+  }
+  
+  const dropdown = document.getElementById('gpaDropdown');
+  if (dropdown && dropdown.value !== gpa) {
+    dropdown.value = gpa;
+  }
+  
+  const meta = scenarioMeta[gpa];
+  document.getElementById('headerSub').textContent = `9 Undergraduate UCs · Top 10 CSU Engineering Schools · ${meta.label} Strategy Active`;
+  document.getElementById('kpiGpaVal').textContent = meta.label;
+  document.getElementById('kpiGpaSub').textContent = meta.sub;
+  document.getElementById('kpiPivotVal').textContent = meta.pivotVal;
+  document.getElementById('kpiPivotSub').textContent = meta.pivotSub;
+  document.getElementById('kpiTiersVal').textContent = meta.tiers;
+  document.getElementById('kpiTiersSub').textContent = meta.tiersSub;
+  
+  document.getElementById('bannerTitle').textContent = meta.bannerTitle;
+  document.getElementById('bannerDesc').textContent = meta.bannerDesc;
+  
+  document.getElementById('thRecMajor').innerHTML = `Rec. Major (${meta.label}) <span class="sort-arrow" id="sort-rec">↕</span>`;
+  document.getElementById('thRationale').textContent = `Strategic Rationale (${meta.label})`;
+  
+  renderTable();
+}
 
 function renderTable() {
   const tbody = document.getElementById('tableBody');
@@ -628,106 +1162,119 @@ function renderTable() {
     if (currentSystemFilter !== 'all' && item.system !== currentSystemFilter) return false;
     
     // Major filter
+    const activeScen = item.scenarios[currentGPA];
     if (currentMajorFilter !== 'all') {
-      if (currentMajorFilter === 'Civil' && !item.recKey.includes('Civil')) return false;
-      if (currentMajorFilter === 'Mechanical' && !item.recKey.includes('Mechanical')) return false;
-      if (currentMajorFilter === 'Either' && !item.recKey.includes('Either')) return false;
-      if (currentMajorFilter === 'Alt' && !item.recKey.includes('Alt')) return false;
+      if (currentMajorFilter === 'Civil' && !activeScen.recKey.includes('Civil')) return false;
+      if (currentMajorFilter === 'Mechanical' && !activeScen.recKey.includes('Mechanical')) return false;
+      if (currentMajorFilter === 'Either' && !activeScen.recKey.includes('Either')) return false;
+      if (currentMajorFilter === 'None' && !activeScen.recKey.includes('None')) return false;
     }
     
     // Search query
     if (currentSearch.trim() !== '') {
       const q = currentSearch.toLowerCase();
-      const match = item.name.toLowerCase().includes(q) ||
-                    item.system.toLowerCase().includes(q) ||
-                    (item.csuRank && item.csuRank.toLowerCase().includes(q)) ||
-                    item.recMajor.toLowerCase().includes(q) ||
-                    item.meRate.toLowerCase().includes(q) ||
-                    item.ceRate.toLowerCase().includes(q) ||
-                    item.meKnown.toLowerCase().includes(q) ||
-                    item.ceKnown.toLowerCase().includes(q) ||
-                    item.rationale.toLowerCase().includes(q);
-      if (!match) return false;
+      const matchName = item.name.toLowerCase().includes(q);
+      const matchSys = item.system.toLowerCase().includes(q);
+      const matchRec = activeScen.recMajor.toLowerCase().includes(q);
+      const matchKnownMe = item.meKnown.toLowerCase().includes(q);
+      const matchKnownCe = item.ceKnown.toLowerCase().includes(q);
+      return matchName || matchSys || matchRec || matchKnownMe || matchKnownCe;
     }
-    
     return true;
   });
-
+  
   // Sort
   filtered.sort((a, b) => {
-    let valA, valB;
-    switch(currentSortCol) {
-      case 'name':
-        valA = a.name; valB = b.name;
-        return currentSortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
-      case 'system':
-        valA = a.system; valB = b.system;
-        return currentSortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
-      case 'overall':
-        valA = a.overallNum; valB = b.overallNum;
-        break;
-      case 'gpa':
-        valA = a.gpaMin; valB = b.gpaMin;
-        break;
-      case 'me':
-        valA = a.meNum; valB = b.meNum;
-        break;
-      case 'ce':
-        valA = a.ceNum; valB = b.ceNum;
-        break;
-      case 'rec':
-        valA = a.recMajor; valB = b.recMajor;
-        return currentSortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
-      case 'rankNum':
-      default:
-        valA = a.rankNum; valB = b.rankNum;
-        break;
+    let valA = a[currentSortCol];
+    let valB = b[currentSortCol];
+    
+    if (currentSortCol === 'overall') { valA = a.overallNum; valB = b.overallNum; }
+    else if (currentSortCol === 'gpa') { valA = a.gpaMin; valB = b.gpaMin; }
+    else if (currentSortCol === 'me') { valA = a.meNum; valB = b.meNum; }
+    else if (currentSortCol === 'ce') { valA = a.ceNum; valB = b.ceNum; }
+    else if (currentSortCol === 'rec') {
+      valA = a.scenarios[currentGPA].recMajor;
+      valB = b.scenarios[currentGPA].recMajor;
     }
-    if (valA < valB) return currentSortAsc ? -1 : 1;
-    if (valA > valB) return currentSortAsc ? 1 : -1;
-    return 0;
+    
+    if (valA === undefined || valA === null) valA = '';
+    if (valB === undefined || valB === null) valB = '';
+    
+    if (typeof valA === 'string') {
+      return currentSortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    } else {
+      return currentSortAsc ? (valA - valB) : (valB - valA);
+    }
   });
-
+  
+  // Update counter
   document.getElementById('tableCounter').textContent = `Showing ${filtered.length} of ${collegeData.length} campuses`;
-
-  if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:3rem;color:var(--ink-faint);font-family:'DM Mono',monospace;">No matching colleges found. Try adjusting your filters or search term.</td></tr>`;
-    return;
-  }
-
+  
+  // Build HTML
   tbody.innerHTML = filtered.map(item => {
-    const sysTag = item.system === 'UC' 
-      ? `<span class="tag tag-uc">UC</span>` 
-      : `<span class="tag tag-csu">${item.csuRank || 'CSU'}</span>`;
-      
-    let recBadgeClass = 'tag-civil';
-    if (item.recKey === 'Mechanical') recBadgeClass = 'tag-me';
-    else if (item.recKey === 'Either') recBadgeClass = 'tag-either';
-    else if (item.recKey === 'Alt') recBadgeClass = 'tag-alt';
+    const sysTag = item.system === 'UC' ? '<span class="tag tag-uc">UC System</span>' : `<span class="tag tag-csu">${item.csuRank || 'CSU'}</span>`;
+    
+    const activeScen = item.scenarios[currentGPA];
+    let recBadge = '';
+    if (activeScen.recKey.includes('Civil')) {
+      recBadge = `<span class="tag tag-civil">🏗️ ${activeScen.recMajor}</span>`;
+    } else if (activeScen.recKey.includes('Mechanical')) {
+      recBadge = `<span class="tag tag-me">⚙️ ${activeScen.recMajor}</span>`;
+    } else if (activeScen.recKey.includes('Either')) {
+      recBadge = `<span class="tag tag-either">⚖️ ${activeScen.recMajor}</span>`;
+    } else {
+      recBadge = `<span class="tag tag-na">🚫 ${activeScen.recMajor}</span>`;
+    }
+
+    const meCard = item.meNum > 0 ? `
+      <div class="feedback-card">
+        <div class="fb-row"><span class="fb-badge fb-rank">🏛️ ${item.meRank}</span></div>
+        <div class="fb-row"><strong>Known for:</strong> ${item.meKnownFor}</div>
+        <div class="fb-row"><strong>🤝 Intern / Ties:</strong> ${item.meInternships}</div>
+        <div class="fb-row fb-outcome"><strong>💼 Job &amp; Pay:</strong> ${item.meJobChance}</div>
+      </div>
+    ` : `
+      <div class="feedback-card fb-not-offered">
+        <div class="fb-row"><span class="tag tag-na">🚫 Not Offered</span></div>
+        <div class="fb-row">${item.meKnownFor}</div>
+      </div>
+    `;
+
+    const ceCard = item.ceNum > 0 ? `
+      <div class="feedback-card">
+        <div class="fb-row"><span class="fb-badge fb-rank">🏛️ ${item.ceRank}</span></div>
+        <div class="fb-row"><strong>Known for:</strong> ${item.ceKnownFor}</div>
+        <div class="fb-row"><strong>🤝 Intern / Ties:</strong> ${item.ceInternships}</div>
+        <div class="fb-row fb-outcome"><strong>💼 Job &amp; Pay:</strong> ${item.ceJobChance}</div>
+      </div>
+    ` : `
+      <div class="feedback-card fb-not-offered">
+        <div class="fb-row"><span class="tag tag-na">🚫 Not Offered</span></div>
+        <div class="fb-row">${item.ceKnownFor}</div>
+      </div>
+    `;
 
     return `
       <tr>
         <td>
           <div class="campus-cell">
             <span class="campus-name">${item.name}</span>
-            <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="campus-link">
-              Visit official site ↗
-            </a>
+            <a href="${item.url}" target="_blank" rel="noopener" class="campus-link">Official Portal ↗</a>
           </div>
         </td>
         <td>${sysTag}</td>
         <td><span class="rate-badge">${item.overallRate}</span></td>
         <td><div class="gpa-cell">${item.gpaRange}</div></td>
         <td>
-          <span class="rate-badge ${item.meNum < 15 && item.meNum > 0 ? 'color:var(--warn)' : ''}">${item.meRate}</span>
+          <span class="rate-badge">${item.meRate}</span>
         </td>
-        <td><div class="program-desc">${item.meKnown}</div></td>
+        <td>${meCard}</td>
         <td>
           <span class="rate-badge">${item.ceRate}</span>
         </td>
-        <td><div class="program-desc">${item.ceKnown}</div></td>
-        <td><span class="tag ${recBadgeClass}">${item.recMajor}</span></td>
-        <td><div class="rationale-text">${item.rationale}</div></td>
+        <td>${ceCard}</td>
+        <td>${recBadge}</td>
+        <td><div class="rationale-text">${activeScen.rationale}</div></td>
       </tr>
     `;
   }).join('');
@@ -756,12 +1303,10 @@ function resetFilters() {
   currentSystemFilter = 'all';
   currentMajorFilter = 'all';
   currentSearch = '';
-  currentSortCol = 'rankNum';
-  currentSortAsc = true;
   document.getElementById('searchInput').value = '';
-  document.querySelectorAll('[data-filter="system"]').forEach(b => b.classList.toggle('active', b.dataset.val === 'all'));
-  document.querySelectorAll('[data-filter="major"]').forEach(b => b.classList.toggle('active', b.dataset.val === 'all'));
-  updateSortIndicators();
+  document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-filter="system"][data-val="all"]').classList.add('active');
+  document.querySelector('[data-filter="major"][data-val="all"]').classList.add('active');
   renderTable();
 }
 
@@ -772,45 +1317,49 @@ function sortTable(col) {
     currentSortCol = col;
     currentSortAsc = true;
   }
-  updateSortIndicators();
+  
+  document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
+  ['name', 'system', 'overall', 'gpa', 'me', 'ce', 'rec'].forEach(c => {
+    const el = document.getElementById('sort-' + c);
+    if (el) el.textContent = '↕';
+  });
+  
+  const activeSortEl = document.getElementById('sort-' + col);
+  if (activeSortEl) {
+    activeSortEl.parentElement.classList.add('sorted');
+    activeSortEl.textContent = currentSortAsc ? '↑' : '↓';
+  }
+  
   renderTable();
 }
 
-function updateSortIndicators() {
-  const cols = ['name', 'system', 'overall', 'gpa', 'me', 'ce', 'rec'];
-  cols.forEach(c => {
-    const el = document.getElementById(`sort-${c}`);
-    if (!el) return;
-    const th = el.parentElement;
-    if (currentSortCol === c) {
-      th.classList.add('sorted');
-      el.textContent = currentSortAsc ? '▲' : '▼';
-    } else {
-      th.classList.remove('sorted');
-      el.textContent = '↕';
-    }
-  });
+function escapeCSV(text) {
+  if (text === null || text === undefined) return '';
+  text = String(text).replace(/"/g, '""');
+  return `"${text}"`;
 }
 
 function copyTableTSV() {
+  const meta = scenarioMeta[currentGPA];
   const headers = [
     "College Name", "Website Link", "System", "Overall Admit Rate", 
     "Recommended GPA (W / UW)", "Mechanical Eng. Admit & Rank", 
-    "Known for ME? (or Alternative)", "Civil Eng. Admit & Rank", 
-    "Known for CE? (or Alternative)", "Recommended Major (4.10 GPA)", 
-    "Strategic Rationale for 4.10 GPA"
+    "Known for ME? / Feedback", "Civil Eng. Admit & Rank", 
+    "Known for CE? / Feedback", `Recommended Major (${meta.label})`, 
+    `Strategic Rationale for ${meta.label}`
   ];
   
   const rows = collegeData.map(c => [
     c.name, c.url, c.csuRank ? `${c.csuRank}` : c.system, c.overallRate,
     c.gpaRange, c.meRate, c.meKnown, c.ceRate, c.ceKnown,
-    c.recMajor, c.rationale
+    c.scenarios[currentGPA].recMajor, c.scenarios[currentGPA].rationale
   ]);
 
   const tsv = [headers.join('\t'), ...rows.map(r => r.join('\t'))].join('\n');
   
   navigator.clipboard.writeText(tsv).then(() => {
     const toast = document.getElementById('toast');
+    toast.textContent = `✓ Copied ${meta.label} table to clipboard! Ready to paste into Google Sheets.`;
     toast.style.display = 'flex';
     setTimeout(() => { toast.style.display = 'none'; }, 3500);
   }).catch(err => {
@@ -818,13 +1367,14 @@ function copyTableTSV() {
   });
 }
 
-function downloadCSV() {
+function downloadActiveCSV() {
+  const meta = scenarioMeta[currentGPA];
   const headers = [
     "College Name", "Website Link", "System", "Overall Admit Rate", 
     "Recommended GPA (W / UW)", "Mechanical Eng. Admit & Rank", 
-    "Known for ME? (or Alternative)", "Civil Eng. Admit & Rank", 
-    "Known for CE? (or Alternative)", "Recommended Major (4.10 GPA)", 
-    "Strategic Rationale for 4.10 GPA"
+    "Known for ME? / Feedback", "Civil Eng. Admit & Rank", 
+    "Known for CE? / Feedback", `Recommended Major (${meta.label})`, 
+    `Strategic Rationale for ${meta.label}`
   ];
   
   const csvRows = [headers.map(escapeCSV).join(',')];
@@ -840,30 +1390,25 @@ function downloadCSV() {
       escapeCSV(c.meKnown),
       escapeCSV(c.ceRate),
       escapeCSV(c.ceKnown),
-      escapeCSV(c.recMajor),
-      escapeCSV(c.rationale)
+      escapeCSV(c.scenarios[currentGPA].recMajor),
+      escapeCSV(c.scenarios[currentGPA].rationale)
     ].join(','));
   });
 
   const blob = new Blob([csvRows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = 'UC_CSU_Engineering_Admissions.csv';
+  a.setAttribute('href', url);
+  a.setAttribute('download', `UC_CSU_Engineering_Admissions_${currentGPA}.csv`);
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function escapeCSV(text) {
-  if (!text) return '""';
-  const str = String(text).replace(/"/g, '""');
-  return `"${str}"`;
 }
 
 // Initial render
-renderTable();
+document.addEventListener('DOMContentLoaded', () => {
+  renderTable();
+});
 </script>
 </body>
 </html>
